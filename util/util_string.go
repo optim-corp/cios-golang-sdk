@@ -10,3 +10,9 @@ func ToNil(str *string) *string {
 	}
 	return str
 }
+func ToNilStr(str string) *string {
+	if str == ""  {
+		return nil
+	}
+	return &str
+}

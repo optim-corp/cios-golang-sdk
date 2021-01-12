@@ -19,8 +19,8 @@ type ApiGetStreamRequest struct {
 	TimestampParam              *string
 	TimestampRangeParam         *string
 	LabelParam                  *string
-	P_offset                    *int64
-	P_limit                     *int64
+	OffsetParam                    *int64
+	LimitParam                     *int64
 	TimeoutParam                *int
 	SessionIdParam              *string
 	ChannelProtocolIdParam      *string
@@ -28,7 +28,7 @@ type ApiGetStreamRequest struct {
 }
 
 func (r ApiGetStreamRequest) PackerFormat(packerPacker string) ApiGetStreamRequest {
-	r.PackerFormatParam = util.ToNil(packerPacker)
+	r.PackerFormatParam = util.ToNilStr(packerPacker)
 	return r
 }
 func (r ApiGetStreamRequest) ChannelProtocolVersion(channelProtocolVersion int32) ApiGetStreamRequest {
@@ -40,31 +40,31 @@ func (r ApiGetStreamRequest) Timeout(timeout int) ApiGetStreamRequest {
 	return r
 }
 func (r ApiGetStreamRequest) SessionID(sessionID string) ApiGetStreamRequest {
-	r.SessionIdParam = util.ToNil(sessionID)
+	r.SessionIdParam = util.ToNilStr(sessionID)
 	return r
 }
 func (r ApiGetStreamRequest) ChannelProtocolId(channelProtocolId string) ApiGetStreamRequest {
-	r.ChannelProtocolIdParam = util.ToNil(channelProtocolId)
+	r.ChannelProtocolIdParam = util.ToNilStr(channelProtocolId)
 	return r
 }
 func (r ApiGetStreamRequest) Label(label string) ApiGetStreamRequest {
-	r.LabelParam = util.ToNil(label)
+	r.LabelParam = util.ToNilStr(label)
 	return r
 }
 func (r ApiGetStreamRequest) Location(location string) ApiGetStreamRequest {
-	r.LocationParam = util.ToNil(location)
+	r.LocationParam = util.ToNilStr(location)
 	return r
 }
 func (r ApiGetStreamRequest) LocationRange(locationRange string) ApiGetStreamRequest {
-	r.LocationRangeParam = util.ToNil(locationRange)
+	r.LocationRangeParam = util.ToNilStr(locationRange)
 	return r
 }
 func (r ApiGetStreamRequest) Timestamp(timestamp string) ApiGetStreamRequest {
-	r.TimestampParam = util.ToNil(timestamp)
+	r.TimestampParam = util.ToNilStr(timestamp)
 	return r
 }
 func (r ApiGetStreamRequest) TimestampRange(timestampRange string) ApiGetStreamRequest {
-	r.TimestampRangeParam = util.ToNil(timestampRange)
+	r.TimestampRangeParam = util.ToNilStr(timestampRange)
 	return r
 }
 func (r ApiGetStreamRequest) Ascending(ascending bool) ApiGetStreamRequest {
@@ -72,10 +72,10 @@ func (r ApiGetStreamRequest) Ascending(ascending bool) ApiGetStreamRequest {
 	return r
 }
 func (r ApiGetStreamRequest) Offset(offset int64) ApiGetStreamRequest {
-	r.P_offset = &offset
+	r.OffsetParam = &offset
 	return r
 }
 func (r ApiGetStreamRequest) Limit(limit int64) ApiGetStreamRequest {
-	r.P_limit = &limit
+	r.LimitParam = &limit
 	return r
 }

@@ -213,15 +213,15 @@ func (self PubSub) GetStream(channelID string, params model.ApiGetStreamRequest,
 	if params.AscendingParam != nil {
 		ascendingStr = strconv.FormatBool(*params.AscendingParam)
 	}
-	if params.P_offset != nil {
+	if params.OffsetParam != nil {
 		offsetStr = strconv.FormatInt(*params.P_offset, 10)
 	}
 	if params.ChannelProtocolVersionParam != nil {
 		tmp := strconv.FormatInt(int64(*params.ChannelProtocolVersionParam), 10)
 		channelProtocolVersionStr = &tmp
 	}
-	if params.P_limit != nil {
-		limitStr = strconv.FormatInt(*params.P_limit, 10)
+	if params.LimitParam != nil {
+		limitStr = strconv.FormatInt(*params.LimitParam, 10)
 	}
 	_url.RawQuery = util.Query(_url, util.QueryMap{
 		"packer_format":            params.PackerFormatParam,
@@ -256,7 +256,7 @@ func (self PubSub) GetStream(channelID string, params model.ApiGetStreamRequest,
 		func(body []byte) (bool, error) {
 			result = append(result, string(body))
 			count++
-			if count >= *params.P_limit {
+			if count >= *params.LimitParam {
 				return true, nil
 			}
 			return false, nil
@@ -273,7 +273,7 @@ func (self PubSub) GetStreamSafeLimit(channelID string, params model.ApiGetStrea
 	options := MakeGetObjectsOpts()
 	options.P_limit = &_limit
 	options.P_label = params.LabelParam
-	options.P_offset = params.P_offset
+	options.P_offset = params.OffsetParam
 	options.P_location = params.LocationRangeParam
 	options.P_timestamp = params.TimestampParam
 	options.P_sessionId = params.SessionIdParam
@@ -285,14 +285,14 @@ func (self PubSub) GetStreamSafeLimit(channelID string, params model.ApiGetStrea
 	if err != nil {
 		return nil, 0, err
 	}
-	if params.P_limit == nil {
+	if params.LimitParam == nil {
 		return nil, 0, errors.New("nothing limit")
 	}
-	limit := xmath.MinInt64(*params.P_limit, response.Total)
+	limit := xmath.MinInt64(*params.LimitParam, response.Total)
 	if params.P_offset != nil {
 		limit = xmath.MinInt64(limit, response.Total-*params.P_offset)
 	}
-	params.P_limit = &limit
+	params.LimitParam = &limit
 	params.TimeoutParam = &timeout
 	val, err := self.GetStream(channelID, params, ctx)
 	return val, response.Total, err
@@ -323,21 +323,21 @@ func (self PubSub) GetStreamAll(channelID string, params model.ApiGetStreamReque
 	total = response.Total
 	getFunction := func(offset *int64) ([]string, error) {
 		limit := int64(1000)
-		if params.P_limit != nil {
+		if params.LimitParam != nil {
 			limit = xmath.MinInt64(_limit, int64(1000))
 		}
 		limitArgs := xmath.MinInt64(limit, response.Total)
 		if offset != nil {
 			limitArgs = xmath.MinInt64(limit, response.Total-*offset)
 		}
-		params.P_offset = offset
-		params.P_limit = &limitArgs
+		params.OffsetParam = offset
+		params.LimitParam = &limitArgs
 		params.TimeoutParam = &timeout
 		return self.GetStream(channelID, params, ctx)
 	}
 	offset := int64(0)
-	if params.P_limit != nil {
-		_limit = *params.P_limit
+	if params.LimitParam != nil {
+		_limit = *params.LimitParam
 		for {
 			_result, err := getFunction(&offset)
 			if err != nil {
@@ -379,7 +379,7 @@ func (self PubSub) GetStreamUnlimited(channelID string, params model.ApiGetStrea
 		timestampRange := ":" + convert.MustStr(time.Now().UnixNano())
 		params.TimestampRangeParam = &timestampRange
 	}
-	params.P_limit = nil
+	params.LimitParam = nil
 	return self.GetStreamAll(channelID, params, ctx)
 }
 func (self PubSub) MapStreamUnlimited(channelID string, params model.ApiGetStreamRequest, stc interface{}, ctx model.RequestCtx) error {
