@@ -1,8 +1,6 @@
 package model
 
 import (
-	"context"
-
 	"github.com/optim-corp/cios-golang-sdk/util"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
@@ -24,7 +22,6 @@ type ApiGetStreamRequest struct {
 	TimeoutParam                *int
 	SessionIdParam              *string
 	ChannelProtocolIdParam      *string
-	Context                     context.Context
 }
 
 func (r ApiGetStreamRequest) PackerFormat(packerPacker string) ApiGetStreamRequest {

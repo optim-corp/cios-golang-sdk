@@ -260,7 +260,7 @@ func (self PubSub) GetStream(channelID string, params model.ApiGetStreamRequest,
 				return true, nil
 			}
 			return false, nil
-		}, params.Context,
+		}, ctx,
 	)
 	if self.debug {
 		log.Println(result)
