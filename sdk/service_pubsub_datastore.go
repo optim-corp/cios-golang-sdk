@@ -214,7 +214,7 @@ func (self PubSub) GetStream(channelID string, params model.ApiGetStreamRequest,
 		ascendingStr = strconv.FormatBool(*params.AscendingParam)
 	}
 	if params.OffsetParam != nil {
-		offsetStr = strconv.FormatInt(*params.P_offset, 10)
+		offsetStr = strconv.FormatInt(*params.OffsetParam, 10)
 	}
 	if params.ChannelProtocolVersionParam != nil {
 		tmp := strconv.FormatInt(int64(*params.ChannelProtocolVersionParam), 10)
@@ -289,8 +289,8 @@ func (self PubSub) GetStreamSafeLimit(channelID string, params model.ApiGetStrea
 		return nil, 0, errors.New("nothing limit")
 	}
 	limit := xmath.MinInt64(*params.LimitParam, response.Total)
-	if params.P_offset != nil {
-		limit = xmath.MinInt64(limit, response.Total-*params.P_offset)
+	if params.OffsetParam != nil {
+		limit = xmath.MinInt64(limit, response.Total-*params.OffsetParam)
 	}
 	params.LimitParam = &limit
 	params.TimeoutParam = &timeout
@@ -308,7 +308,7 @@ func (self PubSub) GetStreamAll(channelID string, params model.ApiGetStreamReque
 	options := MakeGetObjectsOpts()
 	options.P_limit = &_limit
 	options.P_label = params.LabelParam
-	options.P_offset = params.P_offset
+	options.P_offset = params.OffsetParam
 	options.P_location = params.LocationRangeParam
 	options.P_timestamp = params.TimestampParam
 	options.P_sessionId = params.SessionIdParam
