@@ -1,0 +1,732 @@
+openapi: "3.0.3"
+info:
+  version: 0.0.0
+  title: Cios Resource Owner Openapi
+
+paths:
+  /v2/collections/{collection_id}/series:
+    post:
+      tags:
+        - Collection
+      deprecated: true
+      description: |-
+        データの保存、時系列データ存在確認への反映は非同期。
+
+        Supported application type: Web, Native, Client, Device
+      operationId: postSeries
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/collection-component.openapi.yml#/components/schemas/SeriesRequest'
+      responses:
+        "201":
+          description: 追加成功
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+      summary: 時系列データ保存
+  /v2/collections/{collection_id}/series-bulk:
+    post:
+      tags:
+        - Collection
+      deprecated: true
+      description: |-
+        複数のデータの保存、時系列データ存在確認への反映は非同期
+
+        Supported application type：Web, Native, Client, Device
+      operationId: postSeriesBulk
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/collection-component.openapi.yml#/components/schemas/SeriesBulkRequest'
+      responses:
+        "201":
+          description: 追加成功
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+  /v2/collections/{collection_id}/series/{series_id}/timestamp/{timestamp}/data:
+    put:
+      description: |-
+        データの保存、時系列データ存在確認への反映は非同期。
+
+        Supported application type: Web, Native, Client, Device
+      tags:
+        - Collection
+      operationId: putSeries
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/series_id'
+        - $ref: '../components/parameters.yml#/components/parameters/timestamp_path'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/collection-component.openapi.yml#/components/schemas/SeriesDataRequest'
+      responses:
+        "201":
+          description: 追加成功
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+  /v2/collections/{collection_id}/series/{series_id}/data-bulk:
+    put:
+      description: |-
+        複数のデータの保存、時系列データ存在確認への反映は非同期
+
+        Supported application type：Web, Native, Client, Device
+      operationId: createSeriesDataBulk
+      tags:
+        - Collection
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/series_id'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/collection-component.openapi.yml#/components/schemas/SeriesDataBulkRequest'
+      responses:
+        "201":
+          description: 追加成功
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+  /v2/collections/{collection_id}/series/{series_id}/timestamp/{timestamp}/image:
+    get:
+      tags:
+        - Collection
+      description: |-
+        シリーズID、時刻を指定してオリジナル画像を取得する。
+
+        Supported application type:Web, Native, Client
+      operationId: getSeriesImage
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/series_id'
+        - $ref: '../components/parameters.yml#/components/parameters/timestamp_path'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/collection-component.openapi.yml#/components/schemas/SeriesDataBulkRequest'
+      responses:
+        "200":
+          content:
+            image/jpeg:
+              schema:
+                description: JPEG形式の画像。
+                format: binary
+                type: string
+            image/png:
+              schema:
+                description: PNG形式の画像。
+                format: binary
+                type: string
+          description: 取得成功
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+    put:
+      tags:
+        - Collection
+      description: |-
+        画像を保存する。
+
+        レスポンスのhttpステータスが500となった場合、最新オリジナル画像、最新サムネイル画像、
+        オリジナル画像履歴、サムネイル画像履歴のうち一部だけが保存完了している可能性がある。
+        その場合は保存が完了した画像だけが画像取得APIで取得される状態となるが、
+        同じタイムスタンプで再度画像をアップロードすることで、それらの画像を上書きすることができる。
+
+        Supported application type: Web, Native, Client, Device
+      operationId: createSeriesImage
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/series_id'
+        - $ref: '../components/parameters.yml#/components/parameters/timestamp_path'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+        - $ref: '../components/parameters.yml#/components/parameters/is_latest'
+      requestBody:
+        required: true
+        content:
+          image/jpeg:
+            schema:
+              description: JPEG形式の画像。サイズが1MBを超える場合はリクエスト不正とする。
+              format: binary
+              type: string
+          image/png:
+            schema:
+              description: PNG形式の画像。サイズが1MBを超える場合はリクエスト不正とする。
+              format: binary
+              type: string
+      responses:
+        "201":
+          description: 保存成功
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+  /v2/collections/{collection_id}/series/{series_id}/timestamp/{timestamp}/thumbnail:
+    get:
+      tags:
+        - Collection
+      description: |-
+        シリーズID、時刻を指定してサムネイル画像を取得する。
+
+        Supported application type:Web, Native, Client
+      operationId: getSeriesThumnbnail
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/series_id'
+        - $ref: '../components/parameters.yml#/components/parameters/timestamp_path'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/collection-component.openapi.yml#/components/schemas/SeriesDataBulkRequest'
+      responses:
+        "200":
+          content:
+            image/jpeg:
+              schema:
+                description: JPEG形式の画像。
+                format: binary
+                type: string
+            image/png:
+              schema:
+                description: PNG形式の画像。
+                format: binary
+                type: string
+          description: 取得成功
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+  /v2/collections/{collection_id}/series/{series_id}/data:
+    get:
+      tags:
+        - Collection
+      description: |-
+        シリーズID、時刻を指定してサムネイル画像を取得する。
+
+        Supported application type:Web, Native, Client
+      operationId: getTimeSeriesData
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/series_id'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+        - $ref: '../components/parameters.yml#/components/parameters/Accept-Encoding'
+        - $ref: '../components/parameters.yml#/components/parameters/time_range'
+        - $ref: '../components/parameters.yml#/components/parameters/limit'
+        - $ref: '../components/parameters.yml#/components/parameters/offset'
+        - $ref: '../components/parameters.yml#/components/parameters/ascending'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '../components/collection-component.openapi.yml#/components/schemas/MultipleSeriesDataLocationUnix'
+          description: 取得成功
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+  /v2/collections/{collection_id}/series/{series_id}/images:
+    get:
+      tags:
+        - Collection
+      description: |-
+        シリーズID、期間等を指定してオリジナル画像の履歴を取得する。
+
+        Supported application type:Web, Native, Client
+      operationId: getSeriesImages
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/series_id'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+        - $ref: '../components/parameters.yml#/components/parameters/Accept-Encoding'
+        - $ref: '../components/parameters.yml#/components/parameters/time_range'
+        - $ref: '../components/parameters.yml#/components/parameters/limit'
+        - $ref: '../components/parameters.yml#/components/parameters/offset'
+        - $ref: '../components/parameters.yml#/components/parameters/ascending'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '../components/collection-component.openapi.yml#/components/schemas/MultipleSeriesImage'
+          description: 取得成功
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+  /v2/collections/{collection_id}/series/{series_id}/thumbnails:
+    get:
+      tags:
+        - Collection
+      description: |-
+        シリーズID、期間等を指定してサムネイル画像の履歴を取得する。
+
+        Supported application type:Web, Native, Client
+      operationId: getSeriesThumbnails
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/series_id'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+        - $ref: '../components/parameters.yml#/components/parameters/Accept-Encoding'
+        - $ref: '../components/parameters.yml#/components/parameters/time_range'
+        - $ref: '../components/parameters.yml#/components/parameters/limit'
+        - $ref: '../components/parameters.yml#/components/parameters/offset'
+        - $ref: '../components/parameters.yml#/components/parameters/ascending'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '../components/collection-component.openapi.yml#/components/schemas/MultipleSeriesImage'
+          description: 取得成功
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+  /v2/collections/{collection_id}/series/{series_id}:
+    get:
+      tags:
+        - Collection
+      deprecated: true
+      description: |-
+        期間・シリーズID等を指定して時系列データを取得する。
+
+        Supported application type:Web, Native, Client
+      operationId: getSeries
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/series_id'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+        - $ref: '../components/parameters.yml#/components/parameters/Accept-Encoding'
+        - $ref: '../components/parameters.yml#/components/parameters/time_range'
+        - $ref: '../components/parameters.yml#/components/parameters/limit'
+        - $ref: '../components/parameters.yml#/components/parameters/offset'
+        - $ref: '../components/parameters.yml#/components/parameters/ascending'
+      responses:
+        "200":
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '../components/collection-component.openapi.yml#/components/schemas/MultipleSeriesDataLocationUnix'
+          description: 取得成功
+          headers:
+            Content-Encoding:
+              description: 圧縮形式。リクエストヘッダで圧縮形式を指定した場合のみ。
+              explode: false
+              schema:
+                pattern: gzip
+                type: string
+              style: simple
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+  /v2/collections/{collection_id}/search-latest:
+    post:
+      tags:
+        - Collection
+      description: |-
+        最新データを取得する。<br>
+        取得対象データはtimestampが最も新しいデータではなく`最後に送信されたデータ`となる。 <br>
+        またbulk uploadされたデータは過去データの扱いの為この最新データ取得で取得されるデータには影響しない。 <br>
+        projection=dataの場合は時系列データ保存API、imageかthumbnailの場合は画像保存APIで最後に保存されたものが取得対象となる。
+
+        Supported application type:Web, Native, Client
+      operationId: postSearchLatest
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+        - $ref: '../components/parameters.yml#/components/parameters/limit'
+        - $ref: '../components/parameters.yml#/components/parameters/offset'
+        - $ref: '../components/parameters.yml#/components/parameters/projection'
+        - $ref: '../components/parameters.yml#/components/parameters/Accept-Encoding'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/collection-component.openapi.yml#/components/schemas/CollectionLatestRequest'
+      responses:
+        "200":
+          content:
+            application/json:
+              schema:
+                $ref: '../components/collection-component.openapi.yml#/components/schemas/MultipleCollectionLatest'
+          description: 取得成功
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+  /v2/collections/{collection_id}/archive:
+    post:
+      tags:
+        - Collection
+      description: |-
+        指定した現場の時系列データをアーカイブし、アーカイブ・リストア状態をARCHIVEDにする。
+
+        Supported application type：Web, Native
+      operationId: postCollectionArchive
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+      responses:
+        "202":
+          description: リストア要求受付成功
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+  /v2/collections/{collection_id}/restore:
+    post:
+      tags:
+        - Collection
+      description: |-
+        指定した現場の時系列データをリストアし、アーカイブ・リストア状態をREADYにする。
+
+        Supported application type：Web, Native
+      operationId: postCollectionRestore
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+      responses:
+        "202":
+          description: アーカイブ要求受付成功
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+  /v2/collections/{collection_id}/status:
+    get:
+      tags:
+        - Collection
+      description: |-
+        アーカイブ・リストア状態を取得する。
+
+        アーカイブ・リストア状態遷移
+        ![](./images/archive-restore-state-transtition-diagram.png)
+
+        Supported application type：Web, Native
+      operationId: getCollectionStatus
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '../components/collection-component.openapi.yml#/components/schemas/CollectionStatus'
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+  /v2/collections/{collection_id}/recorded-dates:
+    get:
+      tags:
+        - Collection
+      description: |-
+        指定した年月において、時系列データが存在する日付のリストを取得する。
+
+        時系列データ保存API、または、時系列データ保存(bulk upload)APIで保存された時系列データが存在する日付のみ取得対象であり、画像のみが存在する日付は取得されない。
+
+        Supported application type:Web, Native, Client
+      operationId: getRecordedDates
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+        - $ref: '../components/parameters.yml#/components/parameters/month_required'
+        - $ref: '../components/parameters.yml#/components/parameters/gmt_offset'
+      responses:
+        "200":
+          description: 取得成功
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '../components/collection-component.openapi.yml#/components/schemas/RecordedDates'
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+  /v2/collections/{collection_id}/series/{series_id}/latest:
+    delete:
+      tags:
+        - Collection
+      description: |-
+        シリーズIDを指定して最新データを削除する。削除後は当該シリーズの最新データおよび画像は最新データ取得APIのレスポンスに含まれない。<br>
+        Responseが500の場合、最新データまたは最新画像のいずれかが残っている可能性がある。<br>
+        再度APIを実行してResponseが204であれば残ったリソースも削除できた状態となる。
+
+        Supported application type:Web, Native, Client, Device
+      operationId: deleteSeriesLatest
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/series_id'
+        - $ref: '../components/parameters.yml#/components/parameters/timestamp_path'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+      responses:
+        "204":
+          description: 削除成功
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+  /v2/collections/{collection_id}/series/{series_id}/aggregation:
+    post:
+      tags:
+        - Collection
+      description: |-
+        期間・シリーズID等を指定して時系列データの計測値を集計する。
+
+        Supported application type:Web, Native, Client
+      operationId: getSeriesAggregation
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: '../components/collection-component.openapi.yml#/components/schemas/SeriesAggregationRequest'
+
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/collection_id'
+        - $ref: '../components/parameters.yml#/components/parameters/series_id'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+        - $ref: '../components/parameters.yml#/components/parameters/Accept-Encoding'
+        - $ref: '../components/parameters.yml#/components/parameters/time_range'
+        - $ref: '../components/parameters.yml#/components/parameters/interval'
+        - $ref: '../components/parameters.yml#/components/parameters/ascending'
+      responses:
+        "200":
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: '../components/collection-component.openapi.yml#/components/schemas/SeriesAggregations'
+          description: 取得成功
+          headers:
+            Content-Encoding:
+              description: 圧縮形式。リクエストヘッダで圧縮形式を指定した場合のみ。
+              explode: false
+              schema:
+                pattern: gzip
+                type: string
+              style: simple
+        "400":
+          $ref: '../components/responses.yml#/components/responses/BadRequest'
+        "401":
+          $ref: '../components/responses.yml#/components/responses/InvalidToken'
+        "403":
+          $ref: '../components/responses.yml#/components/responses/InsufficientScopes'
+        "404":
+          $ref: '../components/responses.yml#/components/responses/NotFound'
+        "409":
+          $ref: '../components/responses.yml#/components/responses/StatusMismatch'
+        "500":
+          $ref: '../components/responses.yml#/components/responses/InternalServerError'
+      security:
+        - bearerAuth: [ ]
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

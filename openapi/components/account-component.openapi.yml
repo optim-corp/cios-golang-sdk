@@ -1,0 +1,86 @@
+openapi: 3.0.3
+info:
+  title: Auth Component
+  description: Component
+  version: 1.0.0
+
+paths: {}
+
+components:
+  schemas:
+    Me:
+      type: object
+      required:
+        - id
+        - type
+        - email
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        name:
+          type: string
+        family_name:
+          type: string
+        given_name:
+          type: string
+        phonetic_family_name:
+          type: string
+        phonetic_given_name:
+          type: string
+        phone_number:
+          type: string
+        phone_number_2:
+          type: string
+        language:
+          type: string
+          enum:
+            - ja
+            - en
+            - en-US
+            - de-DE
+            - fe-FR
+            - es-ES
+        email:
+          type: string
+
+        emails:
+          type: array
+          items:
+            type: string
+
+        picture:
+          type: string
+          format: uri
+        corporation:
+          type: object
+          properties:
+            id:
+              type: string
+              format: uuid
+            name:
+              type: string
+        groups:
+          type: array
+          items:
+            type: object
+            required:
+              - id
+              - name
+              - type
+              - corporation_id
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+              type:
+                type: string
+                enum:
+                  - Corporation
+                  - Group
+              corporation_id:
+                type: string
+                nullable: true

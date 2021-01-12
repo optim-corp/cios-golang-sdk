@@ -1,0 +1,25 @@
+openapi: 3.0.1
+info:
+  title: Account API
+  version: 1.0.0
+paths:
+  '/connect/token':
+    post:
+      tags:
+        - auth
+      operationId: refreshToken
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: "../components/auth-component.openapi.yml#/components/schemas/ConnectTokenRequest"
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/auth-component.openapi.yml#/components/schemas/ConnectTokenResponse"
+      security:
+        - basicAuth: [ ]
+

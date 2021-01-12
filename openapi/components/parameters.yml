@@ -1,0 +1,803 @@
+openapi: 3.0.1
+info:
+  title: Parameter Component
+  version: 1.0.0
+
+paths: {}
+
+components:
+  parameters:
+    # path
+    node_id_required:
+      name: node_id
+      in: path
+      required: true
+      schema:
+        type: string
+    bucket_id_required:
+      name: bucket_id
+      in: path
+      required: true
+      schema:
+        type: string
+    channel_id_required:
+      name: channel_id
+      in: path
+      required: true
+      schema:
+        type: string
+    group_id_required:
+      name: group_id
+      in: path
+      required: true
+      schema:
+        type: string
+        format: uuid
+    resource_owner_id_required:
+      name: resource_owner_id
+      in: path
+      required: true
+      schema:
+        type: string
+    object_id_required:
+      name: object_id
+      in: path
+      required: true
+      schema:
+        type: string
+    session_id_required:
+      name: session_id
+      in: path
+      required: true
+      schema:
+        type: string
+    device_id:
+      name: device_id
+      in: path
+      required: true
+      schema:
+        type: string
+    device_id_required:
+      name: device_id
+      in: path
+      description: デバイスID
+      required: true
+      schema:
+        type: string
+    point_id_required:
+      name: point_id
+      in: path
+      required: true
+      schema:
+        type: string
+    circle_id_required:
+      name: circle_id
+      in: path
+      required: true
+      schema:
+        type: string
+    route_id_required:
+      name: route_id
+      in: path
+      required: true
+      schema:
+        type: string
+    video_id:
+      name: video_id
+      in: path
+      required: true
+      schema:
+        type: string
+    policy_id:
+      name: policy_id
+      in: path
+      required: true
+      schema:
+        type: string
+    name:
+      name: name
+      in: path
+      required: true
+      schema:
+        type: string
+    key:
+      name: key
+      in: path
+      required: true
+      schema:
+        type: string
+    component:
+      name: component
+      in: path
+      required: true
+      schema:
+        type: string
+    lifecycle_id:
+      name: lifecycle_id
+      in: path
+      required: true
+      schema:
+        type: string
+    contract_id:
+      name: contract_id
+      in: path
+      required: true
+      schema:
+        type: string
+    user_id_path:
+      name: user_id
+      in: path
+      required: true
+      schema:
+        type: string
+    collection_id:
+      description: コレクション名
+      explode: false
+      in: path
+      name: collection_id
+      required: true
+      schema:
+        description: コレクション名
+        example: location
+        pattern: ^[a-zA-Z0-9][a-zA-Z0-9-_]{1,34}[a-zA-Z0-9]$
+        title: CollectionId
+        type: string
+      style: simple
+    series_id:
+      description: シリーズID
+      explode: false
+      in: path
+      name: series_id
+      required: true
+      schema:
+        type: string
+    timestamp_path:
+      description: UNIXタイム(ミリ秒)
+      explode: false
+      in: path
+      name: timestamp
+      required: true
+      schema:
+        description: UNIXタイム(ミリ秒)
+        example: 1518165596566320
+        format: int64
+        title: TimeStamp
+        type: integer
+      style: simple
+
+
+    # query
+    resource_owner_id_query_required:
+      name: resource_owner_id
+      in: query
+      required: true
+      schema:
+        type: string
+    name_query:
+      name: name
+      description: 名前での部分一致検索
+      in: query
+      required: false
+      schema:
+        pattern: \A.{1,100}\z
+        type: string
+        maxLength: 255
+    key_query:
+      name: key
+      in: query
+      required: false
+      schema:
+        type: string
+    serial_number_query:
+      name: serial_number
+      in: query
+      required: false
+      schema:
+        type: string
+    node_id_query:
+      name: node_id
+      in: query
+      required: false
+      schema:
+        type: string
+    session_id_query:
+      name: session_id
+      in: query
+      required: false
+      schema:
+        type: string
+    parent_node_id:
+      name: parent_node_id
+      in: query
+      required: false
+      schema:
+        type: string
+    parent_key:
+      name: parent_key
+      in: query
+      required: false
+      schema:
+        type: string
+    group_id:
+      name: group_id
+      in: query
+      required: false
+      schema:
+        type: string
+    user_id:
+      name: user_id
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+    type:
+      name: type
+      in: query
+      required: false
+      schema:
+        type: string
+    group_type:
+      name: type
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [ Corporation, Group ]
+    device_id_query:
+      name: device_id
+      in: query
+      required: false
+      schema:
+        type: string
+    page:
+      name: page
+      in: query
+      required: false
+      schema:
+        type: string
+    offset:
+      name: offset
+      in: query
+      required: false
+      description: ページネーションのうち、何件読み飛ばすか
+      schema:
+        type: integer
+        description: 0以上
+        minimum: 0
+        format: int64
+    limit:
+      name: limit
+      in: query
+      required: false
+      description: ページネーションのうち、上位何件取得するか
+      schema:
+        type: integer
+        format: int64
+        minimum: 1
+        maximum: 1000
+    group_order_by:
+      name: order_by
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [ display_name ]
+    member_order_by:
+      name: order_by
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [ role, category ]
+    node_order_by:
+      name: order_by
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [ parent_node_id, name, key, created_at, updated_at, file_size ]
+    order_by:
+      name: order_by
+      description: ソート対象。指定順に高優先でのソートとなる
+      in: query
+      required: false
+      schema:
+        type: string
+    order:
+      name: order
+      description: ソート順序。 order_byで指定したkeyそれぞれに対して昇順、降順を配列で指定
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [ desc, asc ]
+    recursive:
+      name: recursive
+      in: query
+      required: false
+      schema:
+        type: boolean
+    is_directory:
+      name: is_directory
+      in: query
+      required: false
+      schema:
+        type: boolean
+    directory_size:
+      name: directory_size
+      in: query
+      required: false
+      schema:
+        type: boolean
+    force:
+      name: force
+      in: query
+      required: false
+      schema:
+        type: boolean
+    checksum:
+      name: checksum
+      in: query
+      required: true
+      schema:
+        type: string
+    lang:
+      description: 言語指定
+      name: lang
+      in: query
+      required: false
+      schema:
+        description: |-
+          IETF言語タグ(BCP47)準拠。
+          指定言語が設定されていない場合デフォルト言語(display_info.is_defaultがtrueの言語)を利用する
+        type: string
+    is_dev:
+      name: is_dev
+      in: query
+      required: false
+      description: 開発者モードの有効・無効
+      schema:
+        type: boolean
+        description: |-
+          true:display_infoを表示,
+          false:langで指定した言語のnameとdescriptionを表示
+    is_public:
+      name: is_public
+      in: query
+      description: デバイスの公開・非公開
+      required: false
+      schema:
+        description: |-
+          true:公開されているものでの絞り込み,
+          false:所有するものでの絞り込み,
+          all:絞り込みなし
+        type: string
+        enum: [true, false, all]
+    messaging_enabled:
+      name: messaging_enabled
+      in: query
+      required: false
+      schema:
+        type: string
+    datastore_enabled:
+      name: datastore_enabled
+      in: query
+      required: false
+      schema:
+        type: string
+    messaging_persisted:
+      name: messaging_persisted
+      in: query
+      required: false
+      schema:
+        type: string
+    channel_protocol:
+      name: channel_protocol
+      in: query
+      required: false
+      schema:
+        type: string
+    channel_protocol_id:
+      name: channel_protocol_id
+      in: query
+      required: false
+      schema:
+        type: string
+    channel_protocol_version:
+      name: channel_protocol_version
+      in: query
+      required: false
+      schema:
+        type: integer
+    location:
+      name: location
+      in: query
+      required: false
+      schema:
+        type: string
+    ascending:
+      name: ascending
+      in: query
+      required: false
+      schema:
+        type: boolean
+    location_range:
+      name: location_range
+      in: query
+      required: false
+      schema:
+        type: string
+    timestamp_range:
+      name: timestamp_range
+      in: query
+      required: false
+      schema:
+        type: string
+    timestamp:
+      name: timestamp
+      in: query
+      required: false
+      schema:
+        type: string
+    resource_owner_id:
+      name: resource_owner_id
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+    label:
+      name: label
+      in: query
+      required: false
+      schema:
+        type: string
+    state:
+      name: state
+      in: query
+      required: false
+      schema:
+        type: string
+    city:
+      name: city
+      in: query
+      required: false
+      schema:
+        type: string
+    address_1:
+      name: address_1
+      in: query
+      required: false
+      schema:
+        type: string
+    address_2:
+      name: address_2
+      in: query
+      required: false
+      schema:
+        type: string
+    tag:
+      name: tag
+      in: query
+      required: false
+      schema:
+        type: string
+    tags:
+      name: tags
+      in: query
+      required: false
+      schema:
+        type: string
+    domain:
+      name: domain
+      in: query
+      required: false
+      schema:
+        type: string
+    parent_group_id:
+      name: parent_group_id
+      in: query
+      required: false
+      schema:
+        type: string
+        format: uuid
+    includes:
+      name: includes
+      in: query
+      required: false
+      schema:
+        type: string
+    category:
+      name: category
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [ member, guest ]
+    role:
+      name: role
+      in: query
+      required: false
+      schema:
+        type: string
+        enum: [ super_admin, admin, manager, staff ]
+    phonetic_given_name:
+      name: phonetic_given_name
+      in: query
+      required: false
+      schema:
+        type: string
+    phonetic_family_name:
+      name: phonetic_family_name
+      in: query
+      required: false
+      schema:
+        type: string
+    primary:
+      name: primary
+      in: query
+      required: false
+      schema:
+        type: boolean
+    email:
+      name: email
+      in: query
+      required: false
+      schema:
+        type: string
+    packer_format:
+      name: packer_format
+      required: false
+      in: query
+      schema:
+        type: string
+    channel_id_query_required:
+      name: channel_id
+      required: true
+      in: query
+      schema:
+        type: string
+    definition_id:
+      name: definition_id
+      description: |-
+        デバイス定義ID(custom_inventory.definition_id)での完全一致検索
+      required: false
+      in: query
+      schema:
+        type: string
+    id_number:
+      name: id_number
+      required: false
+      description: 識別番号での完全一致検索
+      in: query
+      schema:
+        type: string
+    definition_tag:
+      name: definition_tag
+      description: デバイス定義のタグ(custom_inventory.tag)での完全一致検索
+      required: false
+      in: query
+      schema:
+        type: string
+    inventory_key:
+      name: definition_tag
+      description: |-
+        custominventoryの内部データでの検索時に指定。
+        key,valueのセットの完全一致での検索とし、
+        本パラメータでkeyを指定し、inventory_valueでvalueを指定する。
+      required: false
+      in: query
+      schema:
+        type: string
+    inventory_value:
+      name: definition_tag
+      description: |-
+        custominventoryの内部データでの検索時に指定。
+        key,valueのセットの完全一致での検索とし、本パラメータでvalueを指定し、
+        inventory_keyでkeyを指定する。
+      required: false
+      in: query
+      schema:
+        type: string
+    sort:
+      name: sort
+      required: false
+      in: query
+      schema:
+        type: string
+    top:
+      name: top
+      required: false
+      in: query
+      schema:
+        type: integer
+    skip:
+      name: skip
+      required: false
+      in: query
+      schema:
+        type: integer
+    version:
+      name: version
+      in: query
+      required: false
+      schema:
+        type: string
+    component_key:
+      name: component_key
+      in: query
+      required: false
+      schema:
+        type: string
+    component_value:
+      name: component_value
+      in: query
+      required: false
+      schema:
+        type: string
+    component_id_query:
+      name: component_id_query
+      in: query
+      required: false
+      schema:
+        type: string
+    is_flat:
+      name: is_flat
+      in: query
+      required: false
+      schema:
+        type: boolean
+        default: false
+    is_recursive:
+      name: is_recursive
+      in: query
+      required: true
+      schema:
+        type: boolean
+    event_kind:
+      name: event_kind
+      in: query
+      required: false
+      schema:
+        type: string
+    event_mode:
+      name: event_mode
+      in: query
+      required: false
+      schema:
+        type: string
+    event_type:
+      name: event_type
+      in: query
+      required: false
+      schema:
+        type: string
+    component_id:
+      name: component_id
+      in: query
+      required: false
+      schema:
+        type: string
+    before_id:
+      name: before_id
+      in: query
+      required: false
+      schema:
+        type: string
+    after_id:
+      name: after_id
+      in: query
+      required: false
+      schema:
+        type: string
+    start_event_at:
+      name: start_event_at
+      in: query
+      required: false
+      schema:
+        type: string
+    end_event_at:
+      name: end_event_at
+      in: query
+      required: false
+      schema:
+        type: string
+    maker_id:
+      name: end_event_at
+      in: query
+      required: false
+      schema:
+        type: string
+    status:
+      name: status
+      in: query
+      required: false
+      schema:
+        type: string
+    is_latest:
+      description: 最新画像としてアップロードする場合はtrue。保存に失敗した画像を再度アップロードする場合など、最新画像でない場合はfalseを指定する。
+      explode: true
+      in: query
+      name: is_latest
+      required: false
+      schema:
+        default: true
+        example: false
+        type: boolean
+      style: form
+    time_range:
+      description: <開始時刻>:<終了時刻>、UNIX時間(ミリ秒)。開始時刻はInclusive、終了時刻はExclusive(開始時刻≦取得範囲＜終了時刻)。最大で取得できる期間は7日間以内とする。開始、終了時刻の指定が7日間を超える場合は、400エラーとなる
+      explode: true
+      in: query
+      name: time_range
+      required: true
+      schema:
+        example: 1518165596566:1518165596566
+        pattern: ^((0)|([1-9][0-9]*)):((0)|([1-9][0-9]*))$
+        type: string
+      style: form
+    projection:
+      description: |-
+        取得する対象を以下から選択する
+
+        |値|取得対象|
+        |---|---|
+        |data|画像以外の最新データのみ取得。時系列データ保存APIで保存された各シリーズの時系列データで最後に保存されたデータが返却される。時系列データ保存 (bulk upload)で保存されたデータは取得されない。|
+        |thumbnail|最新のサムネイル画像のみ取得。画像保存APIで各シリーズに対してis_latest=trueを指定して最後に保存された画像が返却される。|
+        |image|最新のオリジナル画像のみ取得。画像保存APIで各シリーズに対してis_latest=trueを指定して最後に保存された画像が返却される。|
+      explode: true
+      in: query
+      name: projection
+      required: false
+      schema:
+        default: data
+        enum: [ data, thumbnail, image ]
+        type: string
+      style: form
+    month_required:
+      description: 問い合わせ年月(YYYY-MM)。1970-01から9999-12まで
+      example: 2019-12
+      explode: true
+      in: query
+      name: month
+      required: true
+      schema:
+        pattern: ^[0-9]{4}-(0[1-9]|1[0-2])$
+        type: string
+      style: form
+    gmt_offset:
+      description: タイムゾーンをGMTからのオフセットで指定(日本の場合9) hh:mmの形式で指定。時間が一桁の場合は0パディングはなし。時間は[-12, 14]の範囲。分は、00, 15, 30, 45のいずれかのみ許容
+      explode: true
+      in: query
+      name: gmt_offset
+      required: false
+      schema:
+        default: 0:00
+        pattern: ^(0|-?[1-9]|-1[0-1]|1[0-3]):(00|15|30|45)$|^(-12:00|14:00)$
+        type: string
+      style: form
+    interval:
+      description: 時系列データを集計する単位時間（ミリ秒）を指定する
+      explode: true
+      in: query
+      name: interval
+      required: true
+      schema:
+        example: 60000
+        format: int32
+        maximum: 86400000
+        minimum: 1000
+        type: integer
+      style: form
+    # header
+    Accept-Encoding:
+      description: レスポンスボディの圧縮形式。gzipのみ対応。
+      explode: false
+      in: header
+      name: Accept-Encoding
+      required: false
+      schema:
+        pattern: gzip
+        type: string
+      style: simple

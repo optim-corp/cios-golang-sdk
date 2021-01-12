@@ -1,0 +1,345 @@
+openapi: 3.0.3
+info:
+  title: Device Asset Component
+  description: Component
+  version: 1.0.0
+
+paths: {}
+
+components:
+  schemas:
+    MultipleDeviceModel:
+      required:
+        - total
+        - models
+      properties:
+        total:
+          type: integer
+          format: int64
+        models:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceModel'
+    SingleDeviceModel:
+      required:
+        - model
+      properties:
+        model:
+          $ref: '#/components/schemas/DeviceModel'
+    DeviceModel:
+      required:
+        - id
+        - name
+        - resource_owner_id
+        - created_at
+        - updated_at
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        resource_owner_id:
+          type: string
+          format: uuid
+        maker_id:
+          type: string
+          format: uuid
+        version:
+          type: string
+        watch:
+          $ref: './device-component.openapi.yml#/components/schemas/Watch'
+        components:
+          $ref: '#/components/schemas/ConstitutionComponent'
+        created_at:
+          type: string
+          description: ナノ秒
+        updated_at:
+          type: string
+          description: ナノ秒
+    DeviceModelRequest:
+      required:
+        - name
+        - resource_owner_id
+      type: object
+      properties:
+        name:
+          type: string
+        resource_owner_id:
+          type: string
+          format: uuid
+        maker_id:
+          type: string
+          format: uuid
+        version:
+          type: string
+        watch:
+          $ref: './device-component.openapi.yml#/components/schemas/Watch'
+        components:
+          $ref: '#/components/schemas/ConstitutionComponent'
+    DeviceModelUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        resource_owner_id:
+          type: string
+          format: uuid
+        maker_id:
+          type: string
+          format: uuid
+        version:
+          type: string
+        watch:
+          type: object
+          properties:
+            types:
+              type: object
+              properties:
+                unit:
+                  type: array
+                  items:
+                    type: string
+                parts:
+                  items:
+                    type: string
+            component_ids:
+              type: object
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstitutionComponent'
+    MultipleConstitutionComponent:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstitutionComponent'
+    ConstitutionComponent:
+      type: object
+      properties:
+        id:
+          type: string
+        parent_id:
+          type: string
+        address:
+          type: string
+        type:
+          $ref: './device-component.openapi.yml#/components/schemas/ComponentTypeEnum'
+        attribute:
+          type: object
+          example:
+            model: RASOU001
+            serialNo: 1234567890
+            usage_start_date: 1575903600000000000
+        display_info:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/DisplayInfo'
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConstitutionComponent'
+    MultipleDeviceModelEntity:
+      type: object
+      required:
+        - total
+        - entities
+      properties:
+        total:
+          type: integer
+          format: int64
+        entities:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceModelsEntity'
+    SingleDeviceModelsEntity:
+      type: object
+      required:
+        - entity
+      properties:
+        entity:
+          $ref: '#/components/schemas/DeviceModelsEntity'
+    DeviceModelsEntity:
+      type: object
+      required:
+        - id
+        - key
+        - model
+        - start_at
+        - watch
+        - components
+        - resource_owner_id
+      properties:
+        id:
+          type: string
+        key:
+          type: string
+        device_id:
+          type: string
+        model:
+          type: object
+          required:
+            - marker_id
+            - version
+          properties:
+            id:
+              type: string
+            name:
+              type: string
+            key:
+              type: string
+            maker_id:
+              type: string
+            version:
+              type: string
+            created_at:
+              type: string
+              description: ナノ秒
+            updated_at:
+              type: string
+              description: ナノ秒
+        serial_number:
+          type: string
+        start_at:
+          type: string
+          description: ナノ秒
+        custom_inventory:
+          type: array
+          items:
+            type: object
+            description: http://cios.gitlab.tokyo.optim.co.jp/developer-portal/cios-public/md/api_v2/device/
+            example:
+              001: bnu4hbnrmflais1m02e1
+              002: bnu4hbnrmflais1m02e2
+              003: bnu4hbnrmflais1m02e3
+              004: bnu4hbnrmflais1m02e4
+              005: bnu4hbnrmflais1m02e5
+              006: bnu4hbnrmflais1m02e6
+              007: bnu4hbnrmflais1m02e7
+              008: bnu4hbnrmflais1m02e8
+              009: bnu4hbnrmflais1m02e9
+              010: bnu4hbnrmflais1m02e0
+        resource_owner_id:
+          type: string
+        watch:
+          $ref: './device-component.openapi.yml#/components/schemas/Watch'
+        components:
+          $ref: '#/components/schemas/DeviceEntitiesComponent'
+        created_at:
+          type: string
+        updated_at:
+          type: string
+    MultipleDeviceEntitiesComponent:
+      required:
+        - total
+        - components
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceEntitiesComponent'
+    SingleDeviceEntitiesComponent:
+      type: object
+      required:
+        - component
+      properties:
+        component:
+          $ref: '#/components/schemas/DeviceEntitiesComponent'
+    DeviceEntitiesComponent:
+      type: object
+      required:
+        - id
+        - type
+      properties:
+        id:
+          type: string
+        type:
+          $ref: "./device-component.openapi.yml#/components/schemas/ComponentTypeEnum"
+        parent_id:
+          type: string
+        attribute:
+          type: object
+        display_info:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/DisplayInfo'
+        components:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceEntitiesComponent'
+    DeviceEntitiesComponentUpdateRequest:
+      type: object
+      properties:
+        type:
+          type: string
+        parent_id:
+          type: string
+        attribute:
+          type: object
+          example:
+            parts_id: parts0001
+            serial_number: x00001
+        display_info:
+          $ref: './general.yml#/components/schemas/DisplayInfo'
+    MultipleLifeCycle:
+      type: object
+      required:
+        - total
+        - lifecycles
+      properties:
+        total:
+          type: integer
+          format: int64
+        lifecycles:
+          type: array
+          items:
+            $ref: '#/components/schemas/LifeCycle'
+    SingleLifeCycle:
+      type: object
+      required:
+        - lifecycle
+      properties:
+        lifecycle:
+          $ref: '#/components/schemas/LifeCycle'
+    LifeCycle:
+      type: object
+      required:
+        - id
+        - event_at
+        - event_kind
+        - event_mode
+        - event_type
+        - resource_owner_id
+      properties:
+        id:
+          type: string
+        event_kind:
+          type: string
+        event_mode:
+          type: string
+        event_type:
+          type: string
+        before_id:
+          type: string
+        before_component:
+          $ref: '#/components/schemas/DeviceEntitiesComponent'
+        after_id:
+          type: string
+        after_component:
+          $ref: '#/components/schemas/DeviceEntitiesComponent'
+        event_at:
+          type: string
+          description: ナノ秒
+        note:
+          type: string
+        resource_owner_id:
+          type: string

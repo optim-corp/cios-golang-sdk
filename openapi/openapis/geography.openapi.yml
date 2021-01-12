@@ -1,0 +1,299 @@
+openapi: "3.0.3"
+info:
+  version: 1.0.0
+  title: Cios Geography Openapi
+
+paths:
+  '/v2/geo/points':
+    get:
+      tags:
+        - geography
+      operationId: getPoints
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/name_query"
+        - $ref: "../components/parameters.yml#/components/parameters/label"
+        - $ref: "../components/parameters.yml#/components/parameters/is_public"
+        - $ref: "../components/parameters.yml#/components/parameters/resource_owner_id"
+        - $ref: "../components/parameters.yml#/components/parameters/sort"
+        - $ref: "../components/parameters.yml#/components/parameters/top"
+        - $ref: "../components/parameters.yml#/components/parameters/skip"
+        - $ref: "../components/parameters.yml#/components/parameters/lang"
+        - $ref: "../components/parameters.yml#/components/parameters/is_dev"
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/geography-component.openapi.yml#/components/schemas/MultiplePoint"
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+        - geography
+      operationId: createPoint
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '../components/geography-component.openapi.yml#/components/schemas/PointRequest'
+        required: true
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/geography-component.openapi.yml#/components/schemas/SinglePoint"
+      security:
+        - bearerAuth: []
+  '/v2/geo/points/{point_id}':
+    get:
+      tags:
+        - geography
+      operationId: getPoint
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/point_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/lang"
+        - $ref: "../components/parameters.yml#/components/parameters/is_dev"
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/geography-component.openapi.yml#/components/schemas/SinglePoint"
+      security:
+        - bearerAuth: []
+    patch:
+      tags:
+        - geography
+      operationId: updatePoint
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/point_id_required"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../components/general.yml#/components/schemas/DisplayInfo"
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/geography-component.openapi.yml#/components/schemas/SinglePoint"
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - geography
+      operationId: deletePoint
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/point_id_required"
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/geography-component.openapi.yml#/components/schemas/SinglePoint"
+      security:
+        - bearerAuth: []
+  '/v2/geo/circles':
+    get:
+      tags:
+        - geography
+      operationId: getCircles
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/name_query"
+        - $ref: "../components/parameters.yml#/components/parameters/label"
+        - $ref: "../components/parameters.yml#/components/parameters/is_public"
+        - $ref: "../components/parameters.yml#/components/parameters/resource_owner_id"
+        - $ref: "../components/parameters.yml#/components/parameters/sort"
+        - $ref: "../components/parameters.yml#/components/parameters/top"
+        - $ref: "../components/parameters.yml#/components/parameters/skip"
+        - $ref: "../components/parameters.yml#/components/parameters/lang"
+        - $ref: "../components/parameters.yml#/components/parameters/is_dev"
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/geography-component.openapi.yml#/components/schemas/MultipleCircle"
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+        - geography
+      operationId: createCircle
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/geography-component.openapi.yml#/components/schemas/Circle'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/geography-component.openapi.yml#/components/schemas/SingleCircle"
+      security:
+        - bearerAuth: []
+  '/v2/geo/circles/{circles_id}':
+    get:
+      tags:
+        - geography
+      operationId: getCircle
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/circle_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/lang"
+        - $ref: "../components/parameters.yml#/components/parameters/is_dev"
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/geography-component.openapi.yml#/components/schemas/SingleCircle"
+      security:
+        - bearerAuth: []
+    patch:
+      tags:
+        - geography
+      operationId: updateCircle
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/circle_id_required"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../components/general.yml#/components/schemas/DisplayInfo"
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/geography-component.openapi.yml#/components/schemas/SingleCircle"
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - geography
+      operationId: deleteCircle
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/circle_id_required"
+      responses:
+        200:
+          description: ''
+      security:
+        - bearerAuth: []
+  '/v2/geo/routes':
+    get:
+      tags:
+        - geography
+      operationId: getRoutes
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/name_query"
+        - $ref: "../components/parameters.yml#/components/parameters/label"
+        - $ref: "../components/parameters.yml#/components/parameters/is_public"
+        - $ref: "../components/parameters.yml#/components/parameters/resource_owner_id"
+        - $ref: "../components/parameters.yml#/components/parameters/sort"
+        - $ref: "../components/parameters.yml#/components/parameters/top"
+        - $ref: "../components/parameters.yml#/components/parameters/skip"
+        - $ref: "../components/parameters.yml#/components/parameters/lang"
+        - $ref: "../components/parameters.yml#/components/parameters/is_dev"
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/geography-component.openapi.yml#/components/schemas/MultipleRoute"
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+        - geography
+      operationId: createRoute
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '../components/geography-component.openapi.yml#/components/schemas/Route'
+        required: true
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/geography-component.openapi.yml#/components/schemas/SingleRoute"
+      security:
+        - bearerAuth: []
+  '/v2/geo/routes/{routes_id}':
+    get:
+      tags:
+        - geography
+      operationId: getRoute
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/route_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/lang"
+        - $ref: "../components/parameters.yml#/components/parameters/is_dev"
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/geography-component.openapi.yml#/components/schemas/SingleRoute"
+      security:
+        - bearerAuth: []
+    patch:
+      tags:
+        - geography
+      operationId: updateRoute
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/route_id_required"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: array
+              items:
+                $ref: "../components/general.yml#/components/schemas/DisplayInfo"
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/geography-component.openapi.yml#/components/schemas/SingleRoute"
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - geography
+      operationId: deleteRoute
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/route_id_required"
+      responses:
+        200:
+          description: ''
+      security:
+        - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

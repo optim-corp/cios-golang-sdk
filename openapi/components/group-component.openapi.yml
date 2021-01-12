@@ -1,0 +1,334 @@
+openapi: 3.0.3
+info:
+  title: Group Component
+  description: Component
+  version: 1.0.0
+
+paths: {}
+
+components:
+  schemas:
+    MultipleGroup:
+      type: object
+      required:
+        - groups
+        - total
+      properties:
+        total:
+          type: integer
+          format: int64
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/Group'
+    Group:
+      type: object
+      required:
+        - id
+        - name
+        - type
+      properties:
+        id:
+          type: string
+          format: uuid
+        parent_group_id:
+          type: string
+          format: uuid
+        corporation_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+            - Corporation
+            - Group
+        domain:
+          type: string
+          nullable: true
+        phone_number:
+          type: string
+        phone_number_2:
+          type: string
+        address:
+          type: object
+          properties:
+            country:
+              type: string
+            zip_code:
+              type: string
+            state:
+              type: string
+            city:
+              type: string
+            address_1:
+              type: string
+            address_2:
+              type: string
+        tags:
+          type: array
+          items:
+            type: string
+        custom_fields:
+          type: object
+        children:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+                format: uuid
+              name:
+                type: string
+    GroupUpdateRequest:
+      type: object
+      properties:
+        parent_group_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+            - Corporation
+            - Group
+        phone_number:
+          type: string
+        phone_number_2:
+          type: string
+        address:
+          type: object
+          properties:
+            country:
+              type: string
+            zip_code:
+              type: string
+            state:
+              type: string
+            city:
+              type: string
+            address_1:
+              type: string
+            address_2:
+              type: string
+        tags:
+          type: array
+          items:
+            type: string
+        custom_fields:
+          type: object
+    GroupCreateRequest:
+      type: object
+      properties:
+        parent_group_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        phone_number:
+          type: string
+        phone_number_2:
+          type: string
+        address:
+          type: object
+          properties:
+            country:
+              type: string
+            zip_code:
+              type: string
+            state:
+              type: string
+            city:
+              type: string
+            address_1:
+              type: string
+            address_2:
+              type: string
+        tags:
+          type: array
+          items:
+            type: string
+        type:
+          type: string
+          enum:
+            - Group
+        custom_fields: { }
+      required:
+        - name
+        - type
+    GroupInviteRequest:
+      type: object
+      properties:
+        email:
+          type: string
+    GroupReplaceRequest:
+      type: object
+      properties:
+        parent_group_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+            - Group
+        phone_number:
+          type: string
+        phone_number_2:
+          type: string
+        address:
+          type: object
+          properties:
+            country:
+              type: string
+            zip_code:
+              type: string
+            state:
+              type: string
+            city:
+              type: string
+            address_1:
+              type: string
+            address_2:
+              type: string
+        tags:
+          type: array
+          items:
+            type: string
+    MultipleMember:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/Member'
+    MultipleMemberInfo:
+      type: object
+      properties:
+        total:
+          type: integer
+          minimum: 0
+          format: int64
+        members:
+          type: array
+          items:
+            $ref: '#/components/schemas/MemberInfo'
+    SingleMember:
+      type: object
+      properties:
+        member:
+          $ref: '#/components/schemas/Member'
+    Members:
+      type: array
+      items:
+        $ref: "#/components/schemas/Member"
+    Member:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum:
+            - super_admin
+            - admin
+            - manager
+            - staff
+        category:
+          type: string
+        invited:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: string
+        custom_fields: { }
+    MemberInfo:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        user_id:
+          type: string
+          format: uuid
+        role:
+          type: string
+          enum:
+            - super_admin
+            - admin
+            - manager
+            - staff
+        category:
+          type: string
+          enum:
+            - member
+            - guest
+        invited:
+          type: boolean
+        tags:
+          type: array
+          items:
+            type: string
+        profile:
+          type: object
+          properties:
+            type:
+              type: string
+            family_name:
+              type: string
+            given_name:
+              type: string
+            phonetic_family_name:
+              type: string
+            phonetic_given_name:
+              type: string
+            email:
+              type: string
+
+            emails:
+              type: array
+              items:
+                type: string
+
+            picture:
+              type: string
+            phone_number:
+              type: string
+            phone_number_2:
+              type: string
+            language:
+              type: string
+              enum:
+                - ja
+                - en
+                - en-US
+                - de-DE
+                - fe-FR
+                - es-ES
+            address:
+              type: object
+              properties:
+                country:
+                  type: string
+                zip_code:
+                  type: string
+                state:
+                  type: string
+                city:
+                  type: string
+                address_1:
+                  type: string
+                address_2:
+                  type: string

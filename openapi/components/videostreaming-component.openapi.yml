@@ -1,0 +1,112 @@
+openapi: 3.0.1
+info:
+  title: Video Streaming Component
+  description: Component
+  version: 1.0.0
+paths: {}
+
+components:
+  schemas:
+    SingleRoom:
+      properties:
+        room:
+          $ref: '#/components/schemas/Room'
+    Room:
+      properties:
+        room_id:
+          type: string
+        video_id:
+          type: string
+        audio_codec:
+          type: string
+        video_codec:
+          type: string
+        record:
+          type: boolean
+        room_server_fqdn:
+          type: string
+        participants_max:
+          type: integer
+        participants:
+          type: array
+          items:
+            $ref: '#/components/schemas/Participant'
+    MultipleVideo:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        videos:
+          type: array
+          items:
+            $ref: '#/components/schemas/Video'
+      required:
+        - total
+        - videos
+    SingleVideo:
+      type: object
+      properties:
+        video:
+          $ref: '#/components/schemas/Video'
+      required:
+        - video
+    Video:
+      type: object
+      properties:
+        name:
+          type: string
+        id:
+          type: string
+        device_id:
+          type: string
+        resource_owner_id:
+          type: string
+          format: uuid
+        video_name:
+          type: string
+        video_description:
+          type: string
+        enabled:
+          type: boolean
+        created_at:
+          type: string
+        updated_at:
+          type: string
+      required:
+        - id
+        - resource_owner_id
+        - created_at
+        - updated_at
+    Participant:
+      type: object
+      properties:
+        participant_id:
+          type: string
+        token:
+          type: string
+        expires:
+          type: integer
+        target:
+          type: integer
+        used:
+          type: integer
+    PlayRequest:
+      properties:
+        fps:
+          type: integer
+        audio_codec:
+          type: string
+        video_codec:
+          type: string
+        record:
+          type: boolean
+        participants_max:
+          type: integer
+    VideoUpdateRequest:
+      type: object
+      properties:
+        video_name:
+          type: string
+        video_description:
+          type: string

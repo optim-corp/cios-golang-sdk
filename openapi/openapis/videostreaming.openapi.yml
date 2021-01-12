@@ -1,0 +1,111 @@
+openapi: "3.0.3"
+info:
+  version: 1.0.0
+  title: Cios Video Streaming Openapi
+
+paths:
+  "/v2/video_streams":
+    get:
+      tags:
+        - videostreaming-operations
+      operationId: getVideoStreamsList
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id_query_required'
+        - $ref: '../components/parameters.yml#/components/parameters/device_id_query'
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '../components/videostreaming-component.openapi.yml#/components/schemas/MultipleVideo'
+      security:
+        - bearerAuth: []
+  "/v2/video_streams/{video_id}":
+    get:
+      tags:
+        - videostreaming-operations
+      operationId: getVideoStreams
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/video_id'
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '../components/videostreaming-component.openapi.yml#/components/schemas/SingleVideo'
+      security:
+        - bearerAuth: []
+    patch:
+      tags:
+        - videostreaming-operations
+      operationId: updateStreams
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/video_id'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '../components/videostreaming-component.openapi.yml#/components/schemas/VideoUpdateRequest'
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '../components/videostreaming-component.openapi.yml#/components/schemas/SingleVideo'
+      security:
+        - bearerAuth: []
+  "/v2/video_streams/{video_id}/thumbnail":
+    get:
+      tags:
+        - videostreaming-operations
+      operationId: getVideoStreamsThumbnail
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/video_id'
+      responses:
+        "200":
+          description: 成功
+          content:
+            image/png:
+              schema:
+                type: string
+                format: binary
+      security:
+        - bearerAuth: []
+  "/v2/video_streams/{video_id}/play":
+    post:
+      tags:
+        - videostreaming-operations
+      operationId: createVideoStreamsPlay
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/video_id'
+      responses:
+        "200":
+          description: 成功
+          content:
+            application/json:
+              schema:
+                $ref: '../components/videostreaming-component.openapi.yml#/components/schemas/SingleRoom'
+      security:
+        - bearerAuth: []
+  "/v2/video_streams/{video_id}/stop":
+    post:
+      tags:
+        - videostreaming-operations
+      operationId: createVideoStreamsStop
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/video_id'
+      responses:
+        "200":
+          description: 成功
+      security:
+        - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

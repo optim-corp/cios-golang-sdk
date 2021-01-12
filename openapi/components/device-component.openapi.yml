@@ -1,0 +1,340 @@
+openapi: 3.0.3
+info:
+  title: Device Component
+  description: Component
+  version: 1.0.0
+
+paths: {}
+
+components:
+  schemas:
+    MultipleDevice:
+      type: object
+      required:
+        - total
+        - devices
+      properties:
+        total:
+          type: integer
+          format: int64
+        devices:
+          type: array
+          items:
+            $ref: "#/components/schemas/Device"
+    SingleDevice:
+      type: object
+      required:
+        - device
+      properties:
+        device:
+          $ref: "#/components/schemas/Device"
+    DeviceInfo:
+      type: object
+      properties:
+        resource_owner_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+          pattern: \A.{1,100}\z
+        id_number:
+          type: string
+          pattern: \A.{0,100}\z
+        description:
+          type: string
+          pattern: \A.{0,1000}\z
+        display_info:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/DisplayInfo'
+        client_id_list:
+          type: array
+          description: |-
+            クライアントIDリスト。デバイスコンテキストのクライアントが必要な場合(is_managedをmanagedかfull_managedに設定する場合)、対応するエージェント等、デバイス上で動作させるクライアントのIDと公開鍵を指定する。複数ある場合、すべて登録すること。
+          items:
+            type: string
+        is_managed:
+          type: string
+          enum: [unmanaged, managed, full_managed]
+          description: |-
+            該当デバイスの管理方法についての区分。
+
+            管理外：unmanaged
+            ・・・該当デバイス情報に情報を持たせるのみの場合、こちらを選択。
+            一部管理：managed
+            ・・・該当デバイス情報に情報を持たせ、かつ当サービス以外システム（アプリ）にて管理される場合、こちらを選択。
+            完全管理：full_managed（次期対応検討内容）
+            ・・・該当デバイス情報に情報を持たせ、かつ当サービス以外システム（アプリ）およびデバイスエージェント（キッティング、ファームウェアアップデート等行う機構）にて管理される場合、こちらを選択。
+        rsa_publickey:
+          type: string
+          description: RSAの公開鍵をPEM形式で設定する。クライアントIDを指定する場合必須。
+        custom_inventory:
+          description: 付帯情報リスト
+          type: array
+          items: { }
+      required:
+        - resource_owner_id
+    Device:
+      type: object
+      required:
+        - id
+        - resource_owner_id
+        - created_at
+        - updated_at
+      properties:
+        id:
+          type: string
+        resource_owner_id:
+          type: string
+        name:
+          type: string
+        id_number:
+          type: string
+        description:
+          type: string
+        display_info:
+          $ref: './general.yml#/components/schemas/DisplayInfo'
+        client_list:
+          type: array
+          items:
+            $ref: "#/components/schemas/Client"
+        is_managed:
+          type: string
+          enum: [unmanaged, managed, full_managed]
+        rsa_publickey:
+          type: string
+        custom_inventory:
+          type: array
+          items: { }
+        created_at:
+          type: string
+          description: 最終更新時間
+        updated_at:
+          type: string
+          description: 作成時間
+        activated_at:
+          type: string
+          description: アクティベート時間。is_managedがfull_managedの場合のみ表示
+        monitoring_status:
+          type: string
+          description: |-
+            ok:正常,
+            error:エラー,
+            offline:オフライン、
+            Null:監視状態なし
+          enum: [ok, error, offline]
+    Client:
+      type: object
+      properties:
+        application_client:
+          $ref: '#/components/schemas/ApplicationClient'
+        device_client:
+          $ref: '#/components/schemas/DeviceClient'
+    ApplicationClient:
+      type: object
+      properties:
+        client_id:
+          type: string
+    DeviceClient:
+      type: object
+      properties:
+        client_id:
+          type: string
+        client_secret:
+          type: string
+        rsa_publickey:
+          type: string
+          description: PEM
+        display_name:
+          type: string
+    DeviceUpdateRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        id_number:
+          type: string
+        description:
+          type: string
+        display_info:
+          $ref: './general.yml#/components/schemas/DisplayInfo'
+        client_id_list:
+          type: array
+          items:
+            type: string
+        is_managed:
+          type: string
+          description: |-
+            該当デバイスの管理方法についての区分。8
+
+            管理外：unmanaged
+            ・・・該当デバイス情報に情報を持たせるのみの場合、こちらを選択。
+            一部管理：managed
+            ・・・該当デバイス情報に情報を持たせ、かつ当サービス以外システム（アプリ）にて管理される場合、こちらを選択。
+            完全管理：full_managed
+            ・・・該当デバイス情報に情報を持たせ、かつ当サービス以外システム（アプリ）およびデバイスエージェント（キッティング、ファームウェアアップデート等行う機構）にて管理される場合、こちらを選択。
+          enum: [unmanaged, managed, full_managed]
+        rsa_publickey:
+          type: string
+        custom_inventory:
+          type: array
+          items: { }
+    MultipleDeviceMonitoring:
+      type: object
+      required:
+        - total
+        - monitorings
+      properties:
+        total:
+          type: integer
+          format: int64
+        monitorings:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceMonitoring'
+    SingleDeviceMonitoring:
+      type: object
+      required:
+        - monitoring
+      properties:
+        monitoring:
+          $ref: '#/components/schemas/DeviceMonitoring'
+    DeviceMonitoring:
+      type: object
+      required:
+        - device_id
+      properties:
+        device_id:
+          type: string
+        timestamp:
+          type: string
+        connection_status:
+          type: string
+        monitoring_status:
+          type: string
+        error_message:
+          type: string
+        perfomance:
+          $ref: '#/components/schemas/DevicePerformance'
+        connected_device_results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ConnectedDeviceResult'
+    DeviceMonitoringIDsRequest:
+      type: object
+      properties:
+        device_ids:
+          type: array
+          items:
+            type: string
+    DevicePerformance:
+      type: object
+      properties:
+        used_cpu_rate:
+          type: string
+        total_memory:
+          type: string
+        used_memory:
+          type: string
+        used_memory_rate:
+          type: string
+        total_disk:
+          type: string
+        used_disk:
+          type: string
+        used_disk_rate:
+          type: string
+    ConnectedDeviceResult:
+      type: object
+      properties:
+        name:
+          type: string
+        device_number:
+          type: string
+        device_type:
+          type: string
+        timestamp:
+          type: string
+        status:
+          type: string
+        error_message:
+          type: string
+        custom_items:
+          type: string
+    MultipleDevicePolicy:
+      type: object
+      required:
+        - total
+        - policies
+      properties:
+        total:
+          type: integer
+          format: int64
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/DevicePolicy'
+    DevicePolicy:
+      type: object
+      required:
+        - policy_id
+        - resource_owner_id
+        - created_at
+        - updated_at
+      properties:
+        policy_id:
+          type: string
+        activation_key:
+          type: string
+        resource_owner_id:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+    DevicePolicyRequest:
+      type: object
+      properties:
+        resource_owner_id:
+          type: string
+    DeviceInventory:
+      type: object
+    ComponentTypeEnum:
+      enum:
+        - product
+        - unit
+        - parts
+        - sensor
+        - software
+        - instrument
+    Inventory:
+      type: object
+      properties:
+        serial_number:
+          type: string
+        resource_owner_id:
+          type: string
+        start_at:
+          type: string
+        custom_inventory:
+          type: object
+          example:
+            001: bnu4hbnrmflais1m02e1
+            002: bnu4hbnrmflais1m02e2
+            003: bnu4hbnrmflais1m02e3
+            004: bnu4hbnrmflais1m02e4
+            005: bnu4hbnrmflais1m02e5
+            006: bnu4hbnrmflais1m02e6
+            007: bnu4hbnrmflais1m02e7
+            008: bnu4hbnrmflais1m02e8
+            009: bnu4hbnrmflais1m02e9
+            010: bnu4hbnrmflais1m02e0
+    Watch:
+      type: object
+      properties:
+        types:
+          type: object
+        component_ids:
+          type: object
+          example:
+            0x0010: [ "unitSerialNo", "unitStatus", "commandValue" ]

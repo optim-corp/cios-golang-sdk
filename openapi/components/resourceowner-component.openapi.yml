@@ -1,0 +1,47 @@
+openapi: 3.0.3
+info:
+  title: Resource Owner Component
+  description: Component
+  version: 1.0.0
+
+paths: {}
+
+components:
+  schemas:
+    MultipleResourceOwner:
+      type: object
+      required:
+        - total
+        - resource_owners
+      properties:
+        total:
+          type: integer
+          format: int64
+        resource_owners:
+          type: array
+          items:
+            $ref: '#/components/schemas/ResourceOwner'
+    ResourceOwner:
+      type: object
+      required:
+        - id
+        - profile
+        - type
+      properties:
+        id:
+          type: string
+        group_id:
+          type: string
+        user_id:
+          type: string
+        author_id:
+          type: string
+        profile:
+          type: object
+          properties:
+            display_name:
+              type: string
+            website:
+              type: string
+        type:
+          type: string

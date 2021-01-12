@@ -1,0 +1,45 @@
+openapi: 3.0.3
+info:
+  title: Auth Component
+  description: Component
+  version: 1.0.0
+
+paths: {}
+
+components:
+  schemas:
+    ConnectTokenRequest:
+      type: object
+      properties:
+        grant_type:
+          type: string
+        refresh_token:
+          type: string
+        client_id:
+          type: string
+        client_secret:
+          type: string
+        scope:
+          type: string
+    ConnectTokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+        token_type:
+          type: string
+        refresh_token:
+          type: string
+        expires_in:
+          type: integer
+        id_token:
+          type: string
+        scope:
+          type: string
+      required:
+        - access_token
+        - token_type
+        - refresh_token
+        - expires_in
+        - scope
+

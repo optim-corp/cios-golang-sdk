@@ -1,0 +1,379 @@
+openapi: "3.0.3"
+info:
+  version: 1.0.0
+  title: Cios Group Openapi
+
+paths:
+  '/v2/groups':
+    get:
+      tags:
+        - group
+      description: group.read
+      operationId: getGroups
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/name_query"
+        - $ref: "../components/parameters.yml#/components/parameters/parent_group_id"
+        - $ref: "../components/parameters.yml#/components/parameters/state"
+        - $ref: "../components/parameters.yml#/components/parameters/city"
+        - $ref: "../components/parameters.yml#/components/parameters/address_1"
+        - $ref: "../components/parameters.yml#/components/parameters/address_2"
+        - $ref: "../components/parameters.yml#/components/parameters/group_type"
+        - $ref: "../components/parameters.yml#/components/parameters/tags"
+        - $ref: "../components/parameters.yml#/components/parameters/label"
+        - $ref: "../components/parameters.yml#/components/parameters/domain"
+        - $ref: "../components/parameters.yml#/components/parameters/offset"
+        - $ref: "../components/parameters.yml#/components/parameters/limit"
+        - $ref: "../components/parameters.yml#/components/parameters/group_order_by"
+        - $ref: "../components/parameters.yml#/components/parameters/order"
+        - $ref: "../components/parameters.yml#/components/parameters/includes"
+        - $ref: "../components/parameters.yml#/components/parameters/page"
+
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/group-component.openapi.yml#/components/schemas/MultipleGroup"
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - basicAuth: []
+    post:
+      tags:
+        - group
+      description: group.write
+      operationId: createGroup
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../components/group-component.openapi.yml#/components/schemas/GroupCreateRequest"
+
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/group-component.openapi.yml#/components/schemas/Group"
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        403:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - basicAuth: []
+  '/v2/groups/{group_id}':
+    get:
+      tags:
+        - group
+      description: group.read
+      operationId: getGroup
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/group_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/includes"
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/group-component.openapi.yml#/components/schemas/Group"
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - basicAuth: []
+    put:
+      tags:
+        - group
+      description: group.write
+      operationId: replaceGroup
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/group_id_required"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../components/group-component.openapi.yml#/components/schemas/GroupReplaceRequest"
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/group-component.openapi.yml#/components/schemas/Group"
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        404:
+          $ref: "../components/responses.yml#/components/responses/resource_not_found"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - basicAuth: []
+    patch:
+      tags:
+        - group
+      operationId: updateGroup
+      description: group.write
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/group_id_required"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../components/group-component.openapi.yml#/components/schemas/GroupUpdateRequest"
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/group-component.openapi.yml#/components/schemas/Group"
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        404:
+          $ref: "../components/responses.yml#/components/responses/resource_not_found"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - basicAuth: []
+    delete:
+      tags:
+        - group
+      description: group.write
+      operationId: deleteGroup
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/group_id_required"
+
+      responses:
+        200:
+          description: 'OK'
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - basicAuth: []
+  '/v2/groups/{group_id}/invites':
+    post:
+      tags:
+        - group
+      description: group.write
+      operationId: inviteGroup
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/group_id_required"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../components/group-component.openapi.yml#/components/schemas/GroupInviteRequest"
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/group-component.openapi.yml#/components/schemas/Member"
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        404:
+          $ref: "../components/responses.yml#/components/responses/resource_not_found"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - basicAuth: []
+  '/v2/groups/{group_id}/members':
+    get:
+      tags:
+        - group
+      operationId: getMembers
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/group_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/user_id"
+        - $ref: "../components/parameters.yml#/components/parameters/name_query"
+        - $ref: "../components/parameters.yml#/components/parameters/email"
+        - $ref: "../components/parameters.yml#/components/parameters/primary"
+        - $ref: "../components/parameters.yml#/components/parameters/phonetic_family_name"
+        - $ref: "../components/parameters.yml#/components/parameters/phonetic_given_name"
+        - $ref: "../components/parameters.yml#/components/parameters/role"
+        - $ref: "../components/parameters.yml#/components/parameters/category"
+        - $ref: "../components/parameters.yml#/components/parameters/tag"
+        - $ref: "../components/parameters.yml#/components/parameters/includes"
+        - $ref: "../components/parameters.yml#/components/parameters/page"
+        - $ref: "../components/parameters.yml#/components/parameters/offset"
+        - $ref: "../components/parameters.yml#/components/parameters/limit"
+        - $ref: "../components/parameters.yml#/components/parameters/member_order_by"
+        - $ref: "../components/parameters.yml#/components/parameters/order"
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/group-component.openapi.yml#/components/schemas/MultipleMemberInfo"
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - basicAuth: []
+    delete:
+      tags:
+        - group
+      operationId: deleteMember
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/group_id_required"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../components/group-component.openapi.yml#/components/schemas/Members"
+
+      responses:
+        200:
+          description: 'OK'
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        404:
+          $ref: "../components/responses.yml#/components/responses/resource_not_found"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - basicAuth: []
+    put:
+      tags:
+        - group
+      description: group.write
+      operationId: updateMember
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/group_id_required"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../components/group-component.openapi.yml#/components/schemas/MultipleMember"
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/group-component.openapi.yml#/components/schemas/MultipleMember"
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        404:
+          $ref: "../components/responses.yml#/components/responses/resource_not_found"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - basicAuth: []
+    patch:
+      tags:
+        - group
+      description: group.write
+      operationId: setMember
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/group_id_required"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../components/group-component.openapi.yml#/components/schemas/Member"
+
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/group-component.openapi.yml#/components/schemas/Member"
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        404:
+          $ref: "../components/responses.yml#/components/responses/resource_not_found"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - basicAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

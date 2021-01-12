@@ -1,0 +1,173 @@
+openapi: 3.0.3
+info:
+  title: Contract Component
+  description: Component
+  version: 1.0.1
+
+paths: {}
+
+components:
+  schemas:
+    MultipleContract:
+      type: object
+      required:
+        - total
+        - contracts
+      properties:
+        total:
+          type: integer
+          format: int64
+        contracts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Contract'
+    Contract:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        provider_id:
+          type: string
+          format: uuid
+        quantity:
+          type: integer
+        unit:
+          type: string
+        license_type:
+          type: string
+          enum: [ Corporation, User ]
+        contract_type:
+          type: string
+          enum: [ outright, prepaid, automatic_updating_flat_rate, automatic_updating_measured_rate ]
+        span_type:
+          type: string
+          enum: [ daily, weekly, monthly, yearly ]
+        span_number:
+          type: integer
+        status:
+          type: string
+          enum: [ active, inactive, owner_absent, suspend ]
+        purchased_at:
+          type: string
+          description: ISO8601
+        issued_at:
+          type: string
+          description: ISO8601
+        expires_at:
+          type: string
+          description: ISO8601
+        status_change_at:
+          type: string
+          description: ISO8601
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/ContractItem'
+        owner:
+          $ref: '#/components/schemas/ContractOwner'
+    ContractItem:
+      type: object
+      properties:
+        item_id:
+          type: string
+        plan_id:
+          type: string
+    ContractOwner:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        phone_number:
+          type: string
+        phone_number_2:
+          type: string
+        address:
+          $ref: '#/components/schemas/ContractOwnerAddress'
+    ContractOwnerAddress:
+      type: object
+      properties:
+        country:
+          type: string
+          description: ISO 3166-1 alpha-2
+        zip_code:
+          type: string
+        state:
+          type: string
+        city:
+          type: string
+        address_1:
+          type: string
+        address_2:
+          type: string
+        tags:
+          type: array
+          items:
+            type: string
+        custom_fields:
+          type: object
+    MultipleContractUser:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        users:
+          $ref: '#/components/schemas/ContractUser'
+    ContractUser:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        type:
+          type: string
+        name:
+          type: string
+        family_name:
+          type: string
+        given_name:
+          type: string
+        phonetic_family_name:
+          type: string
+        phonetic_given_name:
+          type: string
+        phone_number:
+          type: string
+        phone_number_2:
+          type: string
+        language:
+          type: string
+          enum: [ ja, en, en-US, de-DE, fr-FR, es-ES ]
+          description: ISO639
+        picture:
+          type: string
+          description: uri
+        email:
+          type: string
+        emails:
+          type: array
+          items:
+            type: string
+        role:
+          type: string
+          enum: [ super_admin, staff ]
+        category:
+          type: string
+          enum: [ member, guest ]
+        address:
+          $ref: '#/components/schemas/ContractOwnerAddress'
+        license:
+          $ref: '#/components/schemas/ContractUserLicense'
+    ContractUserLicense:
+      type: object
+      properties:
+        issued_at:
+          type: string
+          description: ISO8601
+        expires_at:
+          type: string
+          description: ISO8601

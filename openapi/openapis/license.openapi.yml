@@ -1,0 +1,37 @@
+openapi: "3.0.3"
+info:
+  version: 1.0.0
+  title: Cios License Openapi
+
+paths:
+  /v2/licenses/me:
+    get:
+      tags:
+        - license
+      operationId: getMyLicenses
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/status'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '../components/license-component.openapi.yml#/components/schemas/MultipleLicense'
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

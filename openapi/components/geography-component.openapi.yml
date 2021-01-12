@@ -1,0 +1,182 @@
+openapi: 3.0.3
+info:
+  title: Auth Component
+  description: Component
+  version: 1.0.0
+
+paths: {}
+
+components:
+  schemas:
+    MultiplePoint:
+      type: object
+      required:
+        - total
+        - points
+      properties:
+        total:
+          type: integer
+          format: int64
+        points:
+          type: array
+          items:
+            $ref: '#/components/schemas/Point'
+    SinglePoint:
+      type: object
+      required:
+        - point
+      properties:
+        point:
+          $ref: '#/components/schemas/Point'
+    Point:
+      type: object
+      required:
+        - id
+        - name
+        - resource_owner_id
+        - location
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        altitude:
+          type: number
+          format: float
+        labels:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/Label'
+        description:
+          type: string
+        display_info:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/DisplayInfo'
+        resource_owner_id:
+          type: string
+    PointRequest:
+      type: object
+      required:
+        - resource_owner_id
+      properties:
+        name:
+          type: string
+        location:
+          $ref: '#/components/schemas/Location'
+        altitude:
+          type: number
+          format: float
+        labels:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/Label'
+        description:
+          type: string
+        display_info:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/DisplayInfo'
+        resource_owner_id:
+          type: string
+    MultipleCircle:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+
+        circles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Circle'
+    SingleCircle:
+      type: object
+      properties:
+        circle:
+          $ref: '#/components/schemas/Circle'
+    Circle:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        altitude:
+          type: number
+          format: float
+        radius_m:
+          type: number
+          format: float
+        location:
+          $ref: '#/components/schemas/Location'
+        labels:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/Label'
+        description:
+          type: string
+        display_info:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/DisplayInfo'
+        resource_owner_id:
+          type: string
+    MultipleRoute:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+
+        routes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Route'
+    SingleRoute:
+      type: object
+      properties:
+        route:
+          $ref: '#/components/schemas/Route'
+    Route:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        contents:
+          type: array
+          items:
+            type: object
+            properties:
+              order_no:
+                type: integer
+              type:
+                type: string
+              id:
+                type: string
+        labels:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/Label'
+        description:
+          type: string
+        display_info:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/DisplayInfo'
+        resource_owner_id:
+          type: string
+    Location:
+      required:
+        - latitude
+        - longitude
+      type: object
+      properties:
+        latitude:
+          type: number
+        longitude:
+          type: number

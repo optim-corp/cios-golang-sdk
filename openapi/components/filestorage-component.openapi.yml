@@ -1,0 +1,180 @@
+openapi: 3.0.3
+info:
+  title: File Storage Component
+  description: Component
+  version: 1.0.0
+
+paths: {}
+
+components:
+  schemas:
+    MultipleBucket:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+          minimum: 0
+        buckets:
+          type: array
+          items:
+            $ref: '#/components/schemas/Bucket'
+      required:
+        - total
+        - buckets
+    SingleBucket:
+      type: object
+      properties:
+        bucket:
+          $ref: '#/components/schemas/Bucket'
+      required:
+        - bucket
+    Bucket:
+      type: object
+      properties:
+        id:
+          type: string
+        resource_owner_id:
+          type: string
+        created_at:
+          type: string
+        created_by:
+          $ref: '#/components/schemas/CreatedBy'
+        updated_at:
+          type: string
+        updated_by:
+          $ref: '#/components/schemas/UpdatedBy'
+        name:
+          type: string
+        files:
+          type: object
+          properties:
+            total_count:
+              type: string
+            total_size:
+              type: string
+      required:
+        - id
+        - resource_owner_id
+        - name
+    BucketRequest:
+      type: object
+      properties:
+        resource_owner_id:
+          type: string
+          format: uuid
+        name:
+          type: string
+      required:
+        - name
+        - resource_owner_id
+    BucketEditBody:
+      type: object
+      properties:
+        dest_bucket_id:
+          type: string
+        parent_node_id:
+          type: string
+    BucketName:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
+
+    MultipleNode:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Node'
+      required:
+        - total
+        - nodes
+    SingleNode:
+      type: object
+      properties:
+        node:
+          $ref: '#/components/schemas/Node'
+      required:
+        - node
+    Node:
+      type: object
+      properties:
+        id:
+          type: string
+        created_at:
+          type: string
+        created_by:
+          $ref: '#/components/schemas/CreatedBy'
+        updated_at:
+          type: string
+        updated_by:
+          $ref: '#/components/schemas/UpdatedBy'
+        name:
+          type: string
+        parent_node_id:
+          type: string
+          nullable: true
+        key:
+          type: string
+        is_directory:
+          type: boolean
+        file:
+          type: object
+          properties:
+            size:
+              type: string
+            checksum:
+              type: string
+      required:
+        - id
+        - key
+        - name
+        - created_at
+        - updated_at
+        - is_directory
+    CreatedBy:
+      type: object
+      properties:
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+        client:
+          type: object
+          properties:
+            client_id:
+              type: string
+            is_device:
+              type: boolean
+    UpdatedBy:
+      type: object
+      properties:
+        user:
+          type: object
+          properties:
+            id:
+              type: string
+        client:
+          type: object
+          properties:
+            client_id:
+              type: string
+            is_device:
+              type: boolean
+    NodeRequest:
+      type: object
+      properties:
+        name:
+          type: string
+        parent_node_id:
+          type: string
+      required:
+        - name

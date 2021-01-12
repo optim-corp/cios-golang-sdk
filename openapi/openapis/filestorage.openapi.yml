@@ -1,0 +1,451 @@
+openapi: "3.0.3"
+info:
+  version: 1.0.0
+  title: Cios FileStorage Openapi
+
+paths:
+  # File Storage
+  '/v2/file_storage/buckets':
+    get:
+      tags:
+        - fileStorage
+      description: file_storage.read
+      operationId: getBuckets
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/limit"
+        - $ref: "../components/parameters.yml#/components/parameters/offset"
+        - $ref: "../components/parameters.yml#/components/parameters/order"
+        - $ref: "../components/parameters.yml#/components/parameters/order_by"
+        - $ref: "../components/parameters.yml#/components/parameters/resource_owner_id"
+        - $ref: "../components/parameters.yml#/components/parameters/name_query"
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/filestorage-component.openapi.yml#/components/schemas/MultipleBucket"
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+        - fileStorage
+      description: file_storage.write
+      operationId: createBucket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/filestorage-component.openapi.yml#/components/schemas/BucketRequest'
+
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/filestorage-component.openapi.yml#/components/schemas/SingleBucket"
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        409:
+          $ref: "../components/responses.yml#/components/responses/conflict_request"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - bearerAuth: []
+  '/v2/file_storage/buckets/{bucket_id}':
+    get:
+      tags:
+        - fileStorage
+      description: file_storage.read
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/bucket_id_required"
+      operationId: getBucket
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/filestorage-component.openapi.yml#/components/schemas/SingleBucket"
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        404:
+          $ref: "../components/responses.yml#/components/responses/resource_not_found"
+        409:
+          $ref: "../components/responses.yml#/components/responses/conflict_request"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - fileStorage
+      description: file_storage.write
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/bucket_id_required"
+      operationId: deleteBucket
+      responses:
+        200:
+          description: 'OK'
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        404:
+          $ref: "../components/responses.yml#/components/responses/resource_not_found"
+        409:
+          $ref: "../components/responses.yml#/components/responses/conflict_request"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - bearerAuth: []
+    patch:
+      tags:
+        - fileStorage
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/bucket_id_required"
+      operationId: updateBucket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../components/filestorage-component.openapi.yml#/components/schemas/BucketName"
+      responses:
+        200:
+          description: 'OK'
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        404:
+          $ref: "../components/responses.yml#/components/responses/resource_not_found"
+        409:
+          $ref: "../components/responses.yml#/components/responses/conflict_request"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - bearerAuth: []
+  '/v2/file_storage/buckets/{bucket_id}/create_directory':
+    post:
+      tags:
+        - fileStorage
+      description: file_storage.write
+      operationId: createDirectory
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/bucket_id_required"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../components/filestorage-component.openapi.yml#/components/schemas/NodeRequest"
+
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/filestorage-component.openapi.yml#/components/schemas/SingleNode"
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        404:
+          $ref: "../components/responses.yml#/components/responses/resource_not_found"
+        409:
+          $ref: "../components/responses.yml#/components/responses/conflict_request"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - bearerAuth: []
+  '/v2/file_storage/buckets/{bucket_id}/nodes':
+    get:
+      tags:
+        - fileStorage
+      description: file_storage.read
+      operationId: getNodes
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/bucket_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/parent_node_id"
+        - $ref: "../components/parameters.yml#/components/parameters/recursive"
+        - $ref: "../components/parameters.yml#/components/parameters/name_query"
+        - $ref: "../components/parameters.yml#/components/parameters/key_query"
+        - $ref: "../components/parameters.yml#/components/parameters/is_directory"
+        - $ref: "../components/parameters.yml#/components/parameters/limit"
+        - $ref: "../components/parameters.yml#/components/parameters/offset"
+        - $ref: "../components/parameters.yml#/components/parameters/node_order_by"
+        - $ref: "../components/parameters.yml#/components/parameters/order"
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/filestorage-component.openapi.yml#/components/schemas/MultipleNode"
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        404:
+          $ref: "../components/responses.yml#/components/responses/resource_not_found"
+        409:
+          $ref: "../components/responses.yml#/components/responses/conflict_request"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+
+      security:
+        - bearerAuth: []
+  '/v2/file_storage/buckets/{bucket_id}/nodes/{node_id}':
+    get:
+      tags:
+        - fileStorage
+      operationId: getNode
+      description: file_storage.read
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/bucket_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/node_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/directory_size"
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/filestorage-component.openapi.yml#/components/schemas/SingleNode"
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        404:
+          $ref: "../components/responses.yml#/components/responses/resource_not_found"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - fileStorage
+      operationId: deleteNode
+      description: file_storage.write
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/bucket_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/node_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/directory_size"
+      responses:
+        200:
+          description: 'OK'
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        404:
+          $ref: "../components/responses.yml#/components/responses/resource_not_found"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+
+      security:
+        - bearerAuth: []
+  '/v2/file_storage/buckets/{bucket_id}/nodes/{node_id}/rename':
+    post:
+      tags:
+        - fileStorage
+      operationId: renameNode
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/bucket_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/node_id_required"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/filestorage-component.openapi.yml#/components/schemas/BucketName'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/filestorage-component.openapi.yml#/components/schemas/SingleNode"
+      security:
+        - bearerAuth: []
+  '/v2/file_storage/buckets/{bucket_id}/nodes/{node_id}/move':
+    post:
+      tags:
+        - fileStorage
+      operationId: moveNode
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/bucket_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/node_id_required"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/filestorage-component.openapi.yml#/components/schemas/BucketEditBody'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/filestorage-component.openapi.yml#/components/schemas/SingleNode"
+      security:
+        - bearerAuth: []
+  '/v2/file_storage/buckets/{bucket_id}/nodes/{node_id}/copy':
+    post:
+      tags:
+        - fileStorage
+      operationId: copyNode
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/bucket_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/node_id_required"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/filestorage-component.openapi.yml#/components/schemas/BucketEditBody'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/filestorage-component.openapi.yml#/components/schemas/SingleNode"
+      security:
+        - bearerAuth: []
+  '/v2/file_storage/buckets/{bucket_id}/upload':
+    put:
+      tags:
+        - fileStorage
+      description: file_storage.upload
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/bucket_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/checksum"
+        - $ref: "../components/parameters.yml#/components/parameters/name_query"
+        - $ref: "../components/parameters.yml#/components/parameters/node_id_query"
+        - $ref: "../components/parameters.yml#/components/parameters/key_query"
+        - $ref: "../components/parameters.yml#/components/parameters/parent_node_id"
+        - $ref: "../components/parameters.yml#/components/parameters/parent_key"
+        - $ref: "../components/parameters.yml#/components/parameters/force"
+      operationId: uploadFile
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: byte
+
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/filestorage-component.openapi.yml#/components/schemas/SingleBucket"
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        404:
+          $ref: "../components/responses.yml#/components/responses/resource_not_found"
+        409:
+          $ref: "../components/responses.yml#/components/responses/conflict_request"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - bearerAuth: []
+  '/v2/file_storage/buckets/{bucket_id}/download':
+    get:
+      tags:
+        - fileStorage
+      description: file_storage.download
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/bucket_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/node_id_query"
+        - $ref: "../components/parameters.yml#/components/parameters/key_query"
+      operationId: downloadFile
+      responses:
+        200:
+          description: 'OK'
+          content:
+            /*:
+              schema:
+                type: string
+                format: byte
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        404:
+          $ref: "../components/responses.yml#/components/responses/resource_not_found"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+      security:
+        - bearerAuth: []
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
