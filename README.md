@@ -1,12 +1,21 @@
-# Go CIOS Client SDK!!!!
+# CIOS Golang SDK
 
-## Go Get!!!
+It is a convenient SDK to use [Cloud IoT OS](https://www.optim.cloud/platform/) in Go language.
+
+This SDK uses OpenAPI and is generated in code.
+OpenAPI will be split at a later date, but is now included in the code.
+
+## Instration
 
 ```shell script
 go get -u github.com/optim-corp/cios-golang-sdk
 ```
 
+## Document
+
+[CIOS Golang SDK Documents](./cios/README.md)
 ## Usage
+
 
 ### Initialization
 
@@ -34,7 +43,7 @@ client = ciossdk.NewCiosClient(&ciossdk.CiosClientConfig{
 ```
 
 
-### Get Buckets
+### [Examples] Get Buckets
 
 ```go
 ctx := ciossdk.MakeRequestCtx("Bearer Hogehoge")) // or context.Background()
@@ -43,3 +52,9 @@ params := ciossdk.MakeGetBucketsOpts(ctx).
     Limit(20)
 buckets, httpResponse, err :=  client.FileStorage.GetBucketsUnlimited(params)
 ```
+
+## LICENSE
+
+[The Apache-2.0 License](https://www.apache.org/licenses/LICENSE-2.0)
+
+Copyright (c) 2021 OPTiM Corporation <https://www.optim.co.jp/>
