@@ -1,6 +1,6 @@
-# CIOS Golang SDK
+# OPTiM Cloud IoT OS Golang SDK
 
-It is a convenient SDK to use [Cloud IoT OS](https://www.optim.cloud/platform/) in Go language.
+It is a convenient SDK to use [OPTiM Cloud IoT OS(CIOS)](https://www.optim.cloud/platform/) in Go language.
 
 This SDK uses OpenAPI and is generated in code.
 OpenAPI will be split at a later date, but is now included in the code.
