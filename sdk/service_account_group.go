@@ -106,8 +106,10 @@ func (self Account) GetGroup(groupId string, includes *string, ctx model.Request
 		req = req.Includes(*includes)
 	}
 	res, httpResponse, err := req.Execute()
-	if _, _, _, _, err = self.refresh(); err != nil {
-		return req.Execute()
+	if err != nil && self.autoR {
+		if _, _, _, _, err = self.refresh(); err != nil {
+			return req.Execute()
+		}
 	}
 	return res, httpResponse, err
 }

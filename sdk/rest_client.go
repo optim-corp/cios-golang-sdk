@@ -2,6 +2,7 @@ package ciossdk
 
 import (
 	"context"
+	"errors"
 	"fmt"
 	"io/ioutil"
 	"log"
@@ -94,135 +95,144 @@ type (
 	}
 )
 
-func NewCiosClient(config *CiosClientConfig) *CiosClient {
+func NewCiosClient(config CiosClientConfig) *CiosClient {
 	instance := new(CiosClient)
-	if config != nil {
-		if config.ClientID != "" && config.ClientSecret != "" {
-			instance.clientID = config.ClientID
-			instance.clientSecret = config.ClientSecret
-			instance.requestScope = config.RequestScope
-			instance.AutoRefresh = config.AutoRefresh
-			if config.RefreshToken != "" {
-				instance.refreshToken = config.RefreshToken
-				instance.authType = model.REFRESH_TYPE
-			} else if false {
-				instance.authType = model.DEVICE_TYPE
-			} else {
-				instance.authType = model.CLIENT_TYPE
-			}
+	if config.ClientID != "" && config.ClientSecret != "" {
+		instance.clientID = config.ClientID
+		instance.clientSecret = config.ClientSecret
+		instance.requestScope = config.RequestScope
+		instance.AutoRefresh = config.AutoRefresh
+		if config.RefreshToken != "" {
+			instance.refreshToken = config.RefreshToken
+			instance.authType = model.REFRESH_TYPE
+		} else if false {
+			instance.authType = model.DEVICE_TYPE
 		} else {
-			instance.authType = model.NONE_TYPE
+			instance.authType = model.CLIENT_TYPE
 		}
-
-		instance.LicenseUrl = config.Urls.LicenseUrl
-		instance.IamUrl = config.Urls.IamUrl
-		instance.AuthUrl = config.Urls.AuthUrl
-		instance.StorageUrl = config.Urls.StorageUrl
-		instance.AccountsUrl = config.Urls.AccountsUrl
-		instance.LocationUrl = config.Urls.LocationUrl
-		instance.MessagingUrl = config.Urls.MessagingUrl
-		instance.MonitoringUrl = config.Urls.MonitoringUrl
-		instance.VideoStreamingUrl = config.Urls.VideoStreamingUrl
-		instance.DeviceManagementUrl = config.Urls.DeviceManagementUrl
-		instance.DeviceAssetManagementUrl = config.Urls.DeviceAssetManagementUrl
-		instance.ContractUrl = config.Urls.ContractUrl
-
-		instance.Contract = &Contract{ApiClient: createClient(config.Urls.ContractUrl), Url: config.Urls.ContractUrl}
-		instance.License = &License{ApiClient: createClient(config.Urls.LicenseUrl), Url: config.Urls.LicenseUrl}
-		instance.Auth = &Auth{ApiClient: createClient(config.Urls.AuthUrl), Url: config.Urls.AuthUrl}
-		instance.PubSub = &PubSub{ApiClient: createClient(config.Urls.MessagingUrl), Url: config.Urls.MessagingUrl}
-		instance.Account = &Account{ApiClient: createClient(config.Urls.AccountsUrl), Url: config.Urls.AccountsUrl}
-		instance.DeviceManagement = &DeviceManagement{ApiClient: createClient(config.Urls.DeviceManagementUrl), Url: config.Urls.DeviceManagementUrl}
-		instance.DeviceAssetManagement = &DeviceAssetManagement{ApiClient: createClient(config.Urls.DeviceAssetManagementUrl), Url: config.Urls.DeviceAssetManagementUrl}
-		instance.FileStorage = &FileStorage{ApiClient: createClient(config.Urls.StorageUrl), Url: config.Urls.StorageUrl}
-		instance.Geography = &Geography{ApiClient: createClient(config.Urls.LocationUrl), Url: config.Urls.LocationUrl}
-		if instance.AutoRefresh {
-			refFunc := func() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
-				if instance.debug {
-					log.Printf("%s", "Refresh AccessToken.")
-				}
-				if !instance.AutoRefresh {
-					return "", "", "", 0, fmt.Errorf("%s", "No AutoRefresh")
-				}
-				instance.Debug(false)
-				defer func() { instance.Debug(instance.debug) }()
-				switch instance.authType {
-				case model.CLIENT_TYPE:
-					responseData := struct {
-						AccessToken string `json:"access_token"`
-						TokenType   string `json:"token_type"`
-						ExpiresIn   int    `json:"expires_in"`
-						Scope       string `json:"scope"`
-					}{}
-					values := url.Values{}
-					values.Add("grant_type", "client_credentials")
-					values.Add("client_id", instance.clientID)
-					values.Add("client_secret", instance.clientSecret)
-					values.Add("scope", instance.requestScope)
-					resp, _ := http.Post(
-						instance.AuthUrl+"/connect/token",
-						"application/x-www-form-urlencoded",
-						strings.NewReader(values.Encode()),
-					)
-					defer resp.Body.Close()
-
-					body, err := ioutil.ReadAll(resp.Body)
-					if err != nil {
-						return "", "", "", 0, err
-					}
-
-					err = convert.UnMarshalJson(body, &responseData)
-					if err != nil {
-						return "", "", "", 0, err
-					}
-					instance._accessToken(responseData.AccessToken)
-					return responseData.AccessToken, responseData.Scope, responseData.TokenType, responseData.ExpiresIn, nil
-				case model.REFRESH_TYPE:
-					response, _, err := instance.Auth.ApiClient.AuthApi.RefreshToken(context.Background()).
-						GrantType("refresh_token").RefreshToken(instance.refreshToken).
-						ClientId(instance.clientID).ClientSecret(instance.clientSecret).
-						Scope(instance.requestScope).Execute()
-					if err != nil {
-						return "", "", "", 0, err
-					}
-					instance._accessToken(response.AccessToken)
-					return response.AccessToken, response.Scope, response.TokenType, int(response.ExpiresIn), nil
-				case model.DEVICE_TYPE:
-					return "", "", "", 0, fmt.Errorf("%s", "No Implement Device Auth Type")
-				default:
-					return "", "", "", 0, fmt.Errorf("%s", "No AccessToken")
-				}
-			}
-			instance.Auth.autoR = instance.AutoRefresh
-			instance.PubSub.autoR = instance.AutoRefresh
-			instance.Account.autoR = instance.AutoRefresh
-			instance.Geography.autoR = instance.AutoRefresh
-			instance.FileStorage.autoR = instance.AutoRefresh
-			instance.DeviceManagement.autoR = instance.AutoRefresh
-			instance.DeviceAssetManagement.autoR = instance.AutoRefresh
-			instance.License.autoR = instance.AutoRefresh
-			instance.Contract.autoR = instance.AutoRefresh
-
-			instance.Contract.refresh = refFunc
-			instance.Auth.refresh = refFunc
-			instance.PubSub.refresh = refFunc
-			instance.Account.refresh = refFunc
-			instance.Geography.refresh = refFunc
-			instance.FileStorage.refresh = refFunc
-			instance.DeviceManagement.refresh = refFunc
-			instance.DeviceAssetManagement.refresh = refFunc
-			instance.License.refresh = refFunc
-			select {
-			case <-time.After(3 * time.Second):
-			default:
-				// TODO: 考える
-				instance.RefreshAccessToken()
-			}
-		}
-		instance.Debug(config.Debug)
 	} else {
-		panic("No CLI SDK Config")
+		instance.authType = model.NONE_TYPE
 	}
+
+	instance.LicenseUrl = config.Urls.LicenseUrl
+	instance.IamUrl = config.Urls.IamUrl
+	instance.AuthUrl = config.Urls.AuthUrl
+	instance.StorageUrl = config.Urls.StorageUrl
+	instance.AccountsUrl = config.Urls.AccountsUrl
+	instance.LocationUrl = config.Urls.LocationUrl
+	instance.MessagingUrl = config.Urls.MessagingUrl
+	instance.MonitoringUrl = config.Urls.MonitoringUrl
+	instance.VideoStreamingUrl = config.Urls.VideoStreamingUrl
+	instance.DeviceManagementUrl = config.Urls.DeviceManagementUrl
+	instance.DeviceAssetManagementUrl = config.Urls.DeviceAssetManagementUrl
+	instance.ContractUrl = config.Urls.ContractUrl
+
+	instance.Contract = &Contract{ApiClient: createClient(config.Urls.ContractUrl), Url: config.Urls.ContractUrl}
+	instance.License = &License{ApiClient: createClient(config.Urls.LicenseUrl), Url: config.Urls.LicenseUrl}
+	instance.Auth = &Auth{ApiClient: createClient(config.Urls.AuthUrl), Url: config.Urls.AuthUrl}
+	instance.PubSub = &PubSub{ApiClient: createClient(config.Urls.MessagingUrl), Url: config.Urls.MessagingUrl}
+	instance.Account = &Account{ApiClient: createClient(config.Urls.AccountsUrl), Url: config.Urls.AccountsUrl}
+	instance.DeviceManagement = &DeviceManagement{ApiClient: createClient(config.Urls.DeviceManagementUrl), Url: config.Urls.DeviceManagementUrl}
+	instance.DeviceAssetManagement = &DeviceAssetManagement{ApiClient: createClient(config.Urls.DeviceAssetManagementUrl), Url: config.Urls.DeviceAssetManagementUrl}
+	instance.FileStorage = &FileStorage{ApiClient: createClient(config.Urls.StorageUrl), Url: config.Urls.StorageUrl}
+	instance.Geography = &Geography{ApiClient: createClient(config.Urls.LocationUrl), Url: config.Urls.LocationUrl}
+	instance.Auth.autoR = instance.AutoRefresh
+	instance.PubSub.autoR = instance.AutoRefresh
+	instance.Account.autoR = instance.AutoRefresh
+	instance.Geography.autoR = instance.AutoRefresh
+	instance.FileStorage.autoR = instance.AutoRefresh
+	instance.DeviceManagement.autoR = instance.AutoRefresh
+	instance.DeviceAssetManagement.autoR = instance.AutoRefresh
+	instance.License.autoR = instance.AutoRefresh
+	instance.Contract.autoR = instance.AutoRefresh
+	if instance.AutoRefresh {
+		refFunc := func() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
+			if instance.debug {
+				log.Printf("%s", "Refresh AccessToken.")
+			}
+			if !instance.AutoRefresh {
+				return "", "", "", 0, fmt.Errorf("%s", "No AutoRefresh")
+			}
+			instance.Debug(false)
+			defer func() { instance.Debug(instance.debug) }()
+			switch instance.authType {
+			case model.CLIENT_TYPE:
+				responseData := struct {
+					AccessToken string `json:"access_token"`
+					TokenType   string `json:"token_type"`
+					ExpiresIn   int    `json:"expires_in"`
+					Scope       string `json:"scope"`
+				}{}
+				values := url.Values{}
+				values.Add("grant_type", "client_credentials")
+				values.Add("client_id", instance.clientID)
+				values.Add("client_secret", instance.clientSecret)
+				values.Add("scope", instance.requestScope)
+				resp, _ := http.Post(
+					instance.AuthUrl+"/connect/token",
+					"application/x-www-form-urlencoded",
+					strings.NewReader(values.Encode()),
+				)
+				defer resp.Body.Close()
+
+				body, err := ioutil.ReadAll(resp.Body)
+				if err != nil {
+					return "", "", "", 0, err
+				}
+
+				err = convert.UnMarshalJson(body, &responseData)
+				if err != nil {
+					return "", "", "", 0, err
+				}
+				instance._accessToken(responseData.AccessToken)
+				return responseData.AccessToken, responseData.Scope, responseData.TokenType, responseData.ExpiresIn, nil
+			case model.REFRESH_TYPE:
+				response, _, err := instance.Auth.ApiClient.AuthApi.RefreshToken(context.Background()).
+					GrantType("refresh_token").RefreshToken(instance.refreshToken).
+					ClientId(instance.clientID).ClientSecret(instance.clientSecret).
+					Scope(instance.requestScope).Execute()
+				if err != nil {
+					return "", "", "", 0, err
+				}
+				instance._accessToken(response.AccessToken)
+				return response.AccessToken, response.Scope, response.TokenType, int(response.ExpiresIn), nil
+			case model.DEVICE_TYPE:
+				return "", "", "", 0, fmt.Errorf("%s", "No Implement Device Auth Type")
+			default:
+				return "", "", "", 0, fmt.Errorf("%s", "No AccessToken")
+			}
+		}
+		instance.Contract.refresh = refFunc
+		instance.Auth.refresh = refFunc
+		instance.PubSub.refresh = refFunc
+		instance.Account.refresh = refFunc
+		instance.Geography.refresh = refFunc
+		instance.FileStorage.refresh = refFunc
+		instance.DeviceManagement.refresh = refFunc
+		instance.DeviceAssetManagement.refresh = refFunc
+		instance.License.refresh = refFunc
+		select {
+		case <-time.After(3 * time.Second):
+		default:
+			// TODO: 考える
+			instance.RefreshAccessToken()
+		}
+	} else {
+		refFunc := func() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error){
+			return "", "", "", 0, errors.New("no refresh client")
+		}
+		instance.Contract.refresh = refFunc
+		instance.Auth.refresh = refFunc
+		instance.PubSub.refresh = refFunc
+		instance.Account.refresh = refFunc
+		instance.Geography.refresh = refFunc
+		instance.FileStorage.refresh = refFunc
+		instance.DeviceManagement.refresh = refFunc
+		instance.DeviceAssetManagement.refresh = refFunc
+		instance.License.refresh = refFunc
+	}
+	instance.Debug(config.Debug)
+
 	return instance
 }
 

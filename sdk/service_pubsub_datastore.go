@@ -9,13 +9,11 @@ import (
 	"strings"
 	"time"
 
-	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
-
 	"github.com/optim-corp/cios-golang-sdk/cios"
-
 	"github.com/optim-corp/cios-golang-sdk/model"
-
 	"github.com/optim-corp/cios-golang-sdk/util"
+
+	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
 
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 
@@ -306,7 +304,7 @@ func (self PubSub) GetStreamAll(channelID string, params model.ApiGetStreamReque
 		timeout = 10
 	)
 	options := MakeGetObjectsOpts()
-	options.P_limit = &_limit
+	options.P_limit = convert.Int64Ptr(1)
 	options.P_label = params.LabelParam
 	options.P_offset = params.OffsetParam
 	options.P_location = params.LocationRangeParam

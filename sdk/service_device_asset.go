@@ -63,8 +63,7 @@ func (self DeviceAssetManagement) GetModelsAll(params cios.ApiGetDeviceModelsReq
 			if offset != nil {
 				params.P_offset = offset
 			}
-			tlimit := xmath.MinInt64(_limit, 1000)
-			params.P_limit = &tlimit
+			params.P_limit = convert.Int64Ptr(xmath.MinInt64(_limit, 1000))
 			return self.GetModels(params, ctx)
 		}
 	)
@@ -102,8 +101,8 @@ func (self DeviceAssetManagement) GetModelsUnlimited(params cios.ApiGetDeviceMod
 	params.P_limit = nil
 	return self.GetModelsAll(params, ctx)
 }
-func (self DeviceAssetManagement) GetModelsMapByID(ctx model.RequestCtx) (map[string]cios.DeviceModel, error) {
-	models, _, err := self.GetModelsUnlimited(MakeGetModelsOpts(), ctx)
+func (self DeviceAssetManagement) GetModelsMapByID(params cios.ApiGetDeviceModelsRequest , ctx model.RequestCtx) (map[string]cios.DeviceModel, error) {
+	models, _, err := self.GetModelsUnlimited(params, ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -227,8 +226,8 @@ func (self DeviceAssetManagement) GetEntitiesUnlimited(params cios.ApiGetDeviceE
 	params.P_limit = nil
 	return self.GetEntitiesAll(params, ctx)
 }
-func (self DeviceAssetManagement) GetEntitiesMapByID(ctx model.RequestCtx) (map[string]cios.DeviceModelsEntity, error) {
-	devices, _, err := self.GetEntitiesUnlimited(MakeGetEntitiesOpts(), ctx)
+func (self DeviceAssetManagement) GetEntitiesMapByID(params  cios.ApiGetDeviceEntitiesRequest, ctx model.RequestCtx) (map[string]cios.DeviceModelsEntity, error) {
+	devices, _, err := self.GetEntitiesUnlimited(params, ctx)
 	if err != nil {
 		return nil, err
 	}
@@ -369,7 +368,9 @@ func (self DeviceAssetManagement) DeleteLifecycle(key string, id string, ctx mod
 	request := self.ApiClient.DeviceAssetApi.DeleteDeviceEntitiesLifecycle(ctx, key, id)
 	httpResponse, err := request.Execute()
 	if err != nil && self.autoR {
-		self.refresh()
+		if _, _, _, _, err = self.refresh(); err != nil {
+			return nil, err
+		}
 		return request.Execute()
 	}
 	return httpResponse, err
