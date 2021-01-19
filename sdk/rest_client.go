@@ -66,7 +66,6 @@ type (
 	CIOSUrl struct {
 		LicenseUrl               string
 		ContractUrl              string
-		MonitoringUrl            string
 		MessagingUrl             string
 		LocationUrl              string
 		AccountsUrl              string
@@ -75,6 +74,7 @@ type (
 		AuthUrl                  string
 		VideoStreamingUrl        string
 		DeviceManagementUrl      string
+		DeviceMonitoringUrl      string
 		DeviceAssetManagementUrl string
 	}
 	CiosClientConfig struct {
@@ -121,7 +121,7 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 	instance.AccountsUrl = config.Urls.AccountsUrl
 	instance.LocationUrl = config.Urls.LocationUrl
 	instance.MessagingUrl = config.Urls.MessagingUrl
-	instance.MonitoringUrl = config.Urls.MonitoringUrl
+	instance.MonitoringUrl = config.Urls.DeviceMonitoringUrl
 	instance.VideoStreamingUrl = config.Urls.VideoStreamingUrl
 	instance.DeviceManagementUrl = config.Urls.DeviceManagementUrl
 	instance.DeviceAssetManagementUrl = config.Urls.DeviceAssetManagementUrl
@@ -202,7 +202,6 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 				return "", "", "", 0, fmt.Errorf("%s", "No AccessToken")
 			}
 		}
-		instance.Contract.refresh = refFunc
 		instance.Auth.refresh = refFunc
 		instance.PubSub.refresh = refFunc
 		instance.Account.refresh = refFunc
@@ -211,6 +210,7 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 		instance.DeviceManagement.refresh = refFunc
 		instance.DeviceAssetManagement.refresh = refFunc
 		instance.License.refresh = refFunc
+		instance.Contract.refresh = refFunc
 		select {
 		case <-time.After(3 * time.Second):
 		default:
@@ -221,7 +221,6 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 		refFunc := func() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error){
 			return "", "", "", 0, errors.New("no refresh client")
 		}
-		instance.Contract.refresh = refFunc
 		instance.Auth.refresh = refFunc
 		instance.PubSub.refresh = refFunc
 		instance.Account.refresh = refFunc
@@ -230,6 +229,7 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 		instance.DeviceManagement.refresh = refFunc
 		instance.DeviceAssetManagement.refresh = refFunc
 		instance.License.refresh = refFunc
+		instance.Contract.refresh = refFunc
 	}
 	instance.Debug(config.Debug)
 
