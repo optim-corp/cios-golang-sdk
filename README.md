@@ -53,6 +53,10 @@ params := ciossdk.MakeGetBucketsOpts(ctx).
 buckets, httpResponse, err :=  client.FileStorage.GetBucketsUnlimited(params)
 ```
 
+## How to Support
+
+If you have any issues or questions, please raise them on [Github issues](https://github.com/optim-corp/cios-golang-sdk/issues).
+
 ## LICENSE
 
 [The Apache-2.0 License](https://www.apache.org/licenses/LICENSE-2.0)
