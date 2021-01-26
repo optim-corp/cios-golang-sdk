@@ -1,0 +1,52 @@
+openapi: "3.0.3"
+info:
+  version: 1.0.0
+  title: Cios Resource Owner Openapi
+
+paths:
+  '/v2/resource_owners':
+    get:
+      tags:
+        - resource-owner
+      operationId: getResourceOwners
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/group_id"
+        - $ref: "../components/parameters.yml#/components/parameters/user_id"
+        - $ref: "../components/parameters.yml#/components/parameters/type"
+        - $ref: "../components/parameters.yml#/components/parameters/page"
+        - $ref: "../components/parameters.yml#/components/parameters/offset"
+        - $ref: "../components/parameters.yml#/components/parameters/limit"
+        - $ref: "../components/parameters.yml#/components/parameters/order_by"
+        - $ref: "../components/parameters.yml#/components/parameters/order"
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/resourceowner-component.openapi.yml#/components/schemas/MultipleResourceOwner"
+      security:
+        - bearerAuth: [ ]
+  '/v2/resource_owners/{resource_owner_id}':
+    get:
+      tags:
+        - resource-owner
+      operationId: getResourceOwner
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/resource_owner_id_required"
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/resourceowner-component.openapi.yml#/components/schemas/ResourceOwner"
+      security:
+        - bearerAuth: [ ]
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

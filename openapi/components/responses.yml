@@ -1,0 +1,48 @@
+openapi: 3.0.1
+info:
+  title: Response Component
+  version: 1.0.0
+paths: {}
+
+components:
+  responses:
+    invalid_request:
+      description: 'invalid_request'
+
+    InvalidRequest:
+      description: 'invalid_request'
+    invalid_token:
+      description: 'invalid_token'
+
+    insufficient_scopes:
+      description: 'insufficient_scopes'
+
+    resource_not_found:
+      description: 'resource_not_found'
+
+    internal_server_error:
+      description: 'internal_server_error'
+
+    server_temporarily_unavailable:
+      description: 'server_temporarily_unavailable'
+
+    conflict_request:
+      description: 'conflict_request'
+    NotFound:
+      description: 'Not Found'
+    StatusMismatch:
+      description: 'Status Mismatch'
+    BadRequest:
+      description: "Bad request"
+    ResourceNotFound:
+      description: "Resource not found"
+    Conflict:
+      description: "Conflict"
+    InvalidToken:
+      description: "invalid_token"
+    InsufficientScopes:
+      description: "insufficient_scopes"
+    InternalServerError:
+      description: "internal_server_error"
+    ServerTemporarilyUnavailable:
+      description: "server_temporarily_unavailable"

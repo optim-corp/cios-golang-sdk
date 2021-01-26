@@ -1,0 +1,95 @@
+openapi: 3.0.3
+info:
+  title: License Component
+  description: Component
+  version: 1.0.0
+
+paths: {}
+
+components:
+  schemas:
+    MultipleLicense:
+      required:
+        - total
+        - licenses
+      properties:
+        total:
+          format: int64
+          type: integer
+        licenses:
+          type: array
+          items:
+            $ref: '#/components/schemas/License'
+    License:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          format: uuid
+          nullable: true
+        issued_at:
+          type: string
+        expires_at:
+          type: string
+        subscription:
+          $ref: '#/components/schemas/Subscription'
+    Subscription:
+      type: object
+      required:
+        - id
+      properties:
+        id:
+          type: string
+          format: uuid
+        owner:
+          $ref: '#/components/schemas/SubscriptionOwner'
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/SubscriptionItem'
+        provider_id:
+          type: string
+          format: uuid
+          description: UUID形式
+        quantity:
+          type: integer
+        unit:
+          type: string
+        license_type:
+          type: string
+          enum: [ Corporation, User, Device, Assignless ]
+        status:
+          type: string
+          enum: [ active, inactive, suspend ]
+        purchased_at:
+          type: string
+          description: ISO8601
+        issued_at:
+          type: string
+          description: ISO8601
+        expires_at:
+          type: string
+          description: ISO8601
+    SubscriptionOwner:
+      type: object
+      required:
+        - id
+      properties:
+        type:
+          type: string
+          enum: [ Corporation, User ]
+          description: |
+            Corporation: 企業
+            User: ユーザー
+        id:
+          type: string
+          format: uuid
+    SubscriptionItem:
+      type: object
+      properties:
+        item_id:
+          type: string
+        plan_id:
+          type: string

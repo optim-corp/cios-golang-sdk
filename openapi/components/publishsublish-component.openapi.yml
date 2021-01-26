@@ -1,0 +1,304 @@
+openapi: 3.0.3
+info:
+  title: Pub/Sub Component
+  description: Component
+  version: 1.0.0
+
+paths: {}
+
+components:
+  schemas:
+    MultipleChanel:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/Channel'
+      required:
+        - total
+        - channels
+    SingleChannel:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/Channel'
+      required:
+        - channel
+    ChannelProposal:
+      type: object
+      properties:
+        resource_owner_id:
+          type: string
+        channel_protocols:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelProtocol'
+        display_info:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/DisplayInfo'
+        labels:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/Label'
+        messaging_config:
+          $ref: '#/components/schemas/MessagingConfig'
+        datastore_config:
+          $ref: '#/components/schemas/DataStoreConfig'
+      required:
+        - resource_owner_id
+        - display_info
+    ChannelUpdateProposal:
+      type: object
+      properties:
+        channel_protocols:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelProtocol'
+        display_info:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/DisplayInfo'
+        labels:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/Label'
+        messaging_config:
+          $ref: '#/components/schemas/MessagingConfig'
+        datastore_config:
+          $ref: '#/components/schemas/DataStoreConfig'
+      required:
+        - resource_owner_id
+        - display_info
+    Channel:
+      type: object
+      properties:
+        id:
+          type: string
+        created_at:
+          type: string
+        updated_at:
+          type: string
+        resource_owner_id:
+          type: string
+        name:
+          type: string
+        description:
+          type: string
+        channel_protocols:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelProtocol'
+        display_info:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/DisplayInfo'
+        labels:
+          type: array
+          items:
+            $ref: './general.yml#/components/schemas/Label'
+        messaging_config:
+          $ref: '#/components/schemas/MessagingConfig'
+        datastore_config:
+          $ref: '#/components/schemas/DataStoreConfig'
+      required:
+        - id
+        - resource_owner_id
+        - name
+        - created_at
+        - updated_at
+    ChannelProtocol:
+      type: object
+      properties:
+        id:
+          type: string
+        version:
+          type: integer
+        validation_required:
+          type: boolean
+
+    MessagingConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        persisted:
+          type: boolean
+    DataStoreConfig:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+        max_size:
+          type: string
+        max_count:
+          type: string
+    MultipleDataStoreChannel:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        channels:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataStoreChannel'
+      required:
+        - total
+        - channels
+    SingleDataStoreChannel:
+      type: object
+      properties:
+        channel:
+          $ref: '#/components/schemas/DataStoreChannel'
+      required:
+        - channel
+    DataStoreChannel:
+      type: object
+      properties:
+        id:
+          type: string
+        data_exist:
+          type: boolean
+        stats:
+          type: object
+          properties:
+            count:
+              type: string
+            size:
+              type: string
+            latest_at:
+              type: string
+    MultipleDataStoreObject:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        objects:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataStoreObject'
+      required:
+        - total
+        - objects
+    SingleDataStoreObject:
+      type: object
+      properties:
+        object:
+          $ref: '#/components/schemas/DataStoreObject'
+      required:
+        - object
+    DataStoreObject:
+      required:
+        - id
+        - timestamp
+        - mime_type
+      type: object
+      properties:
+        id:
+          type: string
+        channel_protocols:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelProtocol'
+        mime_type:
+          type: string
+        timestamp:
+          type: string
+        location:
+          type: object
+          properties:
+            latitude:
+              type: number
+            longitude:
+              type: number
+            altitude:
+              type: number
+        session_id:
+          type: string
+    Ids:
+      type: object
+      properties:
+        ids:
+          type: array
+          items:
+            type: string
+    MultipleDataStoreDataLatest:
+      properties:
+        total:
+          type: number
+        objects:
+          type: array
+          items:
+            $ref: '#/components/schemas/PackerFormatJson'
+        errors:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataError'
+    DataError:
+      properties:
+        error_code:
+          type: string
+        id:
+          type: string
+        message:
+          type: string
+    PackerFormatJson:
+      properties:
+        header:
+          $ref: '#/components/schemas/PackerFormatJsonHeader'
+        payload: { }
+      required:
+        - payload
+        - header
+    PackerFormatJsonHeader:
+      properties:
+        channel_id:
+          type: string
+        channel_protocols:
+          type: array
+          items:
+            $ref: '#/components/schemas/ChannelProtocol'
+        timestamp:
+          type: string
+        session_id:
+          type: string
+        mime_type:
+          enum: [ "text/plain","application/xml","application/json","application/octet-stream" ]
+        labels:
+          type: object
+      required:
+        - channel_id
+        - timestamp
+        - mime_type
+    MultipleSession:
+      type: object
+      properties:
+        total:
+          type: integer
+          format: int64
+        sessions:
+          type: array
+          items:
+            $ref: '#/components/schemas/Session'
+    SingleSession:
+      type: object
+      properties:
+        session:
+          $ref: '#/components/schemas/Session'
+    Session:
+      type: object
+      properties:
+        id:
+          type: string
+        first:
+          type: string
+        last:
+          type: string
+        count:
+          type: string

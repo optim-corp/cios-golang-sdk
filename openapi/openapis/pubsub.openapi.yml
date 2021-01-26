@@ -1,0 +1,393 @@
+openapi: "3.0.3"
+info:
+  version: 1.0.0
+  description: a
+  title: Cios Pub/Sub Openapi
+
+paths:
+  '/v2/channels':
+    get:
+      tags:
+        - PublishSubscribe
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/name_query"
+        - $ref: "../components/parameters.yml#/components/parameters/resource_owner_id"
+        - $ref: "../components/parameters.yml#/components/parameters/label"
+        - $ref: "../components/parameters.yml#/components/parameters/channel_protocol"
+        - $ref: "../components/parameters.yml#/components/parameters/limit"
+        - $ref: "../components/parameters.yml#/components/parameters/offset"
+        - $ref: "../components/parameters.yml#/components/parameters/order"
+        - $ref: "../components/parameters.yml#/components/parameters/order_by"
+        - $ref: "../components/parameters.yml#/components/parameters/lang"
+        - $ref: "../components/parameters.yml#/components/parameters/is_dev"
+        - $ref: "../components/parameters.yml#/components/parameters/is_public"
+        - $ref: "../components/parameters.yml#/components/parameters/messaging_enabled"
+        - $ref: "../components/parameters.yml#/components/parameters/datastore_enabled"
+        - $ref: "../components/parameters.yml#/components/parameters/messaging_persisted"
+
+      operationId: getChannels
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/MultipleChanel"
+      security:
+        - bearerAuth: [ ]
+    post:
+      tags:
+        - PublishSubscribe
+      operationId: createChannel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/ChannelProposal"
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/SingleChannel"
+      security:
+        - bearerAuth: [ ]
+  '/v2/channels/{channel_id}':
+    get:
+      tags:
+        - PublishSubscribe
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/channel_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/lang"
+        - $ref: "../components/parameters.yml#/components/parameters/is_dev"
+      operationId: getChannel
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/SingleChannel"
+      security:
+        - bearerAuth: [ ]
+    patch:
+      tags:
+        - PublishSubscribe
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/channel_id_required"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/ChannelUpdateProposal"
+      operationId: updateChannel
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/MultipleChanel"
+      security:
+        - bearerAuth: [ ]
+    delete:
+      tags:
+        - PublishSubscribe
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/channel_id_required"
+      operationId: deleteChannel
+      responses:
+        200:
+          description: 'OK'
+      security:
+        - bearerAuth: [ ]
+  '/v2/messaging':
+    post:
+      tags:
+        - PublishSubscribe
+      operationId: publishMessage
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/packer_format"
+        - $ref: "../components/parameters.yml#/components/parameters/channel_id_query_required"
+      requestBody:
+        required: false
+        content:
+          application/json:
+            schema: { }
+          application/octet-stream:
+            schema:
+              type: string
+              format: byte
+          text/plain:
+            schema:
+              type: string
+          application/xml:
+            schema:
+              type: object
+      responses:
+        200:
+          description: 'OK'
+      security:
+        - bearerAuth: [ ]
+    get:
+      tags:
+        - PublishSubscribe
+      operationId: subscribeMessage
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/packer_format"
+        - $ref: "../components/parameters.yml#/components/parameters/channel_id_query_required"
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      security:
+        - bearerAuth: [ ]
+  '/v2/datastore/channels':
+    get:
+      tags:
+        - PublishSubscribe
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/channel_protocol_id"
+        - $ref: "../components/parameters.yml#/components/parameters/limit"
+        - $ref: "../components/parameters.yml#/components/parameters/offset"
+        - $ref: "../components/parameters.yml#/components/parameters/order"
+        - $ref: "../components/parameters.yml#/components/parameters/order_by"
+
+      operationId: getDataStoreChannels
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/MultipleDataStoreChannel"
+      security:
+        - bearerAuth: [ ]
+  '/v2/datastore/channels/{channel_id}':
+    get:
+      tags:
+        - PublishSubscribe
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/channel_id_required"
+      operationId: getDataStoreChannel
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/SingleDataStoreChannel"
+      security:
+        - bearerAuth: [ ]
+    delete:
+      tags:
+        - PublishSubscribe
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/channel_id_required"
+      operationId: deleteDataStoreChannel
+      responses:
+        200:
+          description: 'OK'
+      security:
+        - bearerAuth: [ ]
+  '/v2/datastore/channels/{channel_id}/objects':
+    get:
+      tags:
+        - PublishSubscribe
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/channel_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/session_id_query"
+        - $ref: "../components/parameters.yml#/components/parameters/channel_protocol_version"
+        - $ref: "../components/parameters.yml#/components/parameters/channel_protocol_id"
+        - $ref: "../components/parameters.yml#/components/parameters/label"
+        - $ref: "../components/parameters.yml#/components/parameters/location"
+        - $ref: "../components/parameters.yml#/components/parameters/location_range"
+        - $ref: "../components/parameters.yml#/components/parameters/timestamp"
+        - $ref: "../components/parameters.yml#/components/parameters/timestamp_range"
+        - $ref: "../components/parameters.yml#/components/parameters/ascending"
+        - $ref: "../components/parameters.yml#/components/parameters/offset"
+        - $ref: "../components/parameters.yml#/components/parameters/limit"
+      operationId: getDataStoreObjects
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/MultipleDataStoreObject"
+      security:
+        - bearerAuth: [ ]
+    post:
+      tags:
+        - PublishSubscribe
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/channel_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/channel_protocol_id"
+        - $ref: "../components/parameters.yml#/components/parameters/channel_protocol_version"
+        - $ref: "../components/parameters.yml#/components/parameters/session_id_query"
+        - $ref: "../components/parameters.yml#/components/parameters/location"
+        - $ref: "../components/parameters.yml#/components/parameters/timestamp"
+      operationId: createDataStoreObject
+      requestBody:
+        required: true
+        content:
+          application/octet-stream:
+            schema:
+              type: string
+              format: binary
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/SingleDataStoreObject"
+      security:
+        - bearerAuth: [ ]
+  '/v2/datastore/channels/{channel_id}/objects/{object_id}':
+    get:
+      tags:
+        - PublishSubscribe
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/channel_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/object_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/packer_format"
+      operationId: getDataStoreObjectData
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema: { }
+            text/plain:
+              schema:
+                type: string
+      security:
+        - bearerAuth: [ ]
+    delete:
+      tags:
+        - PublishSubscribe
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/channel_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/object_id_required"
+      operationId: deleteDataStoreObjectData
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/MultipleDataStoreObject"
+      security:
+        - bearerAuth: [ ]
+  '/v2/datastore/channels/{channel_id}/object_latest':
+    get:
+      tags:
+        - PublishSubscribe
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/channel_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/packer_format"
+      operationId: getDataStoreObjectDataLatest
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema: { }
+            application/xml:
+              schema: { }
+            text/plain:
+              schema:
+                type: string
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+      security:
+        - bearerAuth: [ ]
+  '/v2/datastore/objects_latest':
+    post:
+      tags:
+        - PublishSubscribe
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/Ids"
+      operationId: getDataStoreMultiObjectDataLatest
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/MultipleDataStoreDataLatest"
+      security:
+        - bearerAuth: [ ]
+  '/v2/datastore/channels/{channel_id}/sessions':
+    get:
+      tags:
+        - PublishSubscribe
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/channel_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/timestamp"
+        - $ref: "../components/parameters.yml#/components/parameters/timestamp_range"
+        - $ref: "../components/parameters.yml#/components/parameters/location_range"
+        - $ref: "../components/parameters.yml#/components/parameters/location"
+        - $ref: "../components/parameters.yml#/components/parameters/ascending"
+        - $ref: "../components/parameters.yml#/components/parameters/offset"
+        - $ref: "../components/parameters.yml#/components/parameters/limit"
+      operationId: getDataStoreSessions
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/MultipleSession"
+      security:
+        - bearerAuth: [ ]
+  '/v2/datastore/channels/{channel_id}/sessions/{session_id}':
+    get:
+      tags:
+        - PublishSubscribe
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/channel_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/session_id_required"
+      operationId: getDataStoreSession
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/SingleSession"
+      security:
+        - bearerAuth: [ ]
+    delete:
+      tags:
+        - PublishSubscribe
+      parameters:
+        - $ref: "../components/parameters.yml#/components/parameters/channel_id_required"
+        - $ref: "../components/parameters.yml#/components/parameters/session_id_required"
+      operationId: deleteDataStoreSession
+      responses:
+        200:
+          description: 'OK'
+      security:
+        - bearerAuth: [ ]
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

@@ -1,0 +1,125 @@
+openapi: "3.0.3"
+info:
+  version: 0.0.1
+  title: Cios Contract Openapi
+
+paths:
+  /v2/contracts:
+    get:
+      tags:
+        - contract
+      summary: 契約一覧情報を取得する
+      description: |-
+        SUPPORTED APPLICATION TYPE: クライアント
+        REQUIRED SCOPES: contract.read
+      operationId: getContracts
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/page'
+        - $ref: '../components/parameters.yml#/components/parameters/limit'
+        - $ref: '../components/parameters.yml#/components/parameters/offset'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '../components/contract-component.openapi.yml#/components/schemas/MultipleContract'
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+  /v2/contracts/{contract_id}:
+    get:
+      tags:
+        - contract
+      summary: 契約IDの契約情報を取得する
+      description: contract.read
+      operationId: getContract
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/page'
+        - $ref: '../components/parameters.yml#/components/parameters/limit'
+        - $ref: '../components/parameters.yml#/components/parameters/offset'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '../components/contract-component.openapi.yml#/components/schemas/Contract'
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+  /v2/contracts/{contract_id}/users:
+    get:
+      tags:
+        - contract
+      summary: 契約IDの契約情報を取得する
+      description: contract.read
+      operationId: getContractUsers
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/contract_id'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '../components/contract-component.openapi.yml#/components/schemas/MultipleContractUser'
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+  /v2/contracts/{contract_id}/users/{user_id}:
+    get:
+      tags:
+        - contract
+      summary: 契約IDの契約情報を取得する
+      description: contract.read
+      operationId: getContractUser
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/contract_id'
+        - $ref: '../components/parameters.yml#/components/parameters/user_id_path'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '../components/contract-component.openapi.yml#/components/schemas/ContractUser'
+        400:
+          $ref: "../components/responses.yml#/components/responses/invalid_request"
+        401:
+          $ref: "../components/responses.yml#/components/responses/invalid_token"
+        403:
+          $ref: "../components/responses.yml#/components/responses/insufficient_scopes"
+        500:
+          $ref: "../components/responses.yml#/components/responses/internal_server_error"
+        503:
+          $ref: "../components/responses.yml#/components/responses/server_temporarily_unavailable"
+
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

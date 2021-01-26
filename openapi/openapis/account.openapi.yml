@@ -1,0 +1,36 @@
+openapi: 3.0.1
+info:
+  title: Account API
+  version: 1.0.0
+paths:
+  '/v2/me':
+    get:
+      tags:
+        - account
+      operationId: getMe
+      summary: ログイン中のユーザープロフィールおよび所属する企業、参加するグループの一覧を取得する
+      description: |-
+        SUPPORTED APPLICATION TYPE: Web, ネイティブ
+        REQUIRED SCOPES: user.profile
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: "../components/account-component.openapi.yml#/components/schemas/Me"
+        400:
+          $ref: "../components/responses.yml#/components/responses/InvalidRequest"
+        401:
+          $ref: "../components/responses.yml#/components/responses/InvalidToken"
+        403:
+          $ref: "../components/responses.yml#/components/responses/InsufficientScopes"
+        404:
+          $ref: "../components/responses.yml#/components/responses/ResourceNotFound"
+        500:
+          $ref: "../components/responses.yml#/components/responses/InternalServerError"
+        503:
+          $ref: "../components/responses.yml#/components/responses/ServerTemporarilyUnavailable"
+
+      security:
+        - bearerAuth: [ ]

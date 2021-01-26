@@ -1,0 +1,3350 @@
+components:
+  securitySchemes:
+    bearerAuth:
+      bearerFormat: JWT
+      scheme: bearer
+      type: http
+info:
+  title: Cios Openapi
+  version: 1.0.1
+openapi: 3.0.3
+paths:
+  /connect/token:
+    post:
+      operationId: refreshToken
+      requestBody:
+        content:
+          application/x-www-form-urlencoded:
+            schema:
+              $ref: ./components/auth-component.openapi.yml#/components/schemas/ConnectTokenRequest
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/auth-component.openapi.yml#/components/schemas/ConnectTokenResponse
+          description: ''
+      security:
+      - basicAuth: []
+      tags:
+      - auth
+  /v2/channels:
+    get:
+      operationId: getChannels
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/name_query
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      - $ref: ./components/parameters.yml#/components/parameters/label
+      - $ref: ./components/parameters.yml#/components/parameters/channel_protocol
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/order
+      - $ref: ./components/parameters.yml#/components/parameters/order_by
+      - $ref: ./components/parameters.yml#/components/parameters/lang
+      - $ref: ./components/parameters.yml#/components/parameters/is_dev
+      - $ref: ./components/parameters.yml#/components/parameters/is_public
+      - $ref: ./components/parameters.yml#/components/parameters/messaging_enabled
+      - $ref: ./components/parameters.yml#/components/parameters/datastore_enabled
+      - $ref: ./components/parameters.yml#/components/parameters/messaging_persisted
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/MultipleChanel
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+    post:
+      operationId: createChannel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/ChannelProposal
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/SingleChannel
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+  /v2/channels/{channel_id}:
+    delete:
+      operationId: deleteChannel
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/channel_id_required
+      responses:
+        200:
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+    get:
+      operationId: getChannel
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/channel_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/lang
+      - $ref: ./components/parameters.yml#/components/parameters/is_dev
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/SingleChannel
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+    patch:
+      operationId: updateChannel
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/channel_id_required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/ChannelUpdateProposal
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/MultipleChanel
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+  /v2/collections/{collection_id}/archive:
+    post:
+      description: '指定した現場の時系列データをアーカイブし、アーカイブ・リストア状態をARCHIVEDにする。
+
+
+        Supported application type：Web, Native'
+      operationId: postCollectionArchive
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      responses:
+        '202':
+          description: リストア要求受付成功
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+  /v2/collections/{collection_id}/recorded-dates:
+    get:
+      description: '指定した年月において、時系列データが存在する日付のリストを取得する。
+
+
+        時系列データ保存API、または、時系列データ保存(bulk upload)APIで保存された時系列データが存在する日付のみ取得対象であり、画像のみが存在する日付は取得されない。
+
+
+        Supported application type:Web, Native, Client'
+      operationId: getRecordedDates
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      - $ref: ./components/parameters.yml#/components/parameters/month_required
+      - $ref: ./components/parameters.yml#/components/parameters/gmt_offset
+      responses:
+        '200':
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: ./components/collection-component.openapi.yml#/components/schemas/RecordedDates
+          description: 取得成功
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+  /v2/collections/{collection_id}/restore:
+    post:
+      description: '指定した現場の時系列データをリストアし、アーカイブ・リストア状態をREADYにする。
+
+
+        Supported application type：Web, Native'
+      operationId: postCollectionRestore
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      responses:
+        '202':
+          description: アーカイブ要求受付成功
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+  /v2/collections/{collection_id}/search-latest:
+    post:
+      description: '最新データを取得する。<br>
+
+        取得対象データはtimestampが最も新しいデータではなく`最後に送信されたデータ`となる。 <br>
+
+        またbulk uploadされたデータは過去データの扱いの為この最新データ取得で取得されるデータには影響しない。 <br>
+
+        projection=dataの場合は時系列データ保存API、imageかthumbnailの場合は画像保存APIで最後に保存されたものが取得対象となる。
+
+
+        Supported application type:Web, Native, Client'
+      operationId: postSearchLatest
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/projection
+      - $ref: ./components/parameters.yml#/components/parameters/Accept-Encoding
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/collection-component.openapi.yml#/components/schemas/CollectionLatestRequest
+        required: true
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: ./components/collection-component.openapi.yml#/components/schemas/MultipleCollectionLatest
+          description: 取得成功
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+  /v2/collections/{collection_id}/series:
+    post:
+      deprecated: true
+      description: 'データの保存、時系列データ存在確認への反映は非同期。
+
+
+        Supported application type: Web, Native, Client, Device'
+      operationId: postSeries
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/collection-component.openapi.yml#/components/schemas/SeriesRequest
+        required: true
+      responses:
+        '201':
+          description: 追加成功
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      summary: 時系列データ保存
+      tags:
+      - Collection
+  /v2/collections/{collection_id}/series-bulk:
+    post:
+      deprecated: true
+      description: '複数のデータの保存、時系列データ存在確認への反映は非同期
+
+
+        Supported application type：Web, Native, Client, Device'
+      operationId: postSeriesBulk
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/collection-component.openapi.yml#/components/schemas/SeriesBulkRequest
+        required: true
+      responses:
+        '201':
+          description: 追加成功
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+  /v2/collections/{collection_id}/series/{series_id}:
+    get:
+      deprecated: true
+      description: '期間・シリーズID等を指定して時系列データを取得する。
+
+
+        Supported application type:Web, Native, Client'
+      operationId: getSeries
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/series_id
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      - $ref: ./components/parameters.yml#/components/parameters/Accept-Encoding
+      - $ref: ./components/parameters.yml#/components/parameters/time_range
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/ascending
+      responses:
+        '200':
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: ./components/collection-component.openapi.yml#/components/schemas/MultipleSeriesDataLocationUnix
+          description: 取得成功
+          headers:
+            Content-Encoding:
+              description: 圧縮形式。リクエストヘッダで圧縮形式を指定した場合のみ。
+              explode: false
+              schema:
+                pattern: gzip
+                type: string
+              style: simple
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+  /v2/collections/{collection_id}/series/{series_id}/aggregation:
+    post:
+      description: '期間・シリーズID等を指定して時系列データの計測値を集計する。
+
+
+        Supported application type:Web, Native, Client'
+      operationId: getSeriesAggregation
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/series_id
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      - $ref: ./components/parameters.yml#/components/parameters/Accept-Encoding
+      - $ref: ./components/parameters.yml#/components/parameters/time_range
+      - $ref: ./components/parameters.yml#/components/parameters/interval
+      - $ref: ./components/parameters.yml#/components/parameters/ascending
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: ./components/collection-component.openapi.yml#/components/schemas/SeriesAggregationRequest
+              type: array
+        required: true
+      responses:
+        '200':
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: ./components/collection-component.openapi.yml#/components/schemas/SeriesAggregations
+          description: 取得成功
+          headers:
+            Content-Encoding:
+              description: 圧縮形式。リクエストヘッダで圧縮形式を指定した場合のみ。
+              explode: false
+              schema:
+                pattern: gzip
+                type: string
+              style: simple
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+  /v2/collections/{collection_id}/series/{series_id}/data:
+    get:
+      description: 'シリーズID、時刻を指定してサムネイル画像を取得する。
+
+
+        Supported application type:Web, Native, Client'
+      operationId: getTimeSeriesData
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/series_id
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      - $ref: ./components/parameters.yml#/components/parameters/Accept-Encoding
+      - $ref: ./components/parameters.yml#/components/parameters/time_range
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/ascending
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: ./components/collection-component.openapi.yml#/components/schemas/MultipleSeriesDataLocationUnix
+          description: 取得成功
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+  /v2/collections/{collection_id}/series/{series_id}/data-bulk:
+    put:
+      description: '複数のデータの保存、時系列データ存在確認への反映は非同期
+
+
+        Supported application type：Web, Native, Client, Device'
+      operationId: createSeriesDataBulk
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/series_id
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/collection-component.openapi.yml#/components/schemas/SeriesDataBulkRequest
+        required: true
+      responses:
+        '201':
+          description: 追加成功
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+  /v2/collections/{collection_id}/series/{series_id}/images:
+    get:
+      description: 'シリーズID、期間等を指定してオリジナル画像の履歴を取得する。
+
+
+        Supported application type:Web, Native, Client'
+      operationId: getSeriesImages
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/series_id
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      - $ref: ./components/parameters.yml#/components/parameters/Accept-Encoding
+      - $ref: ./components/parameters.yml#/components/parameters/time_range
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/ascending
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: ./components/collection-component.openapi.yml#/components/schemas/MultipleSeriesImage
+          description: 取得成功
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+  /v2/collections/{collection_id}/series/{series_id}/latest:
+    delete:
+      description: 'シリーズIDを指定して最新データを削除する。削除後は当該シリーズの最新データおよび画像は最新データ取得APIのレスポンスに含まれない。<br>
+
+        Responseが500の場合、最新データまたは最新画像のいずれかが残っている可能性がある。<br>
+
+        再度APIを実行してResponseが204であれば残ったリソースも削除できた状態となる。
+
+
+        Supported application type:Web, Native, Client, Device'
+      operationId: deleteSeriesLatest
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/series_id
+      - $ref: ./components/parameters.yml#/components/parameters/timestamp_path
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      responses:
+        '204':
+          description: 削除成功
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+  /v2/collections/{collection_id}/series/{series_id}/thumbnails:
+    get:
+      description: 'シリーズID、期間等を指定してサムネイル画像の履歴を取得する。
+
+
+        Supported application type:Web, Native, Client'
+      operationId: getSeriesThumbnails
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/series_id
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      - $ref: ./components/parameters.yml#/components/parameters/Accept-Encoding
+      - $ref: ./components/parameters.yml#/components/parameters/time_range
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/ascending
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: ./components/collection-component.openapi.yml#/components/schemas/MultipleSeriesImage
+          description: 取得成功
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+  /v2/collections/{collection_id}/series/{series_id}/timestamp/{timestamp}/data:
+    put:
+      description: 'データの保存、時系列データ存在確認への反映は非同期。
+
+
+        Supported application type: Web, Native, Client, Device'
+      operationId: putSeries
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/series_id
+      - $ref: ./components/parameters.yml#/components/parameters/timestamp_path
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/collection-component.openapi.yml#/components/schemas/SeriesDataRequest
+        required: true
+      responses:
+        '201':
+          description: 追加成功
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+  /v2/collections/{collection_id}/series/{series_id}/timestamp/{timestamp}/image:
+    get:
+      description: 'シリーズID、時刻を指定してオリジナル画像を取得する。
+
+
+        Supported application type:Web, Native, Client'
+      operationId: getSeriesImage
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/series_id
+      - $ref: ./components/parameters.yml#/components/parameters/timestamp_path
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/collection-component.openapi.yml#/components/schemas/SeriesDataBulkRequest
+        required: true
+      responses:
+        '200':
+          content:
+            image/jpeg:
+              schema:
+                description: JPEG形式の画像。
+                format: binary
+                type: string
+            image/png:
+              schema:
+                description: PNG形式の画像。
+                format: binary
+                type: string
+          description: 取得成功
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+    put:
+      description: '画像を保存する。
+
+
+        レスポンスのhttpステータスが500となった場合、最新オリジナル画像、最新サムネイル画像、
+
+        オリジナル画像履歴、サムネイル画像履歴のうち一部だけが保存完了している可能性がある。
+
+        その場合は保存が完了した画像だけが画像取得APIで取得される状態となるが、
+
+        同じタイムスタンプで再度画像をアップロードすることで、それらの画像を上書きすることができる。
+
+
+        Supported application type: Web, Native, Client, Device'
+      operationId: createSeriesImage
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/series_id
+      - $ref: ./components/parameters.yml#/components/parameters/timestamp_path
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      - $ref: ./components/parameters.yml#/components/parameters/is_latest
+      requestBody:
+        content:
+          image/jpeg:
+            schema:
+              description: JPEG形式の画像。サイズが1MBを超える場合はリクエスト不正とする。
+              format: binary
+              type: string
+          image/png:
+            schema:
+              description: PNG形式の画像。サイズが1MBを超える場合はリクエスト不正とする。
+              format: binary
+              type: string
+        required: true
+      responses:
+        '201':
+          description: 保存成功
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+  /v2/collections/{collection_id}/series/{series_id}/timestamp/{timestamp}/thumbnail:
+    get:
+      description: 'シリーズID、時刻を指定してサムネイル画像を取得する。
+
+
+        Supported application type:Web, Native, Client'
+      operationId: getSeriesThumnbnail
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/series_id
+      - $ref: ./components/parameters.yml#/components/parameters/timestamp_path
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/collection-component.openapi.yml#/components/schemas/SeriesDataBulkRequest
+        required: true
+      responses:
+        '200':
+          content:
+            image/jpeg:
+              schema:
+                description: JPEG形式の画像。
+                format: binary
+                type: string
+            image/png:
+              schema:
+                description: PNG形式の画像。
+                format: binary
+                type: string
+          description: 取得成功
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '409':
+          $ref: ./components/responses.yml#/components/responses/StatusMismatch
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+  /v2/collections/{collection_id}/status:
+    get:
+      description: 'アーカイブ・リストア状態を取得する。
+
+
+        アーカイブ・リストア状態遷移
+
+        ![](./images/archive-restore-state-transtition-diagram.png)
+
+
+        Supported application type：Web, Native'
+      operationId: getCollectionStatus
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/collection_id
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      responses:
+        '200':
+          content:
+            application/json; charset=utf-8:
+              schema:
+                $ref: ./components/collection-component.openapi.yml#/components/schemas/CollectionStatus
+          description: 取得成功
+        '400':
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        '401':
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        '403':
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        '404':
+          $ref: ./components/responses.yml#/components/responses/NotFound
+        '500':
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+      security:
+      - bearerAuth: []
+      tags:
+      - Collection
+  /v2/contracts:
+    get:
+      description: 'SUPPORTED APPLICATION TYPE: クライアント
+
+        REQUIRED SCOPES: contract.read'
+      operationId: getContracts
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/page
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/contract-component.openapi.yml#/components/schemas/MultipleContract
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      summary: 契約一覧情報を取得する
+      tags:
+      - contract
+  /v2/contracts/{contract_id}:
+    get:
+      description: contract.read
+      operationId: getContract
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/page
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/contract-component.openapi.yml#/components/schemas/Contract
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      summary: 契約IDの契約情報を取得する
+      tags:
+      - contract
+  /v2/contracts/{contract_id}/users:
+    get:
+      description: contract.read
+      operationId: getContractUsers
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/contract_id
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/contract-component.openapi.yml#/components/schemas/MultipleContractUser
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      summary: 契約IDの契約情報を取得する
+      tags:
+      - contract
+  /v2/contracts/{contract_id}/users/{user_id}:
+    get:
+      description: contract.read
+      operationId: getContractUser
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/contract_id
+      - $ref: ./components/parameters.yml#/components/parameters/user_id_path
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/contract-component.openapi.yml#/components/schemas/ContractUser
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      summary: 契約IDの契約情報を取得する
+      tags:
+      - contract
+  /v2/datastore/channels:
+    get:
+      operationId: getDataStoreChannels
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/channel_protocol_id
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/order
+      - $ref: ./components/parameters.yml#/components/parameters/order_by
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/MultipleDataStoreChannel
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+  /v2/datastore/channels/{channel_id}:
+    delete:
+      operationId: deleteDataStoreChannel
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/channel_id_required
+      responses:
+        200:
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+    get:
+      operationId: getDataStoreChannel
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/channel_id_required
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/SingleDataStoreChannel
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+  /v2/datastore/channels/{channel_id}/object_latest:
+    get:
+      operationId: getDataStoreObjectDataLatest
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/channel_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/packer_format
+      responses:
+        200:
+          content:
+            application/json:
+              schema: {}
+            application/octet-stream:
+              schema:
+                format: binary
+                type: string
+            application/xml:
+              schema: {}
+            text/plain:
+              schema:
+                type: string
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+  /v2/datastore/channels/{channel_id}/objects:
+    get:
+      operationId: getDataStoreObjects
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/channel_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/session_id_query
+      - $ref: ./components/parameters.yml#/components/parameters/channel_protocol_version
+      - $ref: ./components/parameters.yml#/components/parameters/channel_protocol_id
+      - $ref: ./components/parameters.yml#/components/parameters/label
+      - $ref: ./components/parameters.yml#/components/parameters/location
+      - $ref: ./components/parameters.yml#/components/parameters/location_range
+      - $ref: ./components/parameters.yml#/components/parameters/timestamp
+      - $ref: ./components/parameters.yml#/components/parameters/timestamp_range
+      - $ref: ./components/parameters.yml#/components/parameters/ascending
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/MultipleDataStoreObject
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+    post:
+      operationId: createDataStoreObject
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/channel_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/channel_protocol_id
+      - $ref: ./components/parameters.yml#/components/parameters/channel_protocol_version
+      - $ref: ./components/parameters.yml#/components/parameters/session_id_query
+      - $ref: ./components/parameters.yml#/components/parameters/location
+      - $ref: ./components/parameters.yml#/components/parameters/timestamp
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              format: binary
+              type: string
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/SingleDataStoreObject
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+  /v2/datastore/channels/{channel_id}/objects/{object_id}:
+    delete:
+      operationId: deleteDataStoreObjectData
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/channel_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/object_id_required
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/MultipleDataStoreObject
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+    get:
+      operationId: getDataStoreObjectData
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/channel_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/object_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/packer_format
+      responses:
+        200:
+          content:
+            application/json:
+              schema: {}
+            text/plain:
+              schema:
+                type: string
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+  /v2/datastore/channels/{channel_id}/sessions:
+    get:
+      operationId: getDataStoreSessions
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/channel_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/timestamp
+      - $ref: ./components/parameters.yml#/components/parameters/timestamp_range
+      - $ref: ./components/parameters.yml#/components/parameters/location_range
+      - $ref: ./components/parameters.yml#/components/parameters/location
+      - $ref: ./components/parameters.yml#/components/parameters/ascending
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/MultipleSession
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+  /v2/datastore/channels/{channel_id}/sessions/{session_id}:
+    delete:
+      operationId: deleteDataStoreSession
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/channel_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/session_id_required
+      responses:
+        200:
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+    get:
+      operationId: getDataStoreSession
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/channel_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/session_id_required
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/SingleSession
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+  /v2/datastore/objects_latest:
+    post:
+      operationId: getDataStoreMultiObjectDataLatest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/Ids
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/MultipleDataStoreDataLatest
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+  /v2/device_entities:
+    get:
+      operationId: getDeviceEntities
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/order
+      - $ref: ./components/parameters.yml#/components/parameters/order_by
+      - $ref: ./components/parameters.yml#/components/parameters/key_query
+      - $ref: ./components/parameters.yml#/components/parameters/serial_number_query
+      - $ref: ./components/parameters.yml#/components/parameters/device_id_query
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      - $ref: ./components/parameters.yml#/components/parameters/component_key
+      - $ref: ./components/parameters.yml#/components/parameters/component_value
+      - $ref: ./components/parameters.yml#/components/parameters/is_flat
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/MultipleDeviceModelEntity
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+  /v2/device_entities/{key}:
+    delete:
+      operationId: deleteDeviceEntity
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/key
+      responses:
+        200:
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/ResourceNotFound
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+    get:
+      operationId: getDeviceEntity
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/key
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/SingleDeviceModelsEntity
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/ResourceNotFound
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+    patch:
+      operationId: updateDeviceEntity
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/DeviceModelsEntity
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/SingleDeviceModelsEntity
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/ResourceNotFound
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+  /v2/device_entities/{key}/components:
+    get:
+      operationId: getDeviceEntitiesComponents
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/key
+      - $ref: ./components/parameters.yml#/components/parameters/component_id_query
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/MultipleDeviceEntitiesComponent
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+    patch:
+      description: attributeが更新可能
+      operationId: updateDeviceEntitiesComponents
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/DeviceEntitiesComponent
+              type: array
+        required: true
+      responses:
+        200:
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/ResourceNotFound
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+    post:
+      operationId: createDeviceEntitiesComponent
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/key
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/DeviceEntitiesComponent
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/SingleDeviceEntitiesComponent
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        409:
+          $ref: ./components/responses.yml#/components/responses/Conflict
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+  /v2/device_entities/{key}/components/{component_id}:
+    delete:
+      operationId: deleteDeviceEntitiesComponent
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/key
+      - $ref: ./components/parameters.yml#/components/parameters/component
+      - $ref: ./components/parameters.yml#/components/parameters/is_recursive
+      responses:
+        200:
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/ResourceNotFound
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+    get:
+      operationId: getDeviceEntitiesComponent
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/key
+      - $ref: ./components/parameters.yml#/components/parameters/component
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/SingleDeviceEntitiesComponent
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/ResourceNotFound
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+    patch:
+      operationId: updateDeviceEntitiesComponent
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/key
+      - $ref: ./components/parameters.yml#/components/parameters/component
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/DeviceEntitiesComponentUpdateRequest
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/SingleDeviceEntitiesComponent
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/ResourceNotFound
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+  /v2/device_entities/{key}/lifecycles:
+    get:
+      operationId: getDeviceEntitiesLifecycles
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/key
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/order
+      - $ref: ./components/parameters.yml#/components/parameters/order_by
+      - $ref: ./components/parameters.yml#/components/parameters/event_kind
+      - $ref: ./components/parameters.yml#/components/parameters/event_mode
+      - $ref: ./components/parameters.yml#/components/parameters/event_type
+      - $ref: ./components/parameters.yml#/components/parameters/component_id
+      - $ref: ./components/parameters.yml#/components/parameters/before_id
+      - $ref: ./components/parameters.yml#/components/parameters/after_id
+      - $ref: ./components/parameters.yml#/components/parameters/start_event_at
+      - $ref: ./components/parameters.yml#/components/parameters/end_event_at
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/MultipleLifeCycle
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/ResourceNotFound
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+    post:
+      operationId: createDeviceEntitiesLifecycle
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/key
+      - $ref: ./components/parameters.yml#/components/parameters/event_kind
+      - $ref: ./components/parameters.yml#/components/parameters/event_mode
+      - $ref: ./components/parameters.yml#/components/parameters/event_type
+      - $ref: ./components/parameters.yml#/components/parameters/component_id_query
+      - $ref: ./components/parameters.yml#/components/parameters/before_id
+      - $ref: ./components/parameters.yml#/components/parameters/after_id
+      - $ref: ./components/parameters.yml#/components/parameters/start_event_at
+      - $ref: ./components/parameters.yml#/components/parameters/end_event_at
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/LifeCycle
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/SingleLifeCycle
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+  /v2/device_entities/{key}/lifecycles/{lifecycle_id}:
+    delete:
+      operationId: deleteDeviceEntitiesLifecycle
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/key
+      - $ref: ./components/parameters.yml#/components/parameters/lifecycle_id
+      responses:
+        200:
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/ResourceNotFound
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+    get:
+      operationId: getDeviceEntitiesLifecycle
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/key
+      - $ref: ./components/parameters.yml#/components/parameters/lifecycle_id
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/SingleLifeCycle
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components//responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/ResourceNotFound
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+  /v2/device_models:
+    get:
+      operationId: getDeviceModels
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/order
+      - $ref: ./components/parameters.yml#/components/parameters/order_by
+      - $ref: ./components/parameters.yml#/components/parameters/name_query
+      - $ref: ./components/parameters.yml#/components/parameters/maker_id
+      - $ref: ./components/parameters.yml#/components/parameters/version
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      - $ref: ./components/parameters.yml#/components/parameters/component_key
+      - $ref: ./components/parameters.yml#/components/parameters/component_value
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/MultipleDeviceModel
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        501:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      security:
+      - bearerAuth: []
+      tags:
+      - device-asset
+    post:
+      operationId: createDeviceModel
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/DeviceModelRequest
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/SingleDeviceModel
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        409:
+          $ref: ./components/responses.yml#/components/responses/Conflict
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+  /v2/device_models/{name}:
+    delete:
+      operationId: deleteDeviceModel
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/name
+      responses:
+        200:
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/ResourceNotFound
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+    get:
+      operationId: getDeviceModel
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/name
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/SingleDeviceModel
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/ResourceNotFound
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      security:
+      - bearerAuth: []
+      tags:
+      - device-asset
+    patch:
+      description: maker_id, version及びcomponentsが更新可能
+      operationId: updateDeviceModel
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/name
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/DeviceModelUpdateRequest
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/SingleDeviceModel
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/ResourceNotFound
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        501:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      security:
+      - bearerAuth: []
+      tags:
+      - device-asset
+  /v2/device_models/{name}/components:
+    get:
+      operationId: getDeviceModelsComponents
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/name
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/MultipleConstitutionComponent
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/ResourceNotFound
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      security:
+      - bearerAuth: []
+      tags:
+      - device-asset
+  /v2/device_models/{name}/entities:
+    post:
+      operationId: createInventory
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/name
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/device-component.openapi.yml#/components/schemas/Inventory
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/deviceasset-component.openapi.yml#/components/schemas/SingleDeviceModelsEntity
+          description: Processing success
+        400:
+          $ref: ./components/responses.yml#/components/responses/BadRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        409:
+          $ref: ./components/responses.yml#/components/responses/Conflict
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      tags:
+      - device-asset
+  /v2/devices:
+    get:
+      description: 'SUPPORTED APPLICATION TYPE: Web, ネイティブ, クライアント
+
+        REQUIRED SCOPES: device.read'
+      operationId: getDevices
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/order
+      - $ref: ./components/parameters.yml#/components/parameters/order_by
+      - $ref: ./components/parameters.yml#/components/parameters/lang
+      - $ref: ./components/parameters.yml#/components/parameters/is_dev
+      - $ref: ./components/parameters.yml#/components/parameters/is_public
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      - $ref: ./components/parameters.yml#/components/parameters/name_query
+      - $ref: ./components/parameters.yml#/components/parameters/id_number
+      - $ref: ./components/parameters.yml#/components/parameters/definition_id
+      - $ref: ./components/parameters.yml#/components/parameters/definition_tag
+      - $ref: ./components/parameters.yml#/components/parameters/inventory_key
+      - $ref: ./components/parameters.yml#/components/parameters/inventory_value
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/device-component.openapi.yml#/components/schemas/MultipleDevice
+          description: ''
+      security:
+      - bearerAuth: []
+      summary: デバイスの一覧を取得する
+      tags:
+      - device
+    post:
+      description: "SUPPORTED APPLICATION TYPE: Web, ネイティブ\nREQUIRED SCOPES: user.profile\n\
+        * is_managedが managed または full_managed の場合\n  * Request.body.client_id_listに設定されたID毎にアプリケーション種別がデバイスのOAuthClientが作成されます。(rsa_publickeyを指定する必要があります)"
+      operationId: createDevice
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/device-component.openapi.yml#/components/schemas/DeviceInfo
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/device-component.openapi.yml#/components/schemas/SingleDevice
+          description: ''
+      security:
+      - bearerAuth: []
+      summary: デバイスの登録
+      tags:
+      - device
+  /v2/devices/group_policies:
+    get:
+      operationId: getDevicePolicies
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/order
+      - $ref: ./components/parameters.yml#/components/parameters/order_by
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/device-component.openapi.yml#/components/schemas/MultipleDevicePolicy
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - device
+    post:
+      operationId: createDevicePolicy
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/device-component.openapi.yml#/components/schemas/DevicePolicyRequest
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/device-component.openapi.yml#/components/schemas/DevicePolicy
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - device
+  /v2/devices/group_policies/{policy_id}:
+    delete:
+      operationId: deletePolicy
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/policy_id
+      responses:
+        200:
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - device
+  /v2/devices/monitoring/latest:
+    post:
+      operationId: getDeviceMonitoringsLatest
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/device-component.openapi.yml#/components/schemas/DeviceMonitoringIDsRequest
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/device-component.openapi.yml#/components/schemas/MultipleDeviceMonitoring
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - device
+  /v2/devices/{device_id}:
+    delete:
+      operationId: deleteDevice
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/device_id_required
+      responses:
+        200:
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - device
+    get:
+      description: 'SUPPORTED APPLICATION TYPE: Web, ネイティブ, クライアント
+
+        REQUIRED SCOPES: device.read'
+      operationId: getDevice
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/lang
+      - $ref: ./components/parameters.yml#/components/parameters/is_dev
+      - $ref: ./components/parameters.yml#/components/parameters/device_id_required
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/device-component.openapi.yml#/components/schemas/SingleDevice
+          description: ''
+      security:
+      - bearerAuth: []
+      summary: 指定したidのデバイスの情報を取得する
+      tags:
+      - device
+    patch:
+      description: 'SUPPORTED APPLICATION TYPE: Web, ネイティブ, クライアント
+
+        REQUIRED SCOPES: device.write
+
+        * Request.body.client_id_listに設定されたアプリケーションクライアント毎にデバイスクライアントを作成します。
+
+        * is_managedをunmanagedに変更した場合は、device.client_listに登録されているデバイスクライアントをすべて削除します。(OAuthClient
+        APIを利用してデバイスクライアントの削除を行います)
+
+        * is_managedがfull_managedのデバイス管理エージェント固有のデバイスクライアントに関しては、ディアクティベーションでのみ削除可能です。'
+      operationId: updateDevice
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/device_id_required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/device-component.openapi.yml#/components/schemas/DeviceUpdateRequest
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/device-component.openapi.yml#/components/schemas/SingleDevice
+          description: ''
+      security:
+      - bearerAuth: []
+      summary: 指定したidのデバイス情報を更新する
+      tags:
+      - device
+  /v2/devices/{device_id}/inventory/latest:
+    get:
+      operationId: getDeviceInventoryLatest
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/device_id
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/device-component.openapi.yml#/components/schemas/DeviceInventory
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - device
+  /v2/devices/{device_id}/monitoring/latest:
+    get:
+      operationId: getDeviceMonitoringLatest
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/device_id
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/device-component.openapi.yml#/components/schemas/SingleDeviceMonitoring
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - device
+  /v2/file_storage/buckets:
+    get:
+      description: file_storage.read
+      operationId: getBuckets
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/order
+      - $ref: ./components/parameters.yml#/components/parameters/order_by
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      - $ref: ./components/parameters.yml#/components/parameters/name_query
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/filestorage-component.openapi.yml#/components/schemas/MultipleBucket
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - bearerAuth: []
+      tags:
+      - fileStorage
+    post:
+      description: file_storage.write
+      operationId: createBucket
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/filestorage-component.openapi.yml#/components/schemas/BucketRequest
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/filestorage-component.openapi.yml#/components/schemas/SingleBucket
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        409:
+          $ref: ./components/responses.yml#/components/responses/conflict_request
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - bearerAuth: []
+      tags:
+      - fileStorage
+  /v2/file_storage/buckets/{bucket_id}:
+    delete:
+      description: file_storage.write
+      operationId: deleteBucket
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/bucket_id_required
+      responses:
+        200:
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/resource_not_found
+        409:
+          $ref: ./components/responses.yml#/components/responses/conflict_request
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - bearerAuth: []
+      tags:
+      - fileStorage
+    get:
+      description: file_storage.read
+      operationId: getBucket
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/bucket_id_required
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/filestorage-component.openapi.yml#/components/schemas/SingleBucket
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/resource_not_found
+        409:
+          $ref: ./components/responses.yml#/components/responses/conflict_request
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - bearerAuth: []
+      tags:
+      - fileStorage
+    patch:
+      operationId: updateBucket
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/bucket_id_required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/filestorage-component.openapi.yml#/components/schemas/BucketName
+        required: true
+      responses:
+        200:
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/resource_not_found
+        409:
+          $ref: ./components/responses.yml#/components/responses/conflict_request
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - bearerAuth: []
+      tags:
+      - fileStorage
+  /v2/file_storage/buckets/{bucket_id}/create_directory:
+    post:
+      description: file_storage.write
+      operationId: createDirectory
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/bucket_id_required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/filestorage-component.openapi.yml#/components/schemas/NodeRequest
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/filestorage-component.openapi.yml#/components/schemas/SingleNode
+          description: ''
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/resource_not_found
+        409:
+          $ref: ./components/responses.yml#/components/responses/conflict_request
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - bearerAuth: []
+      tags:
+      - fileStorage
+  /v2/file_storage/buckets/{bucket_id}/download:
+    get:
+      description: file_storage.download
+      operationId: downloadFile
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/bucket_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/node_id_query
+      - $ref: ./components/parameters.yml#/components/parameters/key_query
+      responses:
+        200:
+          content:
+            /*:
+              schema:
+                format: byte
+                type: string
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/resource_not_found
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - bearerAuth: []
+      tags:
+      - fileStorage
+  /v2/file_storage/buckets/{bucket_id}/nodes:
+    get:
+      description: file_storage.read
+      operationId: getNodes
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/bucket_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/parent_node_id
+      - $ref: ./components/parameters.yml#/components/parameters/recursive
+      - $ref: ./components/parameters.yml#/components/parameters/name_query
+      - $ref: ./components/parameters.yml#/components/parameters/key_query
+      - $ref: ./components/parameters.yml#/components/parameters/is_directory
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/node_order_by
+      - $ref: ./components/parameters.yml#/components/parameters/order
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/filestorage-component.openapi.yml#/components/schemas/MultipleNode
+          description: ''
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/resource_not_found
+        409:
+          $ref: ./components/responses.yml#/components/responses/conflict_request
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - bearerAuth: []
+      tags:
+      - fileStorage
+  /v2/file_storage/buckets/{bucket_id}/nodes/{node_id}:
+    delete:
+      description: file_storage.write
+      operationId: deleteNode
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/bucket_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/node_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/directory_size
+      responses:
+        200:
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/resource_not_found
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - bearerAuth: []
+      tags:
+      - fileStorage
+    get:
+      description: file_storage.read
+      operationId: getNode
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/bucket_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/node_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/directory_size
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/filestorage-component.openapi.yml#/components/schemas/SingleNode
+          description: ''
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/resource_not_found
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - bearerAuth: []
+      tags:
+      - fileStorage
+  /v2/file_storage/buckets/{bucket_id}/nodes/{node_id}/copy:
+    post:
+      operationId: copyNode
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/bucket_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/node_id_required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/filestorage-component.openapi.yml#/components/schemas/BucketEditBody
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/filestorage-component.openapi.yml#/components/schemas/SingleNode
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - fileStorage
+  /v2/file_storage/buckets/{bucket_id}/nodes/{node_id}/move:
+    post:
+      operationId: moveNode
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/bucket_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/node_id_required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/filestorage-component.openapi.yml#/components/schemas/BucketEditBody
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/filestorage-component.openapi.yml#/components/schemas/SingleNode
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - fileStorage
+  /v2/file_storage/buckets/{bucket_id}/nodes/{node_id}/rename:
+    post:
+      operationId: renameNode
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/bucket_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/node_id_required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/filestorage-component.openapi.yml#/components/schemas/BucketName
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/filestorage-component.openapi.yml#/components/schemas/SingleNode
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - fileStorage
+  /v2/file_storage/buckets/{bucket_id}/upload:
+    put:
+      description: file_storage.upload
+      operationId: uploadFile
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/bucket_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/checksum
+      - $ref: ./components/parameters.yml#/components/parameters/name_query
+      - $ref: ./components/parameters.yml#/components/parameters/node_id_query
+      - $ref: ./components/parameters.yml#/components/parameters/key_query
+      - $ref: ./components/parameters.yml#/components/parameters/parent_node_id
+      - $ref: ./components/parameters.yml#/components/parameters/parent_key
+      - $ref: ./components/parameters.yml#/components/parameters/force
+      requestBody:
+        content:
+          application/octet-stream:
+            schema:
+              format: byte
+              type: string
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/filestorage-component.openapi.yml#/components/schemas/SingleBucket
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/resource_not_found
+        409:
+          $ref: ./components/responses.yml#/components/responses/conflict_request
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - bearerAuth: []
+      tags:
+      - fileStorage
+  /v2/geo/circles:
+    get:
+      operationId: getCircles
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/name_query
+      - $ref: ./components/parameters.yml#/components/parameters/label
+      - $ref: ./components/parameters.yml#/components/parameters/is_public
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      - $ref: ./components/parameters.yml#/components/parameters/sort
+      - $ref: ./components/parameters.yml#/components/parameters/top
+      - $ref: ./components/parameters.yml#/components/parameters/skip
+      - $ref: ./components/parameters.yml#/components/parameters/lang
+      - $ref: ./components/parameters.yml#/components/parameters/is_dev
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/geography-component.openapi.yml#/components/schemas/MultipleCircle
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - geography
+    post:
+      operationId: createCircle
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/geography-component.openapi.yml#/components/schemas/Circle
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/geography-component.openapi.yml#/components/schemas/SingleCircle
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - geography
+  /v2/geo/circles/{circles_id}:
+    delete:
+      operationId: deleteCircle
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/circle_id_required
+      responses:
+        200:
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - geography
+    get:
+      operationId: getCircle
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/circle_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/lang
+      - $ref: ./components/parameters.yml#/components/parameters/is_dev
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/geography-component.openapi.yml#/components/schemas/SingleCircle
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - geography
+    patch:
+      operationId: updateCircle
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/circle_id_required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: ./components/general.yml#/components/schemas/DisplayInfo
+              type: array
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/geography-component.openapi.yml#/components/schemas/SingleCircle
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - geography
+  /v2/geo/points:
+    get:
+      operationId: getPoints
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/name_query
+      - $ref: ./components/parameters.yml#/components/parameters/label
+      - $ref: ./components/parameters.yml#/components/parameters/is_public
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      - $ref: ./components/parameters.yml#/components/parameters/sort
+      - $ref: ./components/parameters.yml#/components/parameters/top
+      - $ref: ./components/parameters.yml#/components/parameters/skip
+      - $ref: ./components/parameters.yml#/components/parameters/lang
+      - $ref: ./components/parameters.yml#/components/parameters/is_dev
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/geography-component.openapi.yml#/components/schemas/MultiplePoint
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - geography
+    post:
+      operationId: createPoint
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/geography-component.openapi.yml#/components/schemas/PointRequest
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/geography-component.openapi.yml#/components/schemas/SinglePoint
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - geography
+  /v2/geo/points/{point_id}:
+    delete:
+      operationId: deletePoint
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/point_id_required
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/geography-component.openapi.yml#/components/schemas/SinglePoint
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - geography
+    get:
+      operationId: getPoint
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/point_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/lang
+      - $ref: ./components/parameters.yml#/components/parameters/is_dev
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/geography-component.openapi.yml#/components/schemas/SinglePoint
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - geography
+    patch:
+      operationId: updatePoint
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/point_id_required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: ./components/general.yml#/components/schemas/DisplayInfo
+              type: array
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/geography-component.openapi.yml#/components/schemas/SinglePoint
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - geography
+  /v2/geo/routes:
+    get:
+      operationId: getRoutes
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/name_query
+      - $ref: ./components/parameters.yml#/components/parameters/label
+      - $ref: ./components/parameters.yml#/components/parameters/is_public
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id
+      - $ref: ./components/parameters.yml#/components/parameters/sort
+      - $ref: ./components/parameters.yml#/components/parameters/top
+      - $ref: ./components/parameters.yml#/components/parameters/skip
+      - $ref: ./components/parameters.yml#/components/parameters/lang
+      - $ref: ./components/parameters.yml#/components/parameters/is_dev
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/geography-component.openapi.yml#/components/schemas/MultipleRoute
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - geography
+    post:
+      operationId: createRoute
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/geography-component.openapi.yml#/components/schemas/Route
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/geography-component.openapi.yml#/components/schemas/SingleRoute
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - geography
+  /v2/geo/routes/{routes_id}:
+    delete:
+      operationId: deleteRoute
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/route_id_required
+      responses:
+        200:
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - geography
+    get:
+      operationId: getRoute
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/route_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/lang
+      - $ref: ./components/parameters.yml#/components/parameters/is_dev
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/geography-component.openapi.yml#/components/schemas/SingleRoute
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - geography
+    patch:
+      operationId: updateRoute
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/route_id_required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              items:
+                $ref: ./components/general.yml#/components/schemas/DisplayInfo
+              type: array
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/geography-component.openapi.yml#/components/schemas/SingleRoute
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - geography
+  /v2/groups:
+    get:
+      description: group.read
+      operationId: getGroups
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/name_query
+      - $ref: ./components/parameters.yml#/components/parameters/parent_group_id
+      - $ref: ./components/parameters.yml#/components/parameters/state
+      - $ref: ./components/parameters.yml#/components/parameters/city
+      - $ref: ./components/parameters.yml#/components/parameters/address_1
+      - $ref: ./components/parameters.yml#/components/parameters/address_2
+      - $ref: ./components/parameters.yml#/components/parameters/group_type
+      - $ref: ./components/parameters.yml#/components/parameters/tags
+      - $ref: ./components/parameters.yml#/components/parameters/label
+      - $ref: ./components/parameters.yml#/components/parameters/domain
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/group_order_by
+      - $ref: ./components/parameters.yml#/components/parameters/order
+      - $ref: ./components/parameters.yml#/components/parameters/includes
+      - $ref: ./components/parameters.yml#/components/parameters/page
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/group-component.openapi.yml#/components/schemas/MultipleGroup
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - basicAuth: []
+      tags:
+      - group
+    post:
+      description: group.write
+      operationId: createGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/group-component.openapi.yml#/components/schemas/GroupCreateRequest
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/group-component.openapi.yml#/components/schemas/Group
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        403:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - basicAuth: []
+      tags:
+      - group
+  /v2/groups/{group_id}:
+    delete:
+      description: group.write
+      operationId: deleteGroup
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/group_id_required
+      responses:
+        200:
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - basicAuth: []
+      tags:
+      - group
+    get:
+      description: group.read
+      operationId: getGroup
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/group_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/includes
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/group-component.openapi.yml#/components/schemas/Group
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - basicAuth: []
+      tags:
+      - group
+    patch:
+      description: group.write
+      operationId: updateGroup
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/group_id_required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/group-component.openapi.yml#/components/schemas/GroupUpdateRequest
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/group-component.openapi.yml#/components/schemas/Group
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/resource_not_found
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - basicAuth: []
+      tags:
+      - group
+    put:
+      description: group.write
+      operationId: replaceGroup
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/group_id_required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/group-component.openapi.yml#/components/schemas/GroupReplaceRequest
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/group-component.openapi.yml#/components/schemas/Group
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/resource_not_found
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - basicAuth: []
+      tags:
+      - group
+  /v2/groups/{group_id}/invites:
+    post:
+      description: group.write
+      operationId: inviteGroup
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/group_id_required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/group-component.openapi.yml#/components/schemas/GroupInviteRequest
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/group-component.openapi.yml#/components/schemas/Member
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/resource_not_found
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - basicAuth: []
+      tags:
+      - group
+  /v2/groups/{group_id}/members:
+    delete:
+      operationId: deleteMember
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/group_id_required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/group-component.openapi.yml#/components/schemas/Members
+        required: true
+      responses:
+        200:
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/resource_not_found
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - basicAuth: []
+      tags:
+      - group
+    get:
+      operationId: getMembers
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/group_id_required
+      - $ref: ./components/parameters.yml#/components/parameters/user_id
+      - $ref: ./components/parameters.yml#/components/parameters/name_query
+      - $ref: ./components/parameters.yml#/components/parameters/email
+      - $ref: ./components/parameters.yml#/components/parameters/primary
+      - $ref: ./components/parameters.yml#/components/parameters/phonetic_family_name
+      - $ref: ./components/parameters.yml#/components/parameters/phonetic_given_name
+      - $ref: ./components/parameters.yml#/components/parameters/role
+      - $ref: ./components/parameters.yml#/components/parameters/category
+      - $ref: ./components/parameters.yml#/components/parameters/tag
+      - $ref: ./components/parameters.yml#/components/parameters/includes
+      - $ref: ./components/parameters.yml#/components/parameters/page
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/member_order_by
+      - $ref: ./components/parameters.yml#/components/parameters/order
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/group-component.openapi.yml#/components/schemas/MultipleMemberInfo
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - basicAuth: []
+      tags:
+      - group
+    patch:
+      description: group.write
+      operationId: setMember
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/group_id_required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/group-component.openapi.yml#/components/schemas/Member
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/group-component.openapi.yml#/components/schemas/Member
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/resource_not_found
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - basicAuth: []
+      tags:
+      - group
+    put:
+      description: group.write
+      operationId: updateMember
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/group_id_required
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/group-component.openapi.yml#/components/schemas/MultipleMember
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/group-component.openapi.yml#/components/schemas/MultipleMember
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/resource_not_found
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      security:
+      - basicAuth: []
+      tags:
+      - group
+  /v2/licenses/me:
+    get:
+      operationId: getMyLicenses
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/status
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/license-component.openapi.yml#/components/schemas/MultipleLicense
+          description: OK
+        400:
+          $ref: ./components/responses.yml#/components/responses/invalid_request
+        401:
+          $ref: ./components/responses.yml#/components/responses/invalid_token
+        403:
+          $ref: ./components/responses.yml#/components/responses/insufficient_scopes
+        500:
+          $ref: ./components/responses.yml#/components/responses/internal_server_error
+        503:
+          $ref: ./components/responses.yml#/components/responses/server_temporarily_unavailable
+      tags:
+      - license
+  /v2/me:
+    get:
+      description: 'SUPPORTED APPLICATION TYPE: Web, ネイティブ
+
+        REQUIRED SCOPES: user.profile'
+      operationId: getMe
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/account-component.openapi.yml#/components/schemas/Me
+          description: ''
+        400:
+          $ref: ./components/responses.yml#/components/responses/InvalidRequest
+        401:
+          $ref: ./components/responses.yml#/components/responses/InvalidToken
+        403:
+          $ref: ./components/responses.yml#/components/responses/InsufficientScopes
+        404:
+          $ref: ./components/responses.yml#/components/responses/ResourceNotFound
+        500:
+          $ref: ./components/responses.yml#/components/responses/InternalServerError
+        503:
+          $ref: ./components/responses.yml#/components/responses/ServerTemporarilyUnavailable
+      security:
+      - bearerAuth: []
+      summary: ログイン中のユーザープロフィールおよび所属する企業、参加するグループの一覧を取得する
+      tags:
+      - account
+  /v2/messaging:
+    get:
+      operationId: subscribeMessage
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/packer_format
+      - $ref: ./components/parameters.yml#/components/parameters/channel_id_query_required
+      responses:
+        200:
+          content:
+            application/octet-stream:
+              schema:
+                format: binary
+                type: string
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+    post:
+      operationId: publishMessage
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/packer_format
+      - $ref: ./components/parameters.yml#/components/parameters/channel_id_query_required
+      requestBody:
+        content:
+          application/json:
+            schema: {}
+          application/octet-stream:
+            schema:
+              format: byte
+              type: string
+          application/xml:
+            schema:
+              type: object
+          text/plain:
+            schema:
+              type: string
+        required: false
+      responses:
+        200:
+          description: OK
+      security:
+      - bearerAuth: []
+      tags:
+      - PublishSubscribe
+  /v2/resource_owners:
+    get:
+      operationId: getResourceOwners
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/group_id
+      - $ref: ./components/parameters.yml#/components/parameters/user_id
+      - $ref: ./components/parameters.yml#/components/parameters/type
+      - $ref: ./components/parameters.yml#/components/parameters/page
+      - $ref: ./components/parameters.yml#/components/parameters/offset
+      - $ref: ./components/parameters.yml#/components/parameters/limit
+      - $ref: ./components/parameters.yml#/components/parameters/order_by
+      - $ref: ./components/parameters.yml#/components/parameters/order
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/resourceowner-component.openapi.yml#/components/schemas/MultipleResourceOwner
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - resource-owner
+  /v2/resource_owners/{resource_owner_id}:
+    get:
+      operationId: getResourceOwner
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id_required
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/resourceowner-component.openapi.yml#/components/schemas/ResourceOwner
+          description: ''
+      security:
+      - bearerAuth: []
+      tags:
+      - resource-owner
+  /v2/video_streams:
+    get:
+      operationId: getVideoStreamsList
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id_query_required
+      - $ref: ./components/parameters.yml#/components/parameters/device_id_query
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: ./components/videostreaming-component.openapi.yml#/components/schemas/MultipleVideo
+          description: 成功
+      security:
+      - bearerAuth: []
+      tags:
+      - videostreaming-operations
+  /v2/video_streams/{video_id}:
+    get:
+      operationId: getVideoStreams
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/video_id
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: ./components/videostreaming-component.openapi.yml#/components/schemas/SingleVideo
+          description: 成功
+      security:
+      - bearerAuth: []
+      tags:
+      - videostreaming-operations
+    patch:
+      operationId: updateStreams
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/video_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/videostreaming-component.openapi.yml#/components/schemas/VideoUpdateRequest
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: ./components/videostreaming-component.openapi.yml#/components/schemas/SingleVideo
+          description: 成功
+      security:
+      - bearerAuth: []
+      tags:
+      - videostreaming-operations
+  /v2/video_streams/{video_id}/play:
+    post:
+      operationId: createVideoStreamsPlay
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/video_id
+      responses:
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: ./components/videostreaming-component.openapi.yml#/components/schemas/SingleRoom
+          description: 成功
+      security:
+      - bearerAuth: []
+      tags:
+      - videostreaming-operations
+  /v2/video_streams/{video_id}/stop:
+    post:
+      operationId: createVideoStreamsStop
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/video_id
+      responses:
+        '200':
+          description: 成功
+      security:
+      - bearerAuth: []
+      tags:
+      - videostreaming-operations
+  /v2/video_streams/{video_id}/thumbnail:
+    get:
+      operationId: getVideoStreamsThumbnail
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/video_id
+      responses:
+        '200':
+          content:
+            image/png:
+              schema:
+                format: binary
+                type: string
+          description: 成功
+      security:
+      - bearerAuth: []
+      tags:
+      - videostreaming-operations

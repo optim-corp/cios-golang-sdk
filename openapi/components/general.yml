@@ -1,0 +1,38 @@
+openapi: 3.0.1
+info:
+  title: General Component
+  version: 1.0.0
+
+paths: {}
+
+components:
+  schemas:
+    DisplayInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        description:
+          type: string
+        language:
+          type: string
+        script:
+          type: string
+        region:
+          type: string
+        is_default:
+          type: boolean
+      required:
+        - name
+        - language
+        - is_default
+    Label:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+      required:
+        - key
+        - value

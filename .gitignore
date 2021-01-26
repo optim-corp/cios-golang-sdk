@@ -1,0 +1,5 @@
+.idea/
+api/
+.openapi-generator/
+
+main.go

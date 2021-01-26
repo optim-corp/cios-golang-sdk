@@ -1,0 +1,236 @@
+openapi: '3.0.3'
+info:
+  version: 1.0.0
+  title: Cios Device Openapi
+
+paths:
+  '/v2/devices':
+    get:
+      tags:
+        - device
+      summary: デバイスの一覧を取得する
+      description: |-
+        SUPPORTED APPLICATION TYPE: Web, ネイティブ, クライアント
+        REQUIRED SCOPES: device.read
+      operationId: getDevices
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/offset'
+        - $ref: '../components/parameters.yml#/components/parameters/limit'
+        - $ref: '../components/parameters.yml#/components/parameters/order'
+        - $ref: '../components/parameters.yml#/components/parameters/order_by'
+        - $ref: '../components/parameters.yml#/components/parameters/lang'
+        - $ref: '../components/parameters.yml#/components/parameters/is_dev'
+        - $ref: '../components/parameters.yml#/components/parameters/is_public'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+        - $ref: '../components/parameters.yml#/components/parameters/name_query'
+        - $ref: '../components/parameters.yml#/components/parameters/id_number'
+        - $ref: '../components/parameters.yml#/components/parameters/definition_id'
+        - $ref: '../components/parameters.yml#/components/parameters/definition_tag'
+        - $ref: '../components/parameters.yml#/components/parameters/inventory_key'
+        - $ref: '../components/parameters.yml#/components/parameters/inventory_value'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '../components/device-component.openapi.yml#/components/schemas/MultipleDevice'
+      security:
+        - bearerAuth: []
+    post:
+      tags:
+        - device
+      summary: デバイスの登録
+      description: |-
+        SUPPORTED APPLICATION TYPE: Web, ネイティブ
+        REQUIRED SCOPES: user.profile
+        * is_managedが managed または full_managed の場合
+          * Request.body.client_id_listに設定されたID毎にアプリケーション種別がデバイスのOAuthClientが作成されます。(rsa_publickeyを指定する必要があります)
+      operationId: createDevice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/device-component.openapi.yml#/components/schemas/DeviceInfo'
+
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '../components/device-component.openapi.yml#/components/schemas/SingleDevice'
+      security:
+        - bearerAuth: []
+  '/v2/devices/{device_id}':
+    get:
+      tags:
+        - device
+      summary: 指定したidのデバイスの情報を取得する
+      description: |-
+        SUPPORTED APPLICATION TYPE: Web, ネイティブ, クライアント
+        REQUIRED SCOPES: device.read
+      operationId: getDevice
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/lang'
+        - $ref: '../components/parameters.yml#/components/parameters/is_dev'
+        - $ref: '../components/parameters.yml#/components/parameters/device_id_required'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '../components/device-component.openapi.yml#/components/schemas/SingleDevice'
+      security:
+        - bearerAuth: []
+    patch:
+      tags:
+        - device
+      summary: 指定したidのデバイス情報を更新する
+      description: |-
+        SUPPORTED APPLICATION TYPE: Web, ネイティブ, クライアント
+        REQUIRED SCOPES: device.write
+        * Request.body.client_id_listに設定されたアプリケーションクライアント毎にデバイスクライアントを作成します。
+        * is_managedをunmanagedに変更した場合は、device.client_listに登録されているデバイスクライアントをすべて削除します。(OAuthClient APIを利用してデバイスクライアントの削除を行います)
+        * is_managedがfull_managedのデバイス管理エージェント固有のデバイスクライアントに関しては、ディアクティベーションでのみ削除可能です。
+      operationId: updateDevice
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/device_id_required'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/device-component.openapi.yml#/components/schemas/DeviceUpdateRequest'
+      responses:
+        200:
+          description: ''
+          content:
+            application/json:
+              schema:
+                $ref: '../components/device-component.openapi.yml#/components/schemas/SingleDevice'
+      security:
+        - bearerAuth: []
+    delete:
+      tags:
+        - device
+      operationId: deleteDevice
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/device_id_required'
+      responses:
+        200:
+          description: ''
+      security:
+        - bearerAuth: []
+  '/v2/devices/{device_id}/inventory/latest':
+    get:
+      tags:
+        - device
+      security:
+        - bearerAuth: []
+      operationId: getDeviceInventoryLatest
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/device_id'
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '../components/device-component.openapi.yml#/components/schemas/DeviceInventory'
+  '/v2/devices/{device_id}/monitoring/latest':
+    get:
+      tags:
+        - device
+      security:
+        - bearerAuth: []
+      operationId: getDeviceMonitoringLatest
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/device_id'
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '../components/device-component.openapi.yml#/components/schemas/SingleDeviceMonitoring'
+  '/v2/devices/monitoring/latest':
+    post:
+      tags:
+        - device
+      security:
+        - bearerAuth: []
+      operationId: getDeviceMonitoringsLatest
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/device-component.openapi.yml#/components/schemas/DeviceMonitoringIDsRequest'
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '../components/device-component.openapi.yml#/components/schemas/MultipleDeviceMonitoring'
+  '/v2/devices/group_policies':
+    get:
+      tags:
+        - device
+      security:
+        - bearerAuth: []
+      operationId: getDevicePolicies
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/limit'
+        - $ref: '../components/parameters.yml#/components/parameters/offset'
+        - $ref: '../components/parameters.yml#/components/parameters/order'
+        - $ref: '../components/parameters.yml#/components/parameters/order_by'
+        - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id'
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '../components/device-component.openapi.yml#/components/schemas/MultipleDevicePolicy'
+    post:
+      tags:
+        - device
+      security:
+        - bearerAuth: []
+      operationId: createDevicePolicy
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '../components/device-component.openapi.yml#/components/schemas/DevicePolicyRequest'
+      responses:
+        200:
+          description: 'OK'
+          content:
+            application/json:
+              schema:
+                $ref: '../components/device-component.openapi.yml#/components/schemas/DevicePolicy'
+  '/v2/devices/group_policies/{policy_id}':
+    delete:
+      tags:
+        - device
+      security:
+        - bearerAuth: []
+      operationId: deletePolicy
+      parameters:
+        - $ref: '../components/parameters.yml#/components/parameters/policy_id'
+      responses:
+        200:
+          description: 'OK'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
