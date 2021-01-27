@@ -78,7 +78,7 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 |Web|✅|
 |Client|✅|
 |Device|https://github.com/optim-corp/cios-golang-sdk/issues/2|
-|Native|TBD...|
+|Native|❌|
 
 
 * Client Auth 
@@ -106,6 +106,8 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     RequestScope:      "hogehoge.hoge",
 })
 ```
+
+The refresh token will only be executed once if the request fails.
 
 ### [Examples] Get Buckets
 
