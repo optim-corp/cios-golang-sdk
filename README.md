@@ -24,11 +24,11 @@ go get -u github.com/optim-corp/cios-golang-sdk
 ```go
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     Debug:             true,
+    AutoRefresh:       true,
     ClientID:          "client ID",
     ClientSecret:      "client secret",
     RequestScope:      "hogehoge.hoge",
     RefreshToken:      "refresh token",
-    AutoRefresh:       true,
     Urls:              sdkmodel.ProdUrls(),
 })
 ```
@@ -38,11 +38,11 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 ```go
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     Debug:             true,
+    AutoRefresh:       true,
     ClientID:          "client ID",
     ClientSecret:      "client secret",
     RequestScope:      "hogehoge.hoge",
     RefreshToken:      "refresh token",
-    AutoRefresh:       true,
     Urls:              sdkmodel.PreUrls(),
 })
 ```
@@ -52,11 +52,11 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 ```go
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     Debug:             true,
+    AutoRefresh:       true,
     ClientID:          "client ID",
     ClientSecret:      "client secret",
     RequestScope:      "hogehoge.hoge",
     RefreshToken:      "refresh token",
-    AutoRefresh:       true,
     Urls: ciossdk.CIOSUrl{
         MessagingUrl:             " https://",
         LocationUrl:              " https://",
@@ -69,6 +69,32 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
         DeviceMonitoringUrl:      " https://",
         DeviceAssetManagementUrl: " https://",
     },
+})
+```
+#### Authentication
+
+* Client Auth
+
+```go
+client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
+    Debug:             true,
+    AutoRefresh:       true,
+    ClientID:          "client ID",
+    ClientSecret:      "client secret",
+    RequestScope:      "hogehoge.hoge",
+})
+```
+
+* Refresh Token Auth
+
+```go
+client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
+    Debug:             true,
+    AutoRefresh:       true,
+    ClientID:          "client ID",
+    ClientSecret:      "client secret",
+    RefreshToken:      "refresh token",
+    RequestScope:      "hogehoge.hoge",
 })
 ```
 
