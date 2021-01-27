@@ -73,6 +73,14 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 ```
 #### Authentication
 
+|OAuthClientType|is Suppoted|
+|---|---|
+|Web|✅|
+|Client|✅|
+|Device|https://github.com/optim-corp/cios-golang-sdk/issues/2|
+|Native|TBD...|
+
+
 * Client Auth 
     * client id
     * client secret
