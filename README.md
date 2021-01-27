@@ -73,30 +73,35 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 ```
 #### Authentication
 
-* Client Auth
-
-```go
-client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
-    Debug:             true,
-    AutoRefresh:       true,
-    ClientID:          "client ID",
-    ClientSecret:      "client secret",
-    RequestScope:      "hogehoge.hoge",
-})
-```
+* Client Auth 
+    * client id
+    * client secret
+    * request scope
+    ```go
+    client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
+        Debug:             true,
+        AutoRefresh:       true,
+        ClientID:          "client ID",
+        ClientSecret:      "client secret",
+        RequestScope:      "hogehoge.hoge",
+    })
+    ```
 
 * Refresh Token Auth
-
-```go
-client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
-    Debug:             true,
-    AutoRefresh:       true,
-    ClientID:          "client ID",
-    ClientSecret:      "client secret",
-    RefreshToken:      "refresh token",
-    RequestScope:      "hogehoge.hoge",
-})
-```
+    * client id
+    * client secret
+    * refresh token
+    * request scope
+    ```go
+    client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
+        Debug:             true,
+        AutoRefresh:       true,
+        ClientID:          "client ID",
+        ClientSecret:      "client secret",
+        RefreshToken:      "refresh token",
+        RequestScope:      "hogehoge.hoge",
+    })
+    ```
 
 ### [Examples] Get Buckets
 
