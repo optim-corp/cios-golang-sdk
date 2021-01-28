@@ -43,6 +43,7 @@ func (self FileStorage) UploadFile(bucketID string, body []byte, params cios.Api
 	params.ApiService = self.ApiClient.FileStorageApi
 	params.P_bucketId = bucketID
 	params.P_name = util.ToNil(params.P_name)
+	params.P_key = util.ToNil(params.P_key)
 	params.P_nodeId = util.ToNil(params.P_nodeId)
 	params.P_parentNodeId = util.ToNil(params.P_parentNodeId)
 	params.P_body = convert.StringPtr(string(body))

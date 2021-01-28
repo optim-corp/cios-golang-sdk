@@ -315,5 +315,5 @@ func TestFileStorage_MoveNode(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
-	client.FileStorage.CopyNode("bucketid", "node", convert.StringPtr("destBucket"), convert.StringPtr("destNode"), context.Background())
+	client.FileStorage.MoveNode("bucketid", "node", convert.StringPtr("destBucket"), convert.StringPtr("destNode"), context.Background())
 }
