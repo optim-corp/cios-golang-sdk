@@ -376,6 +376,7 @@ func (self *MultipleChannelStream) Peek(fn func(*MultipleChannel, int)) *Multipl
 	return self
 }
 
+
 func (self *MultipleChannelStream) Reduce(fn func(MultipleChannel, MultipleChannel, int) MultipleChannel) *MultipleChannelStream {
 	return self.ReduceInit(fn, MultipleChannel{})
 }

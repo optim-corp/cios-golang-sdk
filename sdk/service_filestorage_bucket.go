@@ -8,7 +8,6 @@ import (
 
 	"github.com/optim-corp/cios-golang-sdk/util"
 
-	"github.com/optim-kazuhiro-seida/go-advance-type/check"
 	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
 
 	"github.com/optim-corp/cios-golang-sdk/model"
@@ -21,20 +20,16 @@ func MakeGetBucketsOpts() cios.ApiGetBucketsRequest {
 }
 
 func (self FileStorage) GetBuckets(params cios.ApiGetBucketsRequest, ctx model.RequestCtx) (response cios.MultipleBucket, httpResponse *_nethttp.Response, err error) {
+	if err = self.refresh(); err != nil {
+		return
+	}
 	params.ApiService = self.ApiClient.FileStorageApi
 	params.Ctx = ctx
 	params.P_order = util.ToNil(params.P_order)
 	params.P_orderBy = util.ToNil(params.P_orderBy)
 	params.P_name = util.ToNil(params.P_name)
 	params.P_resourceOwnerId = util.ToNil(params.P_resourceOwnerId)
-	response, httpResponse, err = params.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return
-		}
-		response, httpResponse, err = params.Execute()
-	}
-	return
+	return params.Execute()
 }
 func (self FileStorage) GetBucketsAll(params cios.ApiGetBucketsRequest, ctx model.RequestCtx) ([]cios.Bucket, *_nethttp.Response, error) {
 	var (
@@ -86,18 +81,13 @@ func (self FileStorage) GetBucketsUnlimited(params cios.ApiGetBucketsRequest, ct
 }
 
 func (self FileStorage) GetBucket(bucketID string, ctx model.RequestCtx) (cios.Bucket, *_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return cios.Bucket{}, nil, err
+	}
 	request := self.ApiClient.FileStorageApi.GetBucket(ctx, bucketID)
 	response, httpResponse, err := request.Execute()
 	if err != nil {
-		if !check.IsNil(self.refresh) {
-			if _, _, _, _, err = (*self.refresh)(); err != nil {
-				return cios.Bucket{}, httpResponse, err
-			}
-			response, httpResponse, err = request.Execute()
-		}
-		if err != nil {
-			return cios.Bucket{}, httpResponse, err
-		}
+		return cios.Bucket{}, httpResponse, err
 	}
 	return response.Bucket, httpResponse, err
 }
@@ -119,43 +109,25 @@ func (self FileStorage) GetOrCreateBucket(resourceOwnerID string, name string, c
 	return res, httpResponse, err
 }
 func (self FileStorage) CreateBucket(resourceOwnerID string, name string, ctx model.RequestCtx) (cios.Bucket, *_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return cios.Bucket{}, nil, err
+	}
 	request := self.ApiClient.FileStorageApi.CreateBucket(ctx).BucketRequest(cios.BucketRequest{ResourceOwnerId: resourceOwnerID, Name: name})
 	response, httpResponse, err := request.Execute()
 	if err != nil {
-		if !check.IsNil(self.refresh) {
-			if _, _, _, _, err = (*self.refresh)(); err != nil {
-				return cios.Bucket{}, httpResponse, err
-			}
-			response, httpResponse, err = request.Execute()
-		}
-		if err != nil {
-			return cios.Bucket{}, httpResponse, err
-		}
+		return cios.Bucket{}, httpResponse, err
 	}
 	return response.Bucket, httpResponse, err
 }
 func (self FileStorage) DeleteBucket(bucketID string, ctx model.RequestCtx) (*_nethttp.Response, error) {
-	request := self.ApiClient.FileStorageApi.DeleteBucket(
-		ctx,
-		bucketID,
-	)
-	httpResponse, err := request.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return httpResponse, err
-		}
-		return request.Execute()
+	if err := self.refresh(); err != nil {
+		return nil, err
 	}
-	return httpResponse, err
+	return self.ApiClient.FileStorageApi.DeleteBucket(ctx, bucketID).Execute()
 }
 func (self FileStorage) UpdateBucket(bucketID string, name string, ctx model.RequestCtx) (*_nethttp.Response, error) {
-	request := self.ApiClient.FileStorageApi.UpdateBucket(ctx, bucketID).BucketName(cios.BucketName{Name: name})
-	httpResponse, err := request.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return httpResponse, err
-		}
-		return request.Execute()
+	if err := self.refresh(); err != nil {
+		return nil, err
 	}
-	return httpResponse, err
+	return self.ApiClient.FileStorageApi.UpdateBucket(ctx, bucketID).BucketName(cios.BucketName{Name: name}).Execute()
 }

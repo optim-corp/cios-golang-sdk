@@ -1395,11 +1395,11 @@ type ApiRenameNodeRequest struct {
 	ApiService *FileStorageApiService
 	P_bucketId string
 	P_nodeId string
-	P_bucketName *BucketName
+	P_nodeName *NodeName
 }
 
-func (r ApiRenameNodeRequest) BucketName(bucketName BucketName) ApiRenameNodeRequest {
-	r.P_bucketName = &bucketName
+func (r ApiRenameNodeRequest) NodeName(nodeName NodeName) ApiRenameNodeRequest {
+	r.P_nodeName = &nodeName
 	return r
 }
 
@@ -1452,8 +1452,8 @@ func (a *FileStorageApiService) RenameNodeExecute(r ApiRenameNodeRequest) (Singl
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
-	if r.P_bucketName == nil {
-		return localVarReturnValue, nil, reportError("bucketName is required and must be specified")
+	if r.P_nodeName == nil {
+		return localVarReturnValue, nil, reportError("nodeName is required and must be specified")
 	}
 
 	// to determine the Content-Type header
@@ -1474,7 +1474,7 @@ func (a *FileStorageApiService) RenameNodeExecute(r ApiRenameNodeRequest) (Singl
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.P_bucketName
+	localVarPostBody = r.P_nodeName
 	req, err := a.client.prepareRequest(r.Ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err

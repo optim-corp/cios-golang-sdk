@@ -2,13 +2,16 @@ package ciossdk
 
 import (
 	"context"
-	"fmt"
 	"regexp"
 	"strings"
+	"time"
 
-	"github.com/optim-corp/cios-golang-sdk/model"
+	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+
+	"github.com/dgrijalva/jwt-go"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
+	"github.com/optim-corp/cios-golang-sdk/model"
 )
 
 var (
@@ -35,6 +38,7 @@ type (
 		License               *License
 		Contract              *Contract
 		authType              model.AuthType
+		tokenExp              int64
 	}
 	CiosClientConfig struct {
 		AutoRefresh  bool
@@ -75,32 +79,37 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 	} else {
 		instance.authType = model.NONE_TYPE
 	}
-	if config.AutoRefresh {
-		refFunc := func() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
-			switch instance.authType {
-			case model.CLIENT_TYPE:
-				token, scope, tokenType, exp, err := instance.Auth.GetAccessTokenOnClient()
-				instance._accessToken(token)
-				return token, scope, tokenType, exp, err
-			case model.REFRESH_TYPE:
-				token, scope, tokenType, exp, err := instance.Auth.GetAccessTokenByRefreshToken()
-				instance._accessToken(token)
-				return token, scope, tokenType, exp, err
-			case model.DEVICE_TYPE:
-				return instance.Auth.GetAccessTokenOnDevice()
-			default:
-				return "", "", "", 0, fmt.Errorf("%s", "No AccessToken")
+	refFunc := func() error {
+		if config.AutoRefresh {
+			if instance.tokenExp == 0 || instance.tokenExp-60 <= time.Now().Unix() {
+				switch instance.authType {
+				case model.CLIENT_TYPE:
+					token, _, _, _, err := instance.Auth.GetAccessTokenOnClient()
+					if err != nil {
+						return err
+					}
+					instance._accessToken(token)
+				case model.REFRESH_TYPE:
+					token, _, _, _, err := instance.Auth.GetAccessTokenByRefreshToken()
+					if err != nil {
+						return err
+					}
+					instance._accessToken(token)
+				case model.DEVICE_TYPE:
+				default:
+				}
 			}
 		}
-		instance.PubSub.refresh = &refFunc
-		instance.Account.refresh = &refFunc
-		instance.License.refresh = &refFunc
-		instance.Contract.refresh = &refFunc
-		instance.Geography.refresh = &refFunc
-		instance.FileStorage.refresh = &refFunc
-		instance.DeviceManagement.refresh = &refFunc
-		instance.DeviceAssetManagement.refresh = &refFunc
+		return nil
 	}
+	instance.PubSub.refresh = refFunc
+	instance.Account.refresh = refFunc
+	instance.License.refresh = refFunc
+	instance.Contract.refresh = refFunc
+	instance.Geography.refresh = refFunc
+	instance.FileStorage.refresh = refFunc
+	instance.DeviceManagement.refresh = refFunc
+	instance.DeviceAssetManagement.refresh = refFunc
 	instance.Debug(config.Debug)
 
 	return instance
@@ -118,14 +127,22 @@ func (self *CiosClient) Debug(debug bool) *CiosClient {
 	return self
 }
 func (self *CiosClient) _accessToken(accessToken string) *CiosClient {
-	accessToken = "Bearer " + regexp.MustCompile(`^bearer|Bearer| `).ReplaceAllString(accessToken, "")
-	self.Auth.ApiClient.GetConfig().AddDefaultHeader("Authorization", accessToken)
-	self.PubSub.ApiClient.GetConfig().AddDefaultHeader("Authorization", accessToken)
-	self.DeviceManagement.ApiClient.GetConfig().AddDefaultHeader("Authorization", accessToken)
-	self.Account.ApiClient.GetConfig().AddDefaultHeader("Authorization", accessToken)
-	self.Geography.ApiClient.GetConfig().AddDefaultHeader("Authorization", accessToken)
-	self.DeviceAssetManagement.ApiClient.GetConfig().AddDefaultHeader("Authorization", accessToken)
-	self.FileStorage.ApiClient.GetConfig().AddDefaultHeader("Authorization", accessToken)
+	accessToken = regexp.MustCompile(`^bearer|Bearer| `).ReplaceAllString(accessToken, "")
+	token, _, err := new(jwt.Parser).ParseUnverified(accessToken, jwt.MapClaims{})
+	if err == nil {
+		if claims, ok := token.Claims.(jwt.MapClaims); ok {
+			self.tokenExp = convert.MustInt64(claims["exp"])
+		}
+	}
+	bearerToken := ParseAccessToken(accessToken)
+	self.PubSub.token = accessToken
+	self.Auth.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
+	self.PubSub.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
+	self.DeviceManagement.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
+	self.Account.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
+	self.Geography.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
+	self.DeviceAssetManagement.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
+	self.FileStorage.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
 	return self
 }
 func (self *CiosClient) RequestScope(scope string) *CiosClient {

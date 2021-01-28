@@ -4,8 +4,6 @@ import (
 	"errors"
 	_nethttp "net/http"
 
-	"github.com/optim-kazuhiro-seida/go-advance-type/check"
-
 	"github.com/optim-corp/cios-golang-sdk/util"
 
 	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
@@ -19,6 +17,9 @@ func MakeGetGroupsOpts() cios.ApiGetGroupsRequest {
 }
 
 func (self Account) GetGroups(params cios.ApiGetGroupsRequest, ctx model.RequestCtx) (response cios.MultipleGroup, httpResponse *_nethttp.Response, err error) {
+	if err := self.refresh(); err != nil {
+		return cios.MultipleGroup{}, nil, err
+	}
 	params.Ctx = ctx
 	params.ApiService = self.ApiClient.GroupApi
 	params.P_name = util.ToNil(params.P_name)
@@ -35,14 +36,7 @@ func (self Account) GetGroups(params cios.ApiGetGroupsRequest, ctx model.Request
 	params.P_order = util.ToNil(params.P_order)
 	params.P_orderBy = util.ToNil(params.P_orderBy)
 	params.P_type_ = util.ToNil(params.P_type_)
-	response, httpResponse, err = params.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return
-		}
-		response, httpResponse, err = params.Execute()
-	}
-	return
+	return params.Execute()
 }
 func (self Account) GetGroupsAll(params cios.ApiGetGroupsRequest, ctx model.RequestCtx) ([]cios.Group, *_nethttp.Response, error) {
 	var (
@@ -96,17 +90,14 @@ func (self Account) GetGroupsUnlimited(params cios.ApiGetGroupsRequest, ctx mode
 }
 
 func (self Account) GetGroup(groupId string, includes *string, ctx model.RequestCtx) (cios.Group, *_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return cios.Group{}, nil, err
+	}
 	req := self.ApiClient.GroupApi.GetGroup(ctx, groupId)
 	if includes != nil {
 		req = req.Includes(*includes)
 	}
-	res, httpResponse, err := req.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return req.Execute()
-		}
-	}
-	return res, httpResponse, err
+	return req.Execute()
 }
 func (self Account) GetGroupByResourceOwnerId(resourceOwnerID string, includes *string, ctx model.RequestCtx) (cios.Group, *_nethttp.Response, error) {
 	resourceOwner, httpResponse, err := self.GetResourceOwner(resourceOwnerID, ctx)
@@ -140,37 +131,22 @@ func (self Account) GetGroupMapByResourceOwner(p1 cios.ApiGetGroupsRequest, p2 c
 }
 
 func (self Account) DeleteGroup(groupID string, ctx model.RequestCtx) (*_nethttp.Response, error) {
-	request := self.ApiClient.GroupApi.DeleteGroup(ctx, groupID)
-	herr, err := request.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return herr, err
-		}
-		return request.Execute()
+	if err := self.refresh(); err != nil {
+		return nil, err
 	}
-	return herr, err
+	return self.ApiClient.GroupApi.DeleteGroup(ctx, groupID).Execute()
 }
 
 func (self Account) CreateGroup(body cios.GroupCreateRequest, ctx model.RequestCtx) (cios.Group, *_nethttp.Response, error) {
-	request := self.ApiClient.GroupApi.CreateGroup(ctx).GroupCreateRequest(body)
-	res, herr, err := request.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return res, herr, err
-		}
-		return request.Execute()
+	if err := self.refresh(); err != nil {
+		return cios.Group{}, nil, err
 	}
-	return res, herr, err
+	return self.ApiClient.GroupApi.CreateGroup(ctx).GroupCreateRequest(body).Execute()
 }
 
 func (self Account) UpdateGroup(groupID string, body cios.GroupUpdateRequest, ctx model.RequestCtx) (cios.Group, *_nethttp.Response, error) {
-	request := self.ApiClient.GroupApi.UpdateGroup(ctx, groupID).GroupUpdateRequest(body)
-	res, herr, err := request.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return res, herr, err
-		}
-		return request.Execute()
+	if err := self.refresh(); err != nil {
+		return cios.Group{}, nil, err
 	}
-	return res, herr, err
+	return self.ApiClient.GroupApi.UpdateGroup(ctx, groupID).GroupUpdateRequest(body).Execute()
 }

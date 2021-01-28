@@ -309,6 +309,7 @@ Class | Method | HTTP request | Description
  - [MultipleVideo](docs/MultipleVideo.md)
  - [Node](docs/Node.md)
  - [NodeFile](docs/NodeFile.md)
+ - [NodeName](docs/NodeName.md)
  - [NodeRequest](docs/NodeRequest.md)
  - [PackerFormatJson](docs/PackerFormatJson.md)
  - [PackerFormatJsonHeader](docs/PackerFormatJsonHeader.md)

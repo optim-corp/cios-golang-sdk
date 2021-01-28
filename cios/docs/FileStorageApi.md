@@ -831,7 +831,7 @@ Name | Type | Description  | Notes
 
 ## RenameNode
 
-> SingleNode RenameNode(ctx, bucketId, nodeId).BucketName(bucketName).Execute()
+> SingleNode RenameNode(ctx, bucketId, nodeId).NodeName(nodeName).Execute()
 
 
 
@@ -850,11 +850,11 @@ import (
 func main() {
     bucketId := "bucketId_example" // string | 
     nodeId := "nodeId_example" // string | 
-    bucketName := *openapiclient.NewBucketName("Name_example") // BucketName | 
+    nodeName := *openapiclient.NewNodeName("Name_example") // NodeName | 
 
     configuration := openapiclient.NewConfiguration()
     api_client := openapiclient.NewAPIClient(configuration)
-    resp, r, err := api_client.FileStorageApi.RenameNode(context.Background(), bucketId, nodeId).BucketName(bucketName).Execute()
+    resp, r, err := api_client.FileStorageApi.RenameNode(context.Background(), bucketId, nodeId).NodeName(nodeName).Execute()
     if err.Error() != "" {
         fmt.Fprintf(os.Stderr, "Error when calling `FileStorageApi.RenameNode``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -882,7 +882,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 
 
- **bucketName** | [**BucketName**](BucketName.md) |  | 
+ **nodeName** | [**NodeName**](NodeName.md) |  | 
 
 ### Return type
 

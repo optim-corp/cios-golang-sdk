@@ -2,20 +2,20 @@ package ciossdk
 
 import (
 	"github.com/optim-corp/cios-golang-sdk/cios"
-	"github.com/optim-corp/cios-golang-sdk/model"
 )
 
 type (
 	_instance struct {
 		ApiClient *cios.APIClient
 		Url       string
-		refresh   *func() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error)
+		refresh   func() error
 	}
 	PubSub struct {
 		ApiClient *cios.APIClient
 		Url       string
-		refresh   *func() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error)
+		refresh   func() error
 		debug     bool
+		token     string
 	}
 	Auth struct {
 		ApiClient    *cios.APIClient

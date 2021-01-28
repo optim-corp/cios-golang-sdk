@@ -31,37 +31,32 @@ func MakeGetStreamOpts() model.ApiGetStreamRequest {
 	return model.ApiGetStreamRequest{}
 }
 func (self PubSub) GetDataStoreChannels(params cios.ApiGetDataStoreChannelsRequest, ctx model.RequestCtx) (response cios.MultipleDataStoreChannel, httpResponse *_nethttp.Response, err error) {
+	if err = self.refresh(); err != nil {
+		return
+	}
 	params.Ctx = ctx
 	params.ApiService = self.ApiClient.PublishSubscribeApi
 	params.P_order = util.ToNil(params.P_order)
 	params.P_orderBy = util.ToNil(params.P_orderBy)
 	params.P_channelProtocolId = util.ToNil(params.P_channelProtocolId)
-	response, httpResponse, err = params.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return
-		}
-		response, httpResponse, err = params.Execute()
-	}
-	return
+	return params.Execute()
 }
 func (self PubSub) GetDataStoreChannel(channelID string, ctx model.RequestCtx) (cios.DataStoreChannel, *_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return cios.DataStoreChannel{}, nil, err
+	}
 	request := self.ApiClient.PublishSubscribeApi.GetDataStoreChannel(ctx, channelID)
 	response, httpResponse, err := request.Execute()
 	if err != nil {
-		if !check.IsNil(self.refresh) {
-			if _, _, _, _, err = (*self.refresh)(); err != nil {
-				return cios.DataStoreChannel{}, nil, err
-			}
-			response, httpResponse, err = request.Execute()
-		}
-		if err != nil {
-			return cios.DataStoreChannel{}, httpResponse, err
-		}
+		return cios.DataStoreChannel{}, httpResponse, err
 	}
+
 	return response.Channel, httpResponse, err
 }
 func (self PubSub) GetObjects(channelID string, params cios.ApiGetDataStoreObjectsRequest, ctx model.RequestCtx) (response cios.MultipleDataStoreObject, httpResponse *_nethttp.Response, err error) {
+	if err = self.refresh(); err != nil {
+		return
+	}
 	params.ApiService = self.ApiClient.PublishSubscribeApi
 	params.Ctx = ctx
 	params.P_channelId = channelID
@@ -72,14 +67,7 @@ func (self PubSub) GetObjects(channelID string, params cios.ApiGetDataStoreObjec
 	params.P_timestamp = util.ToNil(params.P_timestamp)
 	params.P_timestampRange = util.ToNil(params.P_timestampRange)
 	params.P_channelProtocolId = util.ToNil(params.P_channelProtocolId)
-	response, httpResponse, err = params.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return
-		}
-		response, httpResponse, err = params.Execute()
-	}
-	return
+	return params.Execute()
 }
 func (self PubSub) GetObjectsAll(channelID string, params cios.ApiGetDataStoreObjectsRequest, ctx model.RequestCtx) ([]cios.DataStoreObject, *_nethttp.Response, error) {
 	var (
@@ -132,32 +120,30 @@ func (self PubSub) GetObjectsUnlimited(channelID string, params cios.ApiGetDataS
 	return self.GetObjectsAll(channelID, params, ctx)
 }
 func (self PubSub) GetObject(channelID string, objectID string, packerFormat *string, ctx model.RequestCtx) (interface{}, *_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return map[string]interface{}{}, nil, err
+	}
 	request := self.ApiClient.PublishSubscribeApi.GetDataStoreObjectData(ctx, channelID, objectID)
 	if packerFormat != nil {
 		request = request.PackerFormat(*packerFormat)
 	}
-	response, httpResponse, err := request.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		return request.Execute()
-	}
-	return response, httpResponse, err
+	return request.Execute()
 }
 func (self PubSub) GetObjectLatest(channelID string, packerFormat *string, ctx model.RequestCtx) (interface{}, *_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return map[string]interface{}{}, nil, err
+	}
 	request := self.ApiClient.PublishSubscribeApi.GetDataStoreObjectDataLatest(ctx, channelID)
 	if packerFormat != nil {
 		request = request.PackerFormat(*packerFormat)
 	}
-	response, httpResponse, err := request.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return nil, nil, err
-		}
-		return request.Execute()
-	}
-	return response, httpResponse, err
+	return request.Execute()
 
 }
 func (self PubSub) MapObjectLatest(channelID string, packerFormat *string, stc interface{}, ctx model.RequestCtx) (*_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return nil, err
+	}
 	response, httpResponse, err := self.GetObjectLatest(channelID, packerFormat, ctx)
 	if err != nil {
 		return httpResponse, err
@@ -165,15 +151,11 @@ func (self PubSub) MapObjectLatest(channelID string, packerFormat *string, stc i
 	return httpResponse, convert.DeepCopy(response, stc)
 }
 func (self PubSub) GetMultiObjectLatest(channelIDs []string, ctx model.RequestCtx) (cios.MultipleDataStoreDataLatest, *_nethttp.Response, error) {
-	request := self.ApiClient.PublishSubscribeApi.GetDataStoreMultiObjectDataLatest(ctx).Ids(cios.Ids{Ids: &channelIDs})
-	response, httpResponse, err := request.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return cios.MultipleDataStoreDataLatest{}, nil, err
-		}
-		return request.Execute()
+	if err := self.refresh(); err != nil {
+		return cios.MultipleDataStoreDataLatest{}, nil, err
 	}
-	return response, httpResponse, err
+	request := self.ApiClient.PublishSubscribeApi.GetDataStoreMultiObjectDataLatest(ctx).Ids(cios.Ids{Ids: &channelIDs})
+	return request.Execute()
 }
 func (self PubSub) GetMultiObjectLatestByChannels(channels []cios.Channel, ctx model.RequestCtx) (cios.MultipleDataStoreDataLatest, *_nethttp.Response, error) {
 	var channelIDs []string
@@ -369,6 +351,9 @@ func (self PubSub) MapStreamFirst(channelID string, params model.ApiGetStreamReq
 	return convert.UnMarshalJson([]byte(value), stc)
 }
 func (self PubSub) DeleteDataByChannel(channelID string, ctx model.RequestCtx) (*_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return nil, err
+	}
 	request := self.ApiClient.PublishSubscribeApi.DeleteDataStoreChannel(ctx, channelID)
 	httpResponse, err := request.Execute()
 	if err != nil && !check.IsNil(self.refresh) {
@@ -377,6 +362,9 @@ func (self PubSub) DeleteDataByChannel(channelID string, ctx model.RequestCtx) (
 	return httpResponse, err
 }
 func (self PubSub) DeleteObject(channelID string, objectID string, ctx model.RequestCtx) (*_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return nil, err
+	}
 	request := self.ApiClient.PublishSubscribeApi.DeleteDataStoreObjectData(ctx, channelID, objectID)
 	_, hErr, err := request.Execute()
 	if err != nil && !check.IsNil(self.refresh) {
