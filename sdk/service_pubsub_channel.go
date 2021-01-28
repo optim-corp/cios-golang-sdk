@@ -18,7 +18,7 @@ func MakeGetChannelsOpts() cios.ApiGetChannelsRequest {
 	return cios.ApiGetChannelsRequest{}
 }
 
-func (self PubSub) GetChannels(params cios.ApiGetChannelsRequest, ctx model.RequestCtx) (response cios.MultipleChanel, httpResponse *_nethttp.Response, err error) {
+func (self PubSub) GetChannels(params cios.ApiGetChannelsRequest, ctx model.RequestCtx) (response cios.MultipleChannel, httpResponse *_nethttp.Response, err error) {
 	params.Ctx = ctx
 	params.ApiService = self.ApiClient.PublishSubscribeApi
 	params.P_name = util.ToNil(params.P_name)
@@ -48,7 +48,7 @@ func (self PubSub) GetChannelsAll(params cios.ApiGetChannelsRequest, ctx model.R
 		err         error
 		offset      = int64(0)
 		_limit      = int64(1000)
-		getFunction = func(offset *int64) (cios.MultipleChanel, *_nethttp.Response, error) {
+		getFunction = func(offset *int64) (cios.MultipleChannel, *_nethttp.Response, error) {
 			if offset != nil {
 				params.P_offset = offset
 			}
@@ -180,7 +180,7 @@ func (self PubSub) CreateChannel(body cios.ChannelProposal, ctx model.RequestCtx
 	}
 	return response.Channel, httpResponse, err
 }
-func (self PubSub) UpdateChannel(channelID string, body cios.ChannelUpdateProposal, ctx model.RequestCtx) (cios.MultipleChanel, *_nethttp.Response, error) {
+func (self PubSub) UpdateChannel(channelID string, body cios.ChannelUpdateProposal, ctx model.RequestCtx) (cios.MultipleChannel, *_nethttp.Response, error) {
 	request := self.ApiClient.PublishSubscribeApi.UpdateChannel(ctx, channelID).ChannelUpdateProposal(body)
 	return request.Execute()
 }

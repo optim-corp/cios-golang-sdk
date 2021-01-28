@@ -516,7 +516,7 @@ Name | Type | Description  | Notes
 
 ## GetChannels
 
-> MultipleChanel GetChannels(ctx).Name(name).ResourceOwnerId(resourceOwnerId).Label(label).ChannelProtocol(channelProtocol).Limit(limit).Offset(offset).Order(order).OrderBy(orderBy).Lang(lang).IsDev(isDev).IsPublic(isPublic).MessagingEnabled(messagingEnabled).DatastoreEnabled(datastoreEnabled).MessagingPersisted(messagingPersisted).Execute()
+> MultipleChannel GetChannels(ctx).Name(name).ResourceOwnerId(resourceOwnerId).Label(label).ChannelProtocol(channelProtocol).Limit(limit).Offset(offset).Order(order).OrderBy(orderBy).Lang(lang).IsDev(isDev).IsPublic(isPublic).MessagingEnabled(messagingEnabled).DatastoreEnabled(datastoreEnabled).MessagingPersisted(messagingPersisted).Execute()
 
 
 
@@ -555,7 +555,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error when calling `PublishSubscribeApi.GetChannels``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `GetChannels`: MultipleChanel
+    // response from `GetChannels`: MultipleChannel
     fmt.Fprintf(os.Stdout, "Response from `PublishSubscribeApi.GetChannels`: %v\n", resp)
 }
 ```
@@ -588,7 +588,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**MultipleChanel**](MultipleChanel.md)
+[**MultipleChannel**](MultipleChannel.md)
 
 ### Authorization
 
@@ -1328,7 +1328,7 @@ Name | Type | Description  | Notes
 
 ## UpdateChannel
 
-> MultipleChanel UpdateChannel(ctx, channelId).ChannelUpdateProposal(channelUpdateProposal).Execute()
+> MultipleChannel UpdateChannel(ctx, channelId).ChannelUpdateProposal(channelUpdateProposal).Execute()
 
 
 
@@ -1355,7 +1355,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error when calling `PublishSubscribeApi.UpdateChannel``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `UpdateChannel`: MultipleChanel
+    // response from `UpdateChannel`: MultipleChannel
     fmt.Fprintf(os.Stdout, "Response from `PublishSubscribeApi.UpdateChannel`: %v\n", resp)
 }
 ```
@@ -1380,7 +1380,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**MultipleChanel**](MultipleChanel.md)
+[**MultipleChannel**](MultipleChannel.md)
 
 ### Authorization
 

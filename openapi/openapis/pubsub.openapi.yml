@@ -32,7 +32,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/MultipleChanel"
+                $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/MultipleChannel"
       security:
         - bearerAuth: [ ]
     post:
@@ -90,7 +90,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/MultipleChanel"
+                $ref: "../components/publishsublish-component.openapi.yml#/components/schemas/MultipleChannel"
       security:
         - bearerAuth: [ ]
     delete:
