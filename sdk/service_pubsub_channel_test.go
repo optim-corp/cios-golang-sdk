@@ -119,7 +119,7 @@ func TestPubSub_Channels(t *testing.T) {
 	//// Auto Refresh Test
 	//client = NewCiosClient(
 	//	CiosClientConfig{
-	//		Urls:        model.CIOSUrl{StorageUrl: ts.URL},
+	//		Urls:        model.CIOSUrl{MessagingUrl: ts.URL},
 	//		AutoRefresh: true,
 	//	},
 	//)
@@ -158,7 +158,7 @@ func TestPubSub_GetChannelsAll(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{MessagingUrl: ts.URL}})
 
 	buckets, _, _ := client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(999), context.Background())
 	if len(buckets) != 999 || offsets[0] != 0 && limits[0] != 1000 {
@@ -202,59 +202,99 @@ func TestPubSub_GetChannelsUnlimited(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{MessagingUrl: ts.URL}})
 
-	buckets, _, _ := client.PubSub.GetChannelsUnlimited(MakeGetChannelsOpts().Limit(1), context.Background())
-	if len(buckets) != 3500 {
-		t.Fatal(len(buckets))
+	response, _, _ := client.PubSub.GetChannelsUnlimited(MakeGetChannelsOpts().Limit(1), context.Background())
+	if len(response) != 3500 {
+		t.Fatal(len(response))
 	}
 }
 
 func TestPubSub_GetChannel(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		if r.URL.Path == "/v2/file_storage/buckets/test" {
+		if r.URL.Path == "/v2/channels/test" {
 			response := cios.SingleChannel{Channel: cios.Channel{
 				Id:              "test",
 				ResourceOwnerId: "test_resource_owner",
-				CreatedAt:       nil,
-				UpdatedAt:       nil,
+				CreatedAt:       "",
+				UpdatedAt:       "",
 				Name:            "",
 			}}
 			json.NewEncoder(w).Encode(response)
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
-	bucket, response, err := client.PubSub.GetChannel("test", context.Background())
-	if bucket.Id != "test" || err != nil || response.StatusCode != 200 {
-		t.Fatal(bucket)
+	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{MessagingUrl: ts.URL}})
+	responseB, response, err := client.PubSub.GetChannel("test", nil, nil, context.Background())
+	if responseB.Id != "test" || err != nil || response.StatusCode != 200 {
+		t.Fatal(responseB)
 	}
 }
 
 func TestPubSub_CreateChannel(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		body := cios.ChannelRequest{}
+		body := cios.ChannelProposal{}
 		if r.Method != "POST" {
 			t.Fatal(r.Method)
 		}
 		byts, _ := ioutil.ReadAll(r.Body)
 		convert.UnMarshalJson(byts, &body)
-		if body.Name != "name" || body.ResourceOwnerId != "resource_owner_id" {
-			t.Fatal(body)
+		if body.ResourceOwnerId != "resource_owner_id" ||
+			*body.DatastoreConfig.Enabled != true ||
+			*body.DatastoreConfig.MaxCount != "222" ||
+			*body.DatastoreConfig.MaxSize != "1000" ||
+			*body.MessagingConfig.Enabled != true ||
+			*body.MessagingConfig.Persisted != true ||
+			(*body.Labels)[0].Key != "test1" ||
+			(*body.Labels)[0].Value != "test1" ||
+			(*body.Labels)[1].Key != "test2" ||
+			(*body.Labels)[1].Value != "test2" ||
+			body.DisplayInfo[0].Name != "test" ||
+			body.DisplayInfo[0].Language != "ja" {
+			t.Fatal(body, *body.Labels, *body.MessagingConfig.Enabled, *body.DatastoreConfig.MaxSize)
 		}
 
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
-	client.PubSub.CreateChannel("resource_owner_id", "name", context.Background())
+	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{MessagingUrl: ts.URL}})
+	client.PubSub.CreateChannel(cios.ChannelProposal{
+		ResourceOwnerId:  "resource_owner_id",
+		ChannelProtocols: nil,
+		DisplayInfo: cios.DisplayInfoStream{
+			{
+				Name:      "test",
+				Language:  "ja",
+				IsDefault: true,
+			},
+		},
+		Labels: &[]cios.Label{
+			{
+				Key:   "test1",
+				Value: "test1",
+			},
+			{
+				Key:   "test2",
+				Value: "test2",
+			},
+		},
+		MessagingConfig: &cios.MessagingConfig{
+			Enabled:   convert.BoolPtr(true),
+			Persisted: convert.BoolPtr(true),
+		},
+		DatastoreConfig: &cios.DataStoreConfig{
+			Enabled:  convert.BoolPtr(true),
+			MaxSize:  convert.StringPtr("1000"),
+			MaxCount: convert.StringPtr("222"),
+		},
+	}, context.Background())
 }
 
 func TestPubSub_DeleteChannel(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		if r.URL.Path != "/v2/file_storage/buckets/bucketid" {
+		if r.URL.Path != "/v2/channels/id" {
 			t.Fatal(r.URL.Path)
 		}
 		if r.Method != "DELETE" {
@@ -262,26 +302,26 @@ func TestPubSub_DeleteChannel(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
-	client.PubSub.DeleteChannel("bucketid", context.Background())
+	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{MessagingUrl: ts.URL}})
+	client.PubSub.DeleteChannel("id", context.Background())
 }
 func TestPubSub_UpdateChannel(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		body := cios.ChannelName{}
-		byts, _ := ioutil.ReadAll(r.Body)
-		convert.UnMarshalJson(byts, &body)
-		if r.URL.Path != "/v2/file_storage/buckets/bucketid" {
+		if r.URL.Path != "/v2/channels/id" {
 			t.Fatal(r.URL.Path)
 		}
 		if r.Method != "PATCH" {
 			t.Fatal(r.Method)
 		}
-		if body.Name != "test" {
-			t.Fatal(body)
-		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
-	client.PubSub.UpdateChannel("bucketid", "test", context.Background())
+	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{MessagingUrl: ts.URL}})
+	client.PubSub.UpdateChannel("id", cios.ChannelUpdateProposal{
+		ChannelProtocols: nil,
+		DisplayInfo:      nil,
+		Labels:           nil,
+		MessagingConfig:  nil,
+		DatastoreConfig:  nil,
+	}, context.Background())
 }
