@@ -265,23 +265,17 @@ func TestFileStorage_DeleteNode(t *testing.T) {
 	client.FileStorage.DeleteNode("bucketid", "delete", context.Background())
 }
 
-//func TestFileStorage_UpdateNode(t *testing.T) {
-//	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-//		w.Header().Set("Content-Type", "application/json")
-//		body := cios.NodeName{}
-//		byts, _ := ioutil.ReadAll(r.Body)
-//		convert.UnMarshalJson(byts, &body)
-//		if r.URL.Path != "/v2/file_storage/buckets/bucketid" {
-//			t.Fatal(r.URL.Path)
-//		}
-//		if r.Method != "PATCH" {
-//			t.Fatal(r.Method)
-//		}
-//		if body.Name != "test" {
-//			t.Fatal(body)
-//		}
-//	}))
-//	defer ts.Close()
-//	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
-//	client.FileStorage.UpdateNode("bucketid", "test", context.Background())
-//}
+func TestFileStorage_RenameNode(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		if r.URL.Path != "/v2/file_storage/buckets/bucketid/nodes/node" {
+			t.Fatal(r.URL.Path)
+		}
+		if r.Method != "PUT" {
+			t.Fatal(r.Method)
+		}
+	}))
+	defer ts.Close()
+	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client.FileStorage.RenameNode("bucketid", "node", "name", context.Background())
+}

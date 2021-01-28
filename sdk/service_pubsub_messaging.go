@@ -19,18 +19,14 @@ import (
 )
 
 func (self PubSub) PublishMessage(id string, body interface{}, packerFormat *string, ctx model.RequestCtx) (*_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return nil, err
+	}
 	request := self.ApiClient.PublishSubscribeApi.PublishMessage(ctx).ChannelId(id).Body(body)
 	if packerFormat != nil {
 		request = request.PackerFormat(*packerFormat)
 	}
-	httpResponse, err := request.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err := (*self.refresh)(); err != nil {
-			return nil, err
-		}
-		return request.Execute()
-	}
-	return httpResponse, err
+	return request.Execute()
 }
 func (self PubSub) PublishMessagePackerOnly(id string, body interface{}, ctx model.RequestCtx) (*_nethttp.Response, error) {
 	return self.PublishMessage(id, &body, nil, ctx)
@@ -89,9 +85,9 @@ func (self PubSub) ConnectWebSocket(channelID string, done chan bool, params Con
 	if params.Context != nil {
 		_token, ok = params.Context.Value(cios.ContextAccessToken).(string)
 	}
-	if _token == "" && !ok && !check.IsNil(self.refresh) {
-		_token, _, _, _, _ = (*self.refresh)()
-
+	if _token == "" {
+		_ = self.refresh()
+		_token = self.token
 	}
 
 	var (
@@ -129,8 +125,8 @@ func (self PubSub) ConnectWebSocket(channelID string, done chan bool, params Con
 			}
 		}
 		reconnection = func() error {
-			token, _, _, _, _ := (*self.refresh)()
-			_connection, _err := self.CreateCIOSWebsocketConnection(wsUrl, ParseAccessToken(token))
+			_ = self.refresh()
+			_connection, _err := self.CreateCIOSWebsocketConnection(wsUrl, ParseAccessToken(self.token))
 			closeConnection()
 			if _err != nil {
 				return _err
@@ -268,7 +264,8 @@ func (self PubSub) SubscribeCiosWebSocket(_url string, beforeFunc *func(*websock
 		_token, ok = ctx.Value(cios.ContextAccessToken).(string)
 	}
 	if _token == "" && !ok && !check.IsNil(self.refresh) {
-		_token, _, _, _, _ = (*self.refresh)()
+		_ = self.refresh()
+		_token = self.token
 
 	}
 	connection, err := self.CreateCIOSWebsocketConnection(_url, ParseAccessToken(_token))
@@ -286,7 +283,7 @@ func (self PubSub) SubscribeCiosWebSocket(_url string, beforeFunc *func(*websock
 			return nil
 		case websocket.IsUnexpectedCloseError(err):
 			connection.Close()
-			connection, err = self.CreateCIOSWebsocketConnection(_url, _token)
+			connection, err = self.CreateCIOSWebsocketConnection(_url, ParseAccessToken(_token))
 			if err != nil {
 				return err
 			}

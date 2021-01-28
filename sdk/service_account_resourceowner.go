@@ -8,7 +8,6 @@ import (
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	"github.com/optim-corp/cios-golang-sdk/model"
-	"github.com/optim-kazuhiro-seida/go-advance-type/check"
 	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
 )
 
@@ -17,6 +16,9 @@ func MakeGetResourceOwnersOpts() cios.ApiGetResourceOwnersRequest {
 }
 
 func (self Account) GetResourceOwners(params cios.ApiGetResourceOwnersRequest, ctx model.RequestCtx) (response cios.MultipleResourceOwner, httpResponse *_nethttp.Response, err error) {
+	if err := self.refresh(); err != nil {
+		return cios.MultipleResourceOwner{}, nil, err
+	}
 	params.ApiService = self.ApiClient.ResourceOwnerApi
 	params.Ctx = ctx
 	params.P_order = util.ToNil(params.P_order)
@@ -24,15 +26,7 @@ func (self Account) GetResourceOwners(params cios.ApiGetResourceOwnersRequest, c
 	params.P_page = util.ToNil(params.P_page)
 	params.P_type_ = util.ToNil(params.P_type_)
 	params.P_userId = util.ToNil(params.P_userId)
-	response, httpResponse, err = params.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return
-		}
-		response, httpResponse, err = params.Execute()
-	}
-	return
-
+	return params.Execute()
 }
 func (self Account) GetResourceOwnersAll(params cios.ApiGetResourceOwnersRequest, ctx model.RequestCtx) ([]cios.ResourceOwner, *_nethttp.Response, error) {
 	var (
@@ -84,15 +78,10 @@ func (self Account) GetResourceOwnersUnlimited(params cios.ApiGetResourceOwnersR
 }
 
 func (self Account) GetResourceOwner(id string, ctx model.RequestCtx) (cios.ResourceOwner, *_nethttp.Response, error) {
-	request := self.ApiClient.ResourceOwnerApi.GetResourceOwner(ctx, id)
-	response, httpResponse, err := request.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return response, httpResponse, err
-		}
-		return request.Execute()
+	if err := self.refresh(); err != nil {
+		return cios.ResourceOwner{}, nil, err
 	}
-	return response, httpResponse, err
+	return self.ApiClient.ResourceOwnerApi.GetResourceOwner(ctx, id).Execute()
 
 }
 func (self Account) GetResourceOwnerByGroupId(groupID string, ctx model.RequestCtx) (cios.ResourceOwner, *_nethttp.Response, error) {

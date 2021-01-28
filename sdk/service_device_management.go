@@ -5,7 +5,6 @@ import (
 
 	"github.com/optim-corp/cios-golang-sdk/util"
 
-	"github.com/optim-kazuhiro-seida/go-advance-type/check"
 	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
@@ -18,6 +17,9 @@ func MakeGetDevicesOpts() cios.ApiGetDevicesRequest {
 }
 
 func (self DeviceManagement) GetDevices(params cios.ApiGetDevicesRequest, ctx model.RequestCtx) (response cios.MultipleDevice, httpResponse *_nethttp.Response, err error) {
+	if err := self.refresh(); err != nil {
+		return nil, err
+	}
 	params.ApiService = self.ApiClient.DeviceApi
 	params.Ctx = ctx
 	params.P_order = util.ToNil(params.P_order)
@@ -29,14 +31,7 @@ func (self DeviceManagement) GetDevices(params cios.ApiGetDevicesRequest, ctx mo
 	params.P_resourceOwnerId = util.ToNil(params.P_resourceOwnerId)
 	params.P_isPublic = util.ToNil(params.P_isPublic)
 	params.P_lang = util.ToNil(params.P_lang)
-	response, httpResponse, err = params.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return
-		}
-		response, httpResponse, err = params.Execute()
-	}
-	return
+	return params.Execute()
 }
 func (self DeviceManagement) GetDevicesAll(params cios.ApiGetDevicesRequest, ctx model.RequestCtx) ([]cios.Device, *_nethttp.Response, error) {
 	var (
@@ -89,6 +84,9 @@ func (self DeviceManagement) GetDevicesUnlimited(params cios.ApiGetDevicesReques
 	return self.GetDevicesAll(params, ctx)
 }
 func (self DeviceManagement) GetDevice(deviceID string, lang *string, isDev *bool, ctx model.RequestCtx) (cios.Device, *_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return nil, err
+	}
 	request := self.ApiClient.DeviceApi.GetDevice(ctx, deviceID)
 	if lang != nil {
 		request = request.Lang(*lang)
@@ -98,56 +96,30 @@ func (self DeviceManagement) GetDevice(deviceID string, lang *string, isDev *boo
 	}
 	response, httpResponse, err := request.Execute()
 	if err != nil {
-		if !check.IsNil(self.refresh) {
-			if _, _, _, _, err = (*self.refresh)(); err != nil {
-				return cios.Device{}, httpResponse, err
-			}
-			response, httpResponse, err = request.Execute()
-		}
-		if err != nil {
-			return cios.Device{}, httpResponse, err
-		}
+		return cios.Device{}, httpResponse, err
 	}
 	return response.Device, httpResponse, err
 }
 func (self DeviceManagement) GetDeviceInventory(deviceID string, ctx model.RequestCtx) (map[string]interface{}, *_nethttp.Response, error) {
-	request := self.ApiClient.DeviceApi.GetDeviceInventoryLatest(ctx, deviceID)
-	response, httpResponse, err := request.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return nil, httpResponse, err
-		}
-		return request.Execute()
+	if err := self.refresh(); err != nil {
+		return nil, err
 	}
-	return response, httpResponse, err
+	return self.ApiClient.DeviceApi.GetDeviceInventoryLatest(ctx, deviceID).Execute()
 }
 func (self DeviceManagement) DeleteDevice(id string, ctx model.RequestCtx) (*_nethttp.Response, error) {
-	request := self.ApiClient.DeviceApi.DeleteDevice(
-		ctx,
-		id,
-	)
-	httpResponse, err := request.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return httpResponse, err
-		}
-		return request.Execute()
+	if err := self.refresh(); err != nil {
+		return nil, err
 	}
-	return httpResponse, err
+	return self.ApiClient.DeviceApi.DeleteDevice(ctx, id).Execute()
 }
 func (self DeviceManagement) CreateDevice(body cios.DeviceInfo, ctx model.RequestCtx) (cios.Device, *_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return nil, err
+	}
 	request := self.ApiClient.DeviceApi.CreateDevice(ctx).DeviceInfo(body)
 	response, httpResponse, err := request.Execute()
 	if err != nil {
-		if !check.IsNil(self.refresh) {
-			if _, _, _, _, err = (*self.refresh)(); err != nil {
-				return cios.Device{}, httpResponse, err
-			}
-			response, httpResponse, err = request.Execute()
-		}
-		if err != nil {
-			return cios.Device{}, httpResponse, err
-		}
+		return cios.Device{}, httpResponse, err
 	}
 	return response.Device, httpResponse, err
 }

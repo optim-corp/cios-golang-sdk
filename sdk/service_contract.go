@@ -7,7 +7,6 @@ import (
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	"github.com/optim-corp/cios-golang-sdk/model"
-	"github.com/optim-kazuhiro-seida/go-advance-type/check"
 	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
 )
 
@@ -16,17 +15,13 @@ func MakeGetContractsOpts() cios.ApiGetContractsRequest {
 }
 
 func (self Contract) GetContracts(params cios.ApiGetContractsRequest, ctx model.RequestCtx) (response cios.MultipleContract, httpResponse *_nethttp.Response, err error) {
+	if err := self.refresh(); err != nil {
+		return cios.MultipleContract{}, nil, err
+	}
 	params.Ctx = ctx
 	params.ApiService = self.ApiClient.ContractApi
 	params.P_page = util.ToNil(params.P_page)
-	response, httpResponse, err = params.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return
-		}
-		response, httpResponse, err = params.Execute()
-	}
-	return
+	return params.Execute()
 }
 
 func (self Contract) GetContractsAll(params cios.ApiGetContractsRequest, ctx model.RequestCtx) ([]cios.Contract, *_nethttp.Response, error) {

@@ -6,7 +6,6 @@ import (
 
 	"github.com/optim-corp/cios-golang-sdk/util"
 
-	"github.com/optim-kazuhiro-seida/go-advance-type/check"
 	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
 
 	"github.com/optim-corp/cios-golang-sdk/model"
@@ -19,6 +18,9 @@ func MakeGetChannelsOpts() cios.ApiGetChannelsRequest {
 }
 
 func (self PubSub) GetChannels(params cios.ApiGetChannelsRequest, ctx model.RequestCtx) (response cios.MultipleChannel, httpResponse *_nethttp.Response, err error) {
+	if err = self.refresh(); err != nil {
+		return
+	}
 	params.Ctx = ctx
 	params.ApiService = self.ApiClient.PublishSubscribeApi
 	params.P_name = util.ToNil(params.P_name)
@@ -32,14 +34,7 @@ func (self PubSub) GetChannels(params cios.ApiGetChannelsRequest, ctx model.Requ
 	params.P_datastoreEnabled = util.ToNil(params.P_datastoreEnabled)
 	params.P_messagingEnabled = util.ToNil(params.P_messagingEnabled)
 	params.P_messagingPersisted = util.ToNil(params.P_messagingPersisted)
-	response, httpResponse, err = params.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return
-		}
-		response, httpResponse, err = params.Execute()
-	}
-	return
+	return params.Execute()
 }
 func (self PubSub) GetChannelsAll(params cios.ApiGetChannelsRequest, ctx model.RequestCtx) ([]cios.Channel, *_nethttp.Response, error) {
 	var (
@@ -87,6 +82,9 @@ func (self PubSub) GetChannelsUnlimited(params cios.ApiGetChannelsRequest, ctx m
 	return self.GetChannelsAll(params, ctx)
 }
 func (self PubSub) GetChannel(channelID string, isDev *bool, lang *string, ctx model.RequestCtx) (cios.Channel, *_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return cios.Channel{}, nil, err
+	}
 	request := self.ApiClient.PublishSubscribeApi.GetChannel(ctx, channelID)
 	if isDev != nil {
 		request = request.IsDev(*isDev)
@@ -96,20 +94,12 @@ func (self PubSub) GetChannel(channelID string, isDev *bool, lang *string, ctx m
 	}
 	response, httpResponse, err := request.Execute()
 	if err != nil {
-		if !check.IsNil(self.refresh) {
-			if _, _, _, _, err = (*self.refresh)(); err != nil {
-				return cios.Channel{}, httpResponse, err
-			}
-			response, httpResponse, err = request.Execute()
-		}
-		if err != nil {
-			return cios.Channel{}, httpResponse, err
-		}
+		return cios.Channel{}, httpResponse, err
 	}
 	return response.Channel, httpResponse, err
 }
 func (self PubSub) GetChannelFirst(params cios.ApiGetChannelsRequest, ctx model.RequestCtx) (cios.Channel, *_nethttp.Response, error) {
-	response, httpResponse, err := self.GetChannels(params, ctx)
+	response, httpResponse, err := self.GetChannels(params.Limit(1), ctx)
 	if err != nil || len(response.Channels) == 0 {
 		return cios.Channel{}, httpResponse, fmt.Errorf("not found")
 	}
@@ -138,18 +128,15 @@ func (self PubSub) GetChannelsMapByResourceOwnerID(params cios.ApiGetChannelsReq
 	return channelsMap, httpResponse, nil
 }
 func (self PubSub) DeleteChannel(channelID string, ctx model.RequestCtx) (*_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return nil, err
+	}
 	request := self.ApiClient.PublishSubscribeApi.
 		DeleteChannel(
 			ctx,
 			channelID,
 		)
 	httpResponse, err := request.Execute()
-	if err != nil && !check.IsNil(self.refresh) {
-		if _, _, _, _, err = (*self.refresh)(); err != nil {
-			return httpResponse, err
-		}
-		return request.Execute()
-	}
 	return httpResponse, err
 }
 func (self PubSub) GetOrCreateChannel(params cios.ApiGetChannelsRequest, body cios.ChannelProposal, ctx model.RequestCtx) (cios.Channel, *_nethttp.Response, error) {
@@ -160,22 +147,20 @@ func (self PubSub) GetOrCreateChannel(params cios.ApiGetChannelsRequest, body ci
 	return channels[0], httpResponse, err
 }
 func (self PubSub) CreateChannel(body cios.ChannelProposal, ctx model.RequestCtx) (cios.Channel, *_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return cios.Channel{}, nil, err
+	}
 	request := self.ApiClient.PublishSubscribeApi.CreateChannel(ctx).ChannelProposal(body)
 	response, httpResponse, err := request.Execute()
 	if err != nil {
-		if !check.IsNil(self.refresh) {
-			if _, _, _, _, err = (*self.refresh)(); err != nil {
-				return cios.Channel{}, httpResponse, err
-			}
-			response, httpResponse, err = request.Execute()
-		}
-		if err != nil {
-			return cios.Channel{}, httpResponse, err
-		}
+		return cios.Channel{}, httpResponse, err
 	}
 	return response.Channel, httpResponse, err
 }
 func (self PubSub) UpdateChannel(channelID string, body cios.ChannelUpdateProposal, ctx model.RequestCtx) (cios.MultipleChannel, *_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return cios.MultipleChannel{}, nil, err
+	}
 	request := self.ApiClient.PublishSubscribeApi.UpdateChannel(ctx, channelID).ChannelUpdateProposal(body)
 	return request.Execute()
 }
