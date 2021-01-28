@@ -6,11 +6,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/k-washi/jwt-decode/jwtdecode"
+	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 
-	"github.com/optim-corp/cios-golang-sdk/model"
+	"github.com/dgrijalva/jwt-go"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
+	"github.com/optim-corp/cios-golang-sdk/model"
 )
 
 var (
@@ -127,19 +128,21 @@ func (self *CiosClient) Debug(debug bool) *CiosClient {
 }
 func (self *CiosClient) _accessToken(accessToken string) *CiosClient {
 	accessToken = regexp.MustCompile(`^bearer|Bearer| `).ReplaceAllString(accessToken, "")
-	if hCS, err := jwtdecode.JwtDecode.DecomposeFB(accessToken); err == nil {
-		if payload, err := jwtdecode.JwtDecode.DecodeClaimFB(hCS[1]); err == nil {
-			self.tokenExp = payload.Expires
+	token, _, err := new(jwt.Parser).ParseUnverified(accessToken, jwt.MapClaims{})
+	if err == nil {
+		if claims, ok := token.Claims.(jwt.MapClaims); ok {
+			self.tokenExp = convert.MustInt64(claims["exp"])
 		}
 	}
+	bearerToken := ParseAccessToken(accessToken)
 	self.PubSub.token = accessToken
-	self.Auth.ApiClient.GetConfig().AddDefaultHeader("Authorization", "Bearer "+accessToken)
-	self.PubSub.ApiClient.GetConfig().AddDefaultHeader("Authorization", "Bearer "+accessToken)
-	self.DeviceManagement.ApiClient.GetConfig().AddDefaultHeader("Authorization", "Bearer "+accessToken)
-	self.Account.ApiClient.GetConfig().AddDefaultHeader("Authorization", "Bearer "+accessToken)
-	self.Geography.ApiClient.GetConfig().AddDefaultHeader("Authorization", "Bearer "+accessToken)
-	self.DeviceAssetManagement.ApiClient.GetConfig().AddDefaultHeader("Authorization", "Bearer "+accessToken)
-	self.FileStorage.ApiClient.GetConfig().AddDefaultHeader("Authorization", "Bearer "+accessToken)
+	self.Auth.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
+	self.PubSub.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
+	self.DeviceManagement.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
+	self.Account.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
+	self.Geography.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
+	self.DeviceAssetManagement.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
+	self.FileStorage.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
 	return self
 }
 func (self *CiosClient) RequestScope(scope string) *CiosClient {

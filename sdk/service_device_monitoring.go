@@ -9,7 +9,7 @@ import (
 
 func (self DeviceManagement) GetMonitorings(deviceIDs []string, ctx model.RequestCtx) (cios.MultipleDeviceMonitoring, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
-		return nil, err
+		return cios.MultipleDeviceMonitoring{}, nil, err
 	}
 	return self.ApiClient.DeviceApi.GetDeviceMonitoringsLatest(ctx).DeviceMonitoringIDsRequest(cios.DeviceMonitoringIDsRequest{DeviceIds: &deviceIDs}).Execute()
 }

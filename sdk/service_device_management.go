@@ -18,7 +18,7 @@ func MakeGetDevicesOpts() cios.ApiGetDevicesRequest {
 
 func (self DeviceManagement) GetDevices(params cios.ApiGetDevicesRequest, ctx model.RequestCtx) (response cios.MultipleDevice, httpResponse *_nethttp.Response, err error) {
 	if err := self.refresh(); err != nil {
-		return nil, err
+		return cios.MultipleDevice{}, nil, err
 	}
 	params.ApiService = self.ApiClient.DeviceApi
 	params.Ctx = ctx
@@ -85,7 +85,7 @@ func (self DeviceManagement) GetDevicesUnlimited(params cios.ApiGetDevicesReques
 }
 func (self DeviceManagement) GetDevice(deviceID string, lang *string, isDev *bool, ctx model.RequestCtx) (cios.Device, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
-		return nil, err
+		return cios.Device{}, nil, err
 	}
 	request := self.ApiClient.DeviceApi.GetDevice(ctx, deviceID)
 	if lang != nil {
@@ -102,7 +102,7 @@ func (self DeviceManagement) GetDevice(deviceID string, lang *string, isDev *boo
 }
 func (self DeviceManagement) GetDeviceInventory(deviceID string, ctx model.RequestCtx) (map[string]interface{}, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
-		return nil, err
+		return nil, nil, err
 	}
 	return self.ApiClient.DeviceApi.GetDeviceInventoryLatest(ctx, deviceID).Execute()
 }
@@ -114,7 +114,7 @@ func (self DeviceManagement) DeleteDevice(id string, ctx model.RequestCtx) (*_ne
 }
 func (self DeviceManagement) CreateDevice(body cios.DeviceInfo, ctx model.RequestCtx) (cios.Device, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
-		return nil, err
+		return cios.Device{}, nil, err
 	}
 	request := self.ApiClient.DeviceApi.CreateDevice(ctx).DeviceInfo(body)
 	response, httpResponse, err := request.Execute()

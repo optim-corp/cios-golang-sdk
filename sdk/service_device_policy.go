@@ -15,7 +15,7 @@ func MakeGetPoliciesOpts() cios.ApiGetDevicePoliciesRequest {
 
 func (self DeviceManagement) GetPolicies(params cios.ApiGetDevicePoliciesRequest, ctx model.RequestCtx) (response cios.MultipleDevicePolicy, httpResponse *_nethttp.Response, err error) {
 	if err := self.refresh(); err != nil {
-		return nil, err
+		return cios.MultipleDevicePolicy{}, nil, err
 	}
 	params.Ctx = ctx
 	params.ApiService = self.ApiClient.DeviceApi
@@ -33,7 +33,7 @@ func (self DeviceManagement) DeletePolicy(id string, ctx model.RequestCtx) (*_ne
 }
 func (self DeviceManagement) CreatePolicy(resourceOwnerID string, ctx model.RequestCtx) (cios.DevicePolicy, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
-		return nil, err
+		return cios.DevicePolicy{}, nil, err
 	}
 	return self.ApiClient.DeviceApi.CreateDevicePolicy(ctx).DevicePolicyRequest(cios.DevicePolicyRequest{ResourceOwnerId: &resourceOwnerID}).Execute()
 }

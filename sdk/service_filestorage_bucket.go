@@ -20,8 +20,8 @@ func MakeGetBucketsOpts() cios.ApiGetBucketsRequest {
 }
 
 func (self FileStorage) GetBuckets(params cios.ApiGetBucketsRequest, ctx model.RequestCtx) (response cios.MultipleBucket, httpResponse *_nethttp.Response, err error) {
-	if err := self.refresh(); err != nil {
-		return nil, err
+	if err = self.refresh(); err != nil {
+		return
 	}
 	params.ApiService = self.ApiClient.FileStorageApi
 	params.Ctx = ctx
@@ -82,7 +82,7 @@ func (self FileStorage) GetBucketsUnlimited(params cios.ApiGetBucketsRequest, ct
 
 func (self FileStorage) GetBucket(bucketID string, ctx model.RequestCtx) (cios.Bucket, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
-		return nil, err
+		return cios.Bucket{}, nil, err
 	}
 	request := self.ApiClient.FileStorageApi.GetBucket(ctx, bucketID)
 	response, httpResponse, err := request.Execute()
@@ -110,7 +110,7 @@ func (self FileStorage) GetOrCreateBucket(resourceOwnerID string, name string, c
 }
 func (self FileStorage) CreateBucket(resourceOwnerID string, name string, ctx model.RequestCtx) (cios.Bucket, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
-		return nil, err
+		return cios.Bucket{}, nil, err
 	}
 	request := self.ApiClient.FileStorageApi.CreateBucket(ctx).BucketRequest(cios.BucketRequest{ResourceOwnerId: resourceOwnerID, Name: name})
 	response, httpResponse, err := request.Execute()
