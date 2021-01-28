@@ -268,14 +268,52 @@ func TestFileStorage_DeleteNode(t *testing.T) {
 func TestFileStorage_RenameNode(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		if r.URL.Path != "/v2/file_storage/buckets/bucketid/nodes/node" {
+		byts, _ := ioutil.ReadAll(r.Body)
+		body := cios.NodeName{}
+		convert.UnMarshalJson(byts, &body)
+		if body.Name != "name" || r.URL.Path != "/v2/file_storage/buckets/bucketid/nodes/node/rename" {
 			t.Fatal(r.URL.Path)
 		}
-		if r.Method != "PUT" {
+		if r.Method != "POST" {
 			t.Fatal(r.Method)
 		}
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
 	client.FileStorage.RenameNode("bucketid", "node", "name", context.Background())
+}
+
+func TestFileStorage_CopyNode(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		byts, _ := ioutil.ReadAll(r.Body)
+		body := cios.BucketEditBody{}
+		convert.UnMarshalJson(byts, &body)
+		if *body.DestBucketId != "destBucket" || *body.ParentNodeId != "destNode" || r.URL.Path != "/v2/file_storage/buckets/bucketid/nodes/node/copy" {
+			t.Fatal(r.URL.Path, body)
+		}
+		if r.Method != "POST" {
+			t.Fatal(r.Method)
+		}
+	}))
+	defer ts.Close()
+	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client.FileStorage.CopyNode("bucketid", "node", convert.StringPtr("destBucket"), convert.StringPtr("destNode"), context.Background())
+}
+func TestFileStorage_MoveNode(t *testing.T) {
+	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		byts, _ := ioutil.ReadAll(r.Body)
+		body := cios.BucketEditBody{}
+		convert.UnMarshalJson(byts, &body)
+		if *body.DestBucketId != "destBucket" || *body.ParentNodeId != "destNode" || r.URL.Path != "/v2/file_storage/buckets/bucketid/nodes/node/move" {
+			t.Fatal(r.URL.Path, body)
+		}
+		if r.Method != "POST" {
+			t.Fatal(r.Method)
+		}
+	}))
+	defer ts.Close()
+	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client.FileStorage.CopyNode("bucketid", "node", convert.StringPtr("destBucket"), convert.StringPtr("destNode"), context.Background())
 }

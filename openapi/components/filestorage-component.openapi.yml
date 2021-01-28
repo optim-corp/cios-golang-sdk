@@ -82,6 +82,13 @@ components:
           type: string
       required:
         - name
+    NodeName:
+      type: object
+      properties:
+        name:
+          type: string
+      required:
+        - name
 
     MultipleNode:
       type: object

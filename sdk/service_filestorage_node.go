@@ -145,7 +145,7 @@ func (self FileStorage) RenameNode(bucketID string, nodeID string, name string, 
 	if err := self.refresh(); err != nil {
 		return cios.Node{}, nil, err
 	}
-	request := self.ApiClient.FileStorageApi.RenameNode(ctx, bucketID, nodeID).BucketName(cios.BucketName{Name: name})
+	request := self.ApiClient.FileStorageApi.RenameNode(ctx, bucketID, nodeID).NodeName(cios.NodeName{Name: name})
 	response, httpResponse, err := request.Execute()
 	if err != nil {
 		return cios.Node{}, httpResponse, err

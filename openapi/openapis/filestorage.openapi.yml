@@ -308,7 +308,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '../components/filestorage-component.openapi.yml#/components/schemas/BucketName'
+              $ref: '../components/filestorage-component.openapi.yml#/components/schemas/NodeName'
       responses:
         200:
           description: ''
