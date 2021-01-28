@@ -1,5 +1,7 @@
-.idea/
+.idea
+docker-compose
 api/
 .openapi-generator/
 
 main.go
+docker-compose.yml

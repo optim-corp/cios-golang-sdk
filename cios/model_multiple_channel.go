@@ -16,7 +16,7 @@ import (
 
 // MultipleChannel struct for MultipleChannel
 type MultipleChannel struct {
-	Total    int64     `json:"total"`
+	Total int64 `json:"total"`
 	Channels []Channel `json:"channels"`
 }
 
@@ -24,7 +24,7 @@ type MultipleChannel struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewMultipleChannel(total int64, channels []Channel) *MultipleChannel {
+func NewMultipleChannel(total int64, channels []Channel, ) *MultipleChannel {
 	this := MultipleChannel{}
 	this.Total = total
 	this.Channels = channels
@@ -41,7 +41,7 @@ func NewMultipleChannelWithDefaults() *MultipleChannel {
 
 // GetTotal returns the Total field value
 func (o *MultipleChannel) GetTotal() int64 {
-	if o == nil {
+	if o == nil  {
 		var ret int64
 		return ret
 	}
@@ -52,7 +52,7 @@ func (o *MultipleChannel) GetTotal() int64 {
 // GetTotalOk returns a tuple with the Total field value
 // and a boolean to check if the value has been set.
 func (o *MultipleChannel) GetTotalOk() (*int64, bool) {
-	if o == nil {
+	if o == nil  {
 		return nil, false
 	}
 	return &o.Total, true
@@ -65,7 +65,7 @@ func (o *MultipleChannel) SetTotal(v int64) {
 
 // GetChannels returns the Channels field value
 func (o *MultipleChannel) GetChannels() []Channel {
-	if o == nil {
+	if o == nil  {
 		var ret []Channel
 		return ret
 	}
@@ -76,7 +76,7 @@ func (o *MultipleChannel) GetChannels() []Channel {
 // GetChannelsOk returns a tuple with the Channels field value
 // and a boolean to check if the value has been set.
 func (o *MultipleChannel) GetChannelsOk() (*[]Channel, bool) {
-	if o == nil {
+	if o == nil  {
 		return nil, false
 	}
 	return &o.Channels, true
@@ -133,3 +133,5 @@ func (v *NullableMultipleChannel) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }
+
+

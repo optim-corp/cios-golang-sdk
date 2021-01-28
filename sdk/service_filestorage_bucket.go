@@ -4,6 +4,8 @@ import (
 	"errors"
 	_nethttp "net/http"
 
+	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+
 	"github.com/optim-corp/cios-golang-sdk/util"
 
 	"github.com/optim-kazuhiro-seida/go-advance-type/check"
@@ -41,19 +43,17 @@ func (self FileStorage) GetBucketsAll(params cios.ApiGetBucketsRequest, ctx mode
 		err         error
 		offset      = int64(0)
 		_limit      = int64(1000)
-		getFunction = func(offset *int64) (cios.MultipleBucket, *_nethttp.Response, error) {
-			if offset != nil {
-				params.P_offset = offset
-			}
-			tlimit := xmath.MinInt64(_limit, 1000)
-			params.P_limit = &tlimit
-			return self.GetBuckets(params, ctx)
+		getFunction = func(offset int64) (cios.MultipleBucket, *_nethttp.Response, error) {
+			return self.GetBuckets(
+				params.
+					Limit(xmath.MinInt64(_limit, 1000)).
+					Offset(convert.MustInt64(offset)),
+				ctx)
 		}
 	)
 	if params.P_limit != nil {
-		_limit = *params.P_limit
-		for {
-			res, httpRes, err := getFunction(&offset)
+		for _limit = *params.P_limit; true; {
+			res, httpRes, err := getFunction(offset)
 			if err != nil {
 				return nil, httpRes, err
 			}
@@ -65,13 +65,13 @@ func (self FileStorage) GetBucketsAll(params cios.ApiGetBucketsRequest, ctx mode
 			}
 		}
 	} else {
-		res, httpRes, err := getFunction(&offset)
+		res, httpRes, err := getFunction(offset)
 		if err != nil {
 			return nil, httpRes, err
 		}
 		result = append(result, res.Buckets...)
 		for offset = int64(1000); offset < res.Total; offset += 1000 {
-			res, httpRes, err = getFunction(&offset)
+			res, httpRes, err = getFunction(offset)
 			if err != nil {
 				return nil, httpRes, err
 			}

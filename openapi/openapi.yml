@@ -51,7 +51,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/MultipleChanel
+                $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/MultipleChannel
           description: OK
       security:
       - bearerAuth: []
@@ -120,7 +120,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/MultipleChanel
+                $ref: ./components/publishsublish-component.openapi.yml#/components/schemas/MultipleChannel
           description: OK
       security:
       - bearerAuth: []

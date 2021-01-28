@@ -279,7 +279,7 @@ Class | Method | HTTP request | Description
  - [MemberInfoProfile](docs/MemberInfoProfile.md)
  - [MessagingConfig](docs/MessagingConfig.md)
  - [MultipleBucket](docs/MultipleBucket.md)
- - [MultipleChanel](docs/MultipleChanel.md)
+ - [MultipleChannel](docs/MultipleChannel.md)
  - [MultipleCircle](docs/MultipleCircle.md)
  - [MultipleCollectionLatest](docs/MultipleCollectionLatest.md)
  - [MultipleConstitutionComponent](docs/MultipleConstitutionComponent.md)

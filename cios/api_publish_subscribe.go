@@ -899,7 +899,7 @@ func (r ApiGetChannelsRequest) MessagingPersisted(messagingPersisted string) Api
 	return r
 }
 
-func (r ApiGetChannelsRequest) Execute() (MultipleChanel, *_nethttp.Response, error) {
+func (r ApiGetChannelsRequest) Execute() (MultipleChannel, *_nethttp.Response, error) {
 	return r.ApiService.GetChannelsExecute(r)
 }
 
@@ -917,16 +917,16 @@ func (a *PublishSubscribeApiService) GetChannels(Ctx _context.Context) ApiGetCha
 
 /*
  * Execute executes the request
- * @return MultipleChanel
+ * @return MultipleChannel
  */
-func (a *PublishSubscribeApiService) GetChannelsExecute(r ApiGetChannelsRequest) (MultipleChanel, *_nethttp.Response, error) {
+func (a *PublishSubscribeApiService) GetChannelsExecute(r ApiGetChannelsRequest) (MultipleChannel, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  MultipleChanel
+		localVarReturnValue  MultipleChannel
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.Ctx, "PublishSubscribeApiService.GetChannels")
@@ -2352,7 +2352,7 @@ func (r ApiUpdateChannelRequest) ChannelUpdateProposal(channelUpdateProposal Cha
 	return r
 }
 
-func (r ApiUpdateChannelRequest) Execute() (MultipleChanel, *_nethttp.Response, error) {
+func (r ApiUpdateChannelRequest) Execute() (MultipleChannel, *_nethttp.Response, error) {
 	return r.ApiService.UpdateChannelExecute(r)
 }
 
@@ -2372,16 +2372,16 @@ func (a *PublishSubscribeApiService) UpdateChannel(Ctx _context.Context, channel
 
 /*
  * Execute executes the request
- * @return MultipleChanel
+ * @return MultipleChannel
  */
-func (a *PublishSubscribeApiService) UpdateChannelExecute(r ApiUpdateChannelRequest) (MultipleChanel, *_nethttp.Response, error) {
+func (a *PublishSubscribeApiService) UpdateChannelExecute(r ApiUpdateChannelRequest) (MultipleChannel, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodPatch
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  MultipleChanel
+		localVarReturnValue  MultipleChannel
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.Ctx, "PublishSubscribeApiService.UpdateChannel")
