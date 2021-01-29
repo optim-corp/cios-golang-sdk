@@ -49,18 +49,14 @@ func (self DeviceAssetManagement) GetModelsAll(params cios.ApiGetDeviceModelsReq
 		err         error
 		_limit      = int64(1000)
 		offset      = int64(0)
-		getFunction = func(offset *int64) (cios.MultipleDeviceModel, *_nethttp.Response, error) {
-			if offset != nil {
-				params.P_offset = offset
-			}
-			params.P_limit = convert.Int64Ptr(xmath.MinInt64(_limit, 1000))
-			return self.GetModels(params, ctx)
+		getFunction = func(offset int64) (cios.MultipleDeviceModel, *_nethttp.Response, error) {
+			return self.GetModels(params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset), ctx)
 		}
 	)
 	if params.P_limit != nil {
 		_limit = *params.P_limit
 		for {
-			res, httpRes, err := getFunction(&offset)
+			res, httpRes, err := getFunction(offset)
 			if err != nil {
 				return nil, httpRes, err
 			}
@@ -72,13 +68,13 @@ func (self DeviceAssetManagement) GetModelsAll(params cios.ApiGetDeviceModelsReq
 			}
 		}
 	} else {
-		res, httpRes, err := getFunction(&offset)
+		res, httpRes, err := getFunction(offset)
 		if err != nil {
 			return nil, httpRes, err
 		}
 		result = append(result, res.Models...)
 		for offset = int64(1000); offset < res.Total; offset += 1000 {
-			res, httpRes, err = getFunction(&offset)
+			res, httpRes, err = getFunction(offset)
 			if err != nil {
 				return nil, httpRes, err
 			}
@@ -106,8 +102,7 @@ func (self DeviceAssetManagement) GetModel(name string, ctx model.RequestCtx) (c
 	if err := self.refresh(); err != nil {
 		return cios.DeviceModel{}, nil, err
 	}
-	request := self.ApiClient.DeviceAssetApi.GetDeviceModel(ctx, name)
-	response, httpResponse, err := request.Execute()
+	response, httpResponse, err := self.ApiClient.DeviceAssetApi.GetDeviceModel(ctx, name).Execute()
 	if err != nil {
 		return cios.DeviceModel{}, httpResponse, err
 	}
@@ -117,8 +112,7 @@ func (self DeviceAssetManagement) CreateModel(body cios.DeviceModelRequest, ctx 
 	if err := self.refresh(); err != nil {
 		return cios.DeviceModel{}, nil, err
 	}
-	request := self.ApiClient.DeviceAssetApi.CreateDeviceModel(ctx).DeviceModelRequest(body)
-	response, httpResponse, err := request.Execute()
+	response, httpResponse, err := self.ApiClient.DeviceAssetApi.CreateDeviceModel(ctx).DeviceModelRequest(body).Execute()
 	if err != nil {
 		return cios.DeviceModel{}, httpResponse, err
 	}
