@@ -222,6 +222,8 @@ components:
             $ref: '#/components/schemas/ConnectedDeviceResult'
     DeviceMonitoringIDsRequest:
       type: object
+      required:
+        - device_ids
       properties:
         device_ids:
           type: array

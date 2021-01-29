@@ -101,12 +101,12 @@ func TestPubSub_Channels(t *testing.T) {
 	)
 
 	// Query Test
-	bucketHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	responseHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		query = r.URL.Query()
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(cios.MultipleChannel{Total: 10})
 	})
-	ts := httptest.NewServer(bucketHandler)
+	ts := httptest.NewServer(responseHandler)
 	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{MessagingUrl: ts.URL}})
 	defer ts.Close()
 	for _, test := range tests {
@@ -123,11 +123,11 @@ func TestPubSub_Channels(t *testing.T) {
 	//		AutoRefresh: true,
 	//	},
 	//)
-	//bucketHandler = func(w http.ResponseWriter, r *http.Request) {
+	//responseHandler = func(w http.ResponseWriter, r *http.Request) {
 	//	w.Header().Set("Content-Type", "application/json")
 	//	w.WriteHeader(404)
 	//}
-	//ts = httptest.NewServer(bucketHandler)
+	//ts = httptest.NewServer(responseHandler)
 	//
 	//result := "Failed"
 	//refFunc := func() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
@@ -160,33 +160,33 @@ func TestPubSub_GetChannelsAll(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{MessagingUrl: ts.URL}})
 
-	buckets, _, _ := client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(999), context.Background())
-	if len(buckets) != 999 || offsets[0] != 0 && limits[0] != 1000 {
-		t.Fatal(len(buckets))
+	responses, _, _ := client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(999), context.Background())
+	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
+		t.Fatal(len(responses))
 	}
 
 	offsets = []int{}
 	limits = []int{}
-	buckets, _, _ = client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(1500), context.Background())
-	if len(buckets) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
-		t.Fatal(len(buckets), limits, offsets)
+	responses, _, _ = client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(1500), context.Background())
+	if len(responses) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
+		t.Fatal(len(responses), limits, offsets)
 	}
 	offsets = []int{}
 	limits = []int{}
-	buckets, _, _ = client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(2001), context.Background())
-	if len(buckets) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
-		t.Fatal(len(buckets), limits, offsets)
+	responses, _, _ = client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(2001), context.Background())
+	if len(responses) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
+		t.Fatal(len(responses), limits, offsets)
 
 	}
 	offsets = []int{}
 	limits = []int{}
-	buckets, _, _ = client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(3501), context.Background())
-	if len(buckets) != 3500 ||
+	responses, _, _ = client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(3501), context.Background())
+	if len(responses) != 3500 ||
 		offsets[0] != 0 || limits[0] != 1000 ||
 		offsets[1] != 1000 && limits[1] != 1000 ||
 		offsets[2] != 2000 || limits[2] != 1000 ||
 		offsets[3] != 3000 || limits[3] != 501 {
-		t.Fatal(len(buckets), limits, offsets)
+		t.Fatal(len(responses), limits, offsets)
 	}
 }
 

@@ -4,13 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**DeviceIds** | Pointer to **[]string** |  | [optional] 
+**DeviceIds** | **[]string** |  | 
 
 ## Methods
 
 ### NewDeviceMonitoringIDsRequest
 
-`func NewDeviceMonitoringIDsRequest() *DeviceMonitoringIDsRequest`
+`func NewDeviceMonitoringIDsRequest(deviceIds []string, ) *DeviceMonitoringIDsRequest`
 
 NewDeviceMonitoringIDsRequest instantiates a new DeviceMonitoringIDsRequest object
 This constructor will assign default values to properties that have it defined,
@@ -44,11 +44,6 @@ and a boolean to check if the value has been set.
 
 SetDeviceIds sets DeviceIds field to given value.
 
-### HasDeviceIds
-
-`func (o *DeviceMonitoringIDsRequest) HasDeviceIds() bool`
-
-HasDeviceIds returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

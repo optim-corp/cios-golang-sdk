@@ -82,5 +82,5 @@ func (self DeviceManagement) CreatePolicy(resourceOwnerID string, ctx model.Requ
 	if err := self.refresh(); err != nil {
 		return cios.DevicePolicy{}, nil, err
 	}
-	return self.ApiClient.DeviceApi.CreateDevicePolicy(ctx).DevicePolicyRequest(cios.DevicePolicyRequest{ResourceOwnerId: &resourceOwnerID}).Execute()
+	return self.ApiClient.DeviceApi.CreateDevicePolicy(ctx).DevicePolicyRequest(cios.DevicePolicyRequest{ResourceOwnerId: resourceOwnerID}).Execute()
 }

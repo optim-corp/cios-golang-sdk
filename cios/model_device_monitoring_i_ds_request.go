@@ -16,15 +16,16 @@ import (
 
 // DeviceMonitoringIDsRequest struct for DeviceMonitoringIDsRequest
 type DeviceMonitoringIDsRequest struct {
-	DeviceIds *[]string `json:"device_ids,omitempty"`
+	DeviceIds []string `json:"device_ids"`
 }
 
 // NewDeviceMonitoringIDsRequest instantiates a new DeviceMonitoringIDsRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDeviceMonitoringIDsRequest() *DeviceMonitoringIDsRequest {
+func NewDeviceMonitoringIDsRequest(deviceIds []string, ) *DeviceMonitoringIDsRequest {
 	this := DeviceMonitoringIDsRequest{}
+	this.DeviceIds = deviceIds
 	return &this
 }
 
@@ -36,41 +37,33 @@ func NewDeviceMonitoringIDsRequestWithDefaults() *DeviceMonitoringIDsRequest {
 	return &this
 }
 
-// GetDeviceIds returns the DeviceIds field value if set, zero value otherwise.
+// GetDeviceIds returns the DeviceIds field value
 func (o *DeviceMonitoringIDsRequest) GetDeviceIds() []string {
-	if o == nil || o.DeviceIds == nil {
+	if o == nil  {
 		var ret []string
 		return ret
 	}
-	return *o.DeviceIds
+
+	return o.DeviceIds
 }
 
-// GetDeviceIdsOk returns a tuple with the DeviceIds field value if set, nil otherwise
+// GetDeviceIdsOk returns a tuple with the DeviceIds field value
 // and a boolean to check if the value has been set.
 func (o *DeviceMonitoringIDsRequest) GetDeviceIdsOk() (*[]string, bool) {
-	if o == nil || o.DeviceIds == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.DeviceIds, true
+	return &o.DeviceIds, true
 }
 
-// HasDeviceIds returns a boolean if a field has been set.
-func (o *DeviceMonitoringIDsRequest) HasDeviceIds() bool {
-	if o != nil && o.DeviceIds != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetDeviceIds gets a reference to the given []string and assigns it to the DeviceIds field.
+// SetDeviceIds sets field value
 func (o *DeviceMonitoringIDsRequest) SetDeviceIds(v []string) {
-	o.DeviceIds = &v
+	o.DeviceIds = v
 }
 
 func (o DeviceMonitoringIDsRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.DeviceIds != nil {
+	if true {
 		toSerialize["device_ids"] = o.DeviceIds
 	}
 	return json.Marshal(toSerialize)

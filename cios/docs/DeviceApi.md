@@ -656,7 +656,7 @@ import (
 )
 
 func main() {
-    deviceMonitoringIDsRequest := *openapiclient.NewDeviceMonitoringIDsRequest() // DeviceMonitoringIDsRequest | 
+    deviceMonitoringIDsRequest := *openapiclient.NewDeviceMonitoringIDsRequest([]string{"DeviceIds_example"}) // DeviceMonitoringIDsRequest | 
 
     configuration := openapiclient.NewConfiguration()
     api_client := openapiclient.NewAPIClient(configuration)
