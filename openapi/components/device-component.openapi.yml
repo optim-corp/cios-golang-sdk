@@ -338,3 +338,41 @@ components:
           type: object
           example:
             0x0010: [ "unitSerialNo", "unitStatus", "commandValue" ]
+
+    DeviceClientRequest:
+      type: object
+      properties:
+        client_id_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceClientRsaKey'
+    DeviceClientRsaKey:
+      type: object
+      required:
+        - client_id
+        - rsa_publickey
+      properties:
+        client_id:
+          type: string
+        rsa_publickey:
+          type: string
+    DeviceClientList:
+      type: object
+      properties:
+        client_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/Client'
+    SingleDeviceClientList:
+      type: object
+      properties:
+        client_list:
+          $ref: '#/components/schemas/Client'
+
+    RsaPublicKey:
+      type: object
+      required:
+        - rsa_publickey
+      properties:
+        rsa_publickey:
+          type: string

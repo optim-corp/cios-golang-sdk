@@ -1936,6 +1936,20 @@ paths:
       - bearerAuth: []
       tags:
       - device
+  /v2/devices/profile:
+    get:
+      operationId: getDeviceProfile
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/lang
+      - $ref: ./components/parameters.yml#/components/parameters/is_dev
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/device-component.openapi.yml#/components/schemas/SingleDevice
+          description: OK
+      summary: device.profile
   /v2/devices/{device_id}:
     delete:
       operationId: deleteDevice
@@ -2001,6 +2015,63 @@ paths:
       summary: 指定したidのデバイス情報を更新する
       tags:
       - device
+  /v2/devices/{device_id}/device_clients:
+    post:
+      description: '* 指定したデバイスにクライアントを作成します。
+
+        * 指定したデバイスIDが存在しない場合は、エラー(404 Not Found)となります。
+
+        * 指定したデバイスにクライアントが存在しない状態で作成した場合、デバイス管理区分を一部管理に変更します。'
+      operationId: createDeviceClient
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/device_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/device-component.openapi.yml#/components/schemas/DeviceClientRequest
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/device-component.openapi.yml#/components/schemas/DeviceClientList
+          description: OK
+  /v2/devices/{device_id}/device_clients/{client_id}:
+    delete:
+      description: -| * 指定したアプリケーションクライアントIDに紐づくデバイスクライアントを削除します。 * 指定したデバイスID、またはアプリケーションクライアントIDが存在しない場合は、エラー(404
+        Not Found)となります。 * 指定したデバイスクライアントを削除後、デバイスに紐づくデバイスクライアントが存在しない場合は、デバイス管理区分を管理外に変更します。
+        * デバイス管理区分が完全管理のデバイス管理エージェント固有のデバイスクライアントに関しては、ディアクティベーションでのみ削除可能です。
+      operationId: deleteDeviceClient
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/device_id
+      - $ref: ./components/parameters.yml#/components/parameters/client_id
+      responses:
+        200:
+          description: OK
+      summary: device.write
+    patch:
+      description: -| * 指定したアプリケーションクライアントIDに紐づくデバイスクライアントのRSA公開鍵を更新します。 * 指定したデバイスID、またはアプリケーションクライアントIDが存在しない場合は、エラー(404
+        Not Found)となります。
+      operationId: updateDeviceClient
+      parameters:
+      - $ref: ./components/parameters.yml#/components/parameters/device_id
+      - $ref: ./components/parameters.yml#/components/parameters/client_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: ./components/device-component.openapi.yml#/components/schemas/RsaPublicKey
+        required: true
+      responses:
+        200:
+          content:
+            application/json:
+              schema:
+                $ref: ./components/device-component.openapi.yml#/components/schemas/SingleDeviceClientList
+          description: OK
+      summary: device.write
   /v2/devices/{device_id}/inventory/latest:
     get:
       operationId: getDeviceInventoryLatest
