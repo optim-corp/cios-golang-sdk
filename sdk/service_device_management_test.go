@@ -266,20 +266,27 @@ func TestDeviceManagement_DeleteDevice(t *testing.T) {
 func TestDeviceManagement_UpdateDevice(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		body := cios.DeviceName{}
+		body := cios.DeviceUpdateRequest{}
 		byts, _ := ioutil.ReadAll(r.Body)
 		convert.UnMarshalJson(byts, &body)
-		if r.URL.Path != "/v2/file_storage/buckets/bucketid" {
+		if *body.Name != "name" || *body.Description != "desc" ||
+			*body.IdNumber != "1234" ||
+			*body.RsaPublickey != "rsa" {
+			t.Fatal(body)
+		}
+		if r.URL.Path != "/v2/devices/bucketid" {
 			t.Fatal(r.URL.Path)
 		}
 		if r.Method != "PATCH" {
 			t.Fatal(r.Method)
 		}
-		if body.Name != "test" {
-			t.Fatal(body)
-		}
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
-	client.DeviceManagement.GetDevicesUnlimited("bucketid", "test", context.Background())
+	client.DeviceManagement.UpdateDevice("bucketid", cios.DeviceUpdateRequest{
+		Name:         convert.StringPtr("name"),
+		IdNumber:     convert.StringPtr("1234"),
+		Description:  convert.StringPtr("desc"),
+		RsaPublickey: convert.StringPtr("rsa"),
+	}, context.Background())
 }

@@ -123,3 +123,13 @@ func (self DeviceManagement) CreateDevice(body cios.DeviceInfo, ctx model.Reques
 	}
 	return response.Device, httpResponse, err
 }
+func (self DeviceManagement) UpdateDevice(deviceId string, body cios.DeviceUpdateRequest, ctx model.RequestCtx) (cios.Device, *_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return cios.Device{}, nil, err
+	}
+	response, httpResponse, err := self.ApiClient.DeviceApi.UpdateDevice(ctx, deviceId).DeviceUpdateRequest(body).Execute()
+	if err != nil {
+		return cios.Device{}, httpResponse, err
+	}
+	return response.Device, httpResponse, err
+}
