@@ -103,16 +103,20 @@ Class | Method | HTTP request | Description
 *ContractApi* | [**GetContractUsers**](docs/ContractApi.md#getcontractusers) | **Get** /v2/contracts/{contract_id}/users | 契約IDの契約情報を取得する
 *ContractApi* | [**GetContracts**](docs/ContractApi.md#getcontracts) | **Get** /v2/contracts | 契約一覧情報を取得する
 *DeviceApi* | [**CreateDevice**](docs/DeviceApi.md#createdevice) | **Post** /v2/devices | デバイスの登録
+*DeviceApi* | [**CreateDeviceClient**](docs/DeviceApi.md#createdeviceclient) | **Post** /v2/devices/{device_id}/device_clients | 
 *DeviceApi* | [**CreateDevicePolicy**](docs/DeviceApi.md#createdevicepolicy) | **Post** /v2/devices/group_policies | 
 *DeviceApi* | [**DeleteDevice**](docs/DeviceApi.md#deletedevice) | **Delete** /v2/devices/{device_id} | 
+*DeviceApi* | [**DeleteDeviceClient**](docs/DeviceApi.md#deletedeviceclient) | **Delete** /v2/devices/{device_id}/device_clients/{client_id} | device.write
 *DeviceApi* | [**DeletePolicy**](docs/DeviceApi.md#deletepolicy) | **Delete** /v2/devices/group_policies/{policy_id} | 
 *DeviceApi* | [**GetDevice**](docs/DeviceApi.md#getdevice) | **Get** /v2/devices/{device_id} | 指定したidのデバイスの情報を取得する
 *DeviceApi* | [**GetDeviceInventoryLatest**](docs/DeviceApi.md#getdeviceinventorylatest) | **Get** /v2/devices/{device_id}/inventory/latest | 
 *DeviceApi* | [**GetDeviceMonitoringLatest**](docs/DeviceApi.md#getdevicemonitoringlatest) | **Get** /v2/devices/{device_id}/monitoring/latest | 
 *DeviceApi* | [**GetDeviceMonitoringsLatest**](docs/DeviceApi.md#getdevicemonitoringslatest) | **Post** /v2/devices/monitoring/latest | 
 *DeviceApi* | [**GetDevicePolicies**](docs/DeviceApi.md#getdevicepolicies) | **Get** /v2/devices/group_policies | 
+*DeviceApi* | [**GetDeviceProfile**](docs/DeviceApi.md#getdeviceprofile) | **Get** /v2/devices/profile | device.profile
 *DeviceApi* | [**GetDevices**](docs/DeviceApi.md#getdevices) | **Get** /v2/devices | デバイスの一覧を取得する
 *DeviceApi* | [**UpdateDevice**](docs/DeviceApi.md#updatedevice) | **Patch** /v2/devices/{device_id} | 指定したidのデバイス情報を更新する
+*DeviceApi* | [**UpdateDeviceClient**](docs/DeviceApi.md#updatedeviceclient) | **Patch** /v2/devices/{device_id}/device_clients/{client_id} | device.write
 *DeviceAssetApi* | [**CreateDeviceEntitiesComponent**](docs/DeviceAssetApi.md#createdeviceentitiescomponent) | **Post** /v2/device_entities/{key}/components | 
 *DeviceAssetApi* | [**CreateDeviceEntitiesLifecycle**](docs/DeviceAssetApi.md#createdeviceentitieslifecycle) | **Post** /v2/device_entities/{key}/lifecycles | 
 *DeviceAssetApi* | [**CreateDeviceModel**](docs/DeviceAssetApi.md#createdevicemodel) | **Post** /v2/device_models | 
@@ -242,6 +246,9 @@ Class | Method | HTTP request | Description
  - [DataStoreObjectLocation](docs/DataStoreObjectLocation.md)
  - [Device](docs/Device.md)
  - [DeviceClient](docs/DeviceClient.md)
+ - [DeviceClientList](docs/DeviceClientList.md)
+ - [DeviceClientRequest](docs/DeviceClientRequest.md)
+ - [DeviceClientRsaKey](docs/DeviceClientRsaKey.md)
  - [DeviceEntitiesComponent](docs/DeviceEntitiesComponent.md)
  - [DeviceEntitiesComponentUpdateRequest](docs/DeviceEntitiesComponentUpdateRequest.md)
  - [DeviceInfo](docs/DeviceInfo.md)
@@ -322,6 +329,7 @@ Class | Method | HTTP request | Description
  - [Room](docs/Room.md)
  - [Route](docs/Route.md)
  - [RouteContents](docs/RouteContents.md)
+ - [RsaPublicKey](docs/RsaPublicKey.md)
  - [SeriesAggregations](docs/SeriesAggregations.md)
  - [SeriesBulkRequest](docs/SeriesBulkRequest.md)
  - [SeriesDataBulkRequest](docs/SeriesDataBulkRequest.md)
@@ -337,6 +345,7 @@ Class | Method | HTTP request | Description
  - [SingleDataStoreChannel](docs/SingleDataStoreChannel.md)
  - [SingleDataStoreObject](docs/SingleDataStoreObject.md)
  - [SingleDevice](docs/SingleDevice.md)
+ - [SingleDeviceClientList](docs/SingleDeviceClientList.md)
  - [SingleDeviceEntitiesComponent](docs/SingleDeviceEntitiesComponent.md)
  - [SingleDeviceModel](docs/SingleDeviceModel.md)
  - [SingleDeviceModelsEntity](docs/SingleDeviceModelsEntity.md)

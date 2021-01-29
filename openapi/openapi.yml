@@ -1950,6 +1950,8 @@ paths:
                 $ref: ./components/device-component.openapi.yml#/components/schemas/SingleDevice
           description: OK
       summary: device.profile
+      tags:
+      - device
   /v2/devices/{device_id}:
     delete:
       operationId: deleteDevice
@@ -2038,6 +2040,8 @@ paths:
               schema:
                 $ref: ./components/device-component.openapi.yml#/components/schemas/DeviceClientList
           description: OK
+      tags:
+      - device
   /v2/devices/{device_id}/device_clients/{client_id}:
     delete:
       description: -| * 指定したアプリケーションクライアントIDに紐づくデバイスクライアントを削除します。 * 指定したデバイスID、またはアプリケーションクライアントIDが存在しない場合は、エラー(404
@@ -2051,6 +2055,8 @@ paths:
         200:
           description: OK
       summary: device.write
+      tags:
+      - device
     patch:
       description: -| * 指定したアプリケーションクライアントIDに紐づくデバイスクライアントのRSA公開鍵を更新します。 * 指定したデバイスID、またはアプリケーションクライアントIDが存在しない場合は、エラー(404
         Not Found)となります。
@@ -2072,6 +2078,8 @@ paths:
                 $ref: ./components/device-component.openapi.yml#/components/schemas/SingleDeviceClientList
           description: OK
       summary: device.write
+      tags:
+      - device
   /v2/devices/{device_id}/inventory/latest:
     get:
       operationId: getDeviceInventoryLatest

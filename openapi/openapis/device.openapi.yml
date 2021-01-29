@@ -126,6 +126,8 @@ paths:
         - bearerAuth: []
   /v2/devices/{device_id}/device_clients:
     post:
+      tags:
+        - device
       description: |-
         * 指定したデバイスにクライアントを作成します。
         * 指定したデバイスIDが存在しない場合は、エラー(404 Not Found)となります。
@@ -148,6 +150,8 @@ paths:
                 $ref: '../components/device-component.openapi.yml#/components/schemas/DeviceClientList'
   /v2/devices/{device_id}/device_clients/{client_id}:
     patch:
+      tags:
+        - device
       description: -|
         * 指定したアプリケーションクライアントIDに紐づくデバイスクライアントのRSA公開鍵を更新します。
         * 指定したデバイスID、またはアプリケーションクライアントIDが存在しない場合は、エラー(404 Not Found)となります。
@@ -170,6 +174,8 @@ paths:
               schema:
                 $ref: '../components/device-component.openapi.yml#/components/schemas/SingleDeviceClientList'
     delete:
+      tags:
+        - device
       description: -|
         * 指定したアプリケーションクライアントIDに紐づくデバイスクライアントを削除します。
         * 指定したデバイスID、またはアプリケーションクライアントIDが存在しない場合は、エラー(404 Not Found)となります。
@@ -185,6 +191,8 @@ paths:
           description: OK
   /v2/devices/profile:
     get:
+      tags:
+        - device
       summary: device.profile
       operationId: getDeviceProfile
       parameters:
