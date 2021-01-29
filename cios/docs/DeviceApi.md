@@ -179,7 +179,7 @@ import (
 )
 
 func main() {
-    devicePolicyRequest := *openapiclient.NewDevicePolicyRequest() // DevicePolicyRequest | 
+    devicePolicyRequest := *openapiclient.NewDevicePolicyRequest("ResourceOwnerId_example") // DevicePolicyRequest | 
 
     configuration := openapiclient.NewConfiguration()
     api_client := openapiclient.NewAPIClient(configuration)

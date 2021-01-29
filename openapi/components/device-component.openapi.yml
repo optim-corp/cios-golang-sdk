@@ -294,6 +294,8 @@ components:
           type: string
     DevicePolicyRequest:
       type: object
+      required:
+        - resource_owner_id
       properties:
         resource_owner_id:
           type: string

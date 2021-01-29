@@ -18,7 +18,7 @@ import (
 	"github.com/optim-corp/cios-golang-sdk/model"
 )
 
-func TestDeviceManagement_GetDevices(t *testing.T) {
+func TestDeviceManagement_GetPolicies(t *testing.T) {
 	var (
 		query url.Values
 		ctx   context.Context
@@ -137,7 +137,7 @@ func TestDeviceManagement_GetDevices(t *testing.T) {
 	//ts.Close()
 }
 
-func TestDeviceManagement_GetDevicesAll(t *testing.T) {
+func TestDeviceManagement_GetPoliciesAll(t *testing.T) {
 	var offsets []int
 	var limits []int
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -185,7 +185,7 @@ func TestDeviceManagement_GetDevicesAll(t *testing.T) {
 	}
 }
 
-func TestDeviceManagement_GetDevicesUnlimited(t *testing.T) {
+func TestDeviceManagement_GetPoliciesUnlimited(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleDevice{Total: 3500, Devices: []cios.Device{}}
@@ -205,74 +205,28 @@ func TestDeviceManagement_GetDevicesUnlimited(t *testing.T) {
 	}
 }
 
-func TestDeviceManagement_GetDevice(t *testing.T) {
+func TestDeviceManagement_DeletePolicy(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		if r.URL.Path == "/v2/devices/test" {
-			response := cios.SingleDevice{Device: cios.Device{
-				Id:              "test",
-				ResourceOwnerId: "test_resource_owner",
-				Name:            convert.StringPtr(""),
-			}}
-			json.NewEncoder(w).Encode(response)
-		}
-	}))
-	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
-	body, response, err := client.DeviceManagement.GetDevice("test", nil, nil, context.Background())
-	if body.Id != "test" || err != nil || response.StatusCode != 200 {
-		t.Fatal(body)
-	}
-}
-
-func TestDeviceManagement_CreateDevice(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/v2/devices" {
+		if r.URL.Path != "/v2/devices/group_policies/id" {
 			t.Fatal(r.URL.Path)
 		}
 		w.Header().Set("Content-Type", "application/json")
-		body := cios.DeviceInfo{}
-		if r.Method != "POST" {
-			t.Fatal(r.Method)
-		}
-		byts, _ := ioutil.ReadAll(r.Body)
-		convert.UnMarshalJson(byts, &body)
-		if *body.Name != "name" || body.ResourceOwnerId != "resource_owner_id" {
-			t.Fatal(body)
-		}
-
-	}))
-	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
-	client.DeviceManagement.CreateDevice(cios.DeviceInfo{
-		Name:            convert.StringPtr("name"),
-		ResourceOwnerId: "resource_owner_id",
-	}, context.Background())
-}
-
-func TestDeviceManagement_DeleteDevice(t *testing.T) {
-	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		if r.URL.Path != "/v2/devices/device_id" {
-			t.Fatal(r.URL.Path)
-		}
 		if r.Method != "DELETE" {
 			t.Fatal(r.Method)
 		}
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
-	client.DeviceManagement.DeleteDevice("device_id", context.Background())
+	client.DeviceManagement.DeletePolicy("id", context.Background())
 }
-func TestDeviceManagement_UpdateDevice(t *testing.T) {
+
+func TestDeviceManagement_CreatePolicy(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
-		body := cios.DeviceUpdateRequest{}
+		body := cios.DevicePolicyRequest{}
 		byts, _ := ioutil.ReadAll(r.Body)
 		convert.UnMarshalJson(byts, &body)
-		if *body.Name != "name" || *body.Description != "desc" ||
-			*body.IdNumber != "1234" ||
-			*body.RsaPublickey != "rsa" {
+		if body.ResourceOwnerId != "resource_owner_id" {
 			t.Fatal(body)
 		}
 		if r.URL.Path != "/v2/devices/bucketid" {
@@ -284,10 +238,5 @@ func TestDeviceManagement_UpdateDevice(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
-	client.DeviceManagement.UpdateDevice("bucketid", cios.DeviceUpdateRequest{
-		Name:         convert.StringPtr("name"),
-		IdNumber:     convert.StringPtr("1234"),
-		Description:  convert.StringPtr("desc"),
-		RsaPublickey: convert.StringPtr("rsa"),
-	}, context.Background())
+	client.DeviceManagement.CreatePolicy("resource_owner_id", context.Background())
 }
