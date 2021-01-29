@@ -2,7 +2,6 @@ package ciossdk
 
 import (
 	_nethttp "net/http"
-	"os"
 
 	"github.com/optim-corp/cios-golang-sdk/util"
 
@@ -73,7 +72,7 @@ func (self Account) GetResourceOwnersAll(params cios.ApiGetResourceOwnersRequest
 	return result, httpRes, err
 }
 func (self Account) GetResourceOwnersUnlimited(params cios.ApiGetResourceOwnersRequest, ctx model.RequestCtx) ([]cios.ResourceOwner, *_nethttp.Response, error) {
-	params.P_offset = nil
+	params.P_limit = nil
 	return self.GetResourceOwnersAll(params, ctx)
 }
 
@@ -94,17 +93,6 @@ func (self Account) GetResourceOwnerByGroupId(groupID string, ctx model.RequestC
 		return cios.ResourceOwner{}, httpResponse, err
 	}
 	return resourceOwners.ResourceOwners[0], httpResponse, err
-}
-
-func (self Account) GetMyResourceOwnerId(ctx model.RequestCtx) string {
-	me, _, _ := self.GetMe(ctx)
-	value, _, _ := self.GetResourceOwners(MakeGetResourceOwnersOpts().UserId(me.Id), ctx)
-
-	if value.Total != 0 {
-		return value.ResourceOwners[0].Id
-	} else {
-		return os.Getenv("RESOURCE_OWNER_ID")
-	}
 }
 
 func (self Account) GetResourceOwnersMapByID(ctx model.RequestCtx) (map[string]cios.ResourceOwner, *_nethttp.Response, error) {
