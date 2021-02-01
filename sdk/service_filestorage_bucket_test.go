@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"testing"
+	"time"
 
 	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
 
@@ -17,6 +18,87 @@ import (
 
 	"github.com/optim-corp/cios-golang-sdk/model"
 )
+
+func Test_RefreshBucket(t *testing.T) {
+	count, _token, ctx := 0, "", context.Background()
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_token = r.Header.Get("Authorization")
+		if r.URL.Path == "/connect/token" {
+			count += 1
+			json.NewEncoder(w).Encode(cios.ConnectTokenResponse{
+				AccessToken:  sampleToken,
+				TokenType:    "",
+				RefreshToken: "",
+				ExpiresIn:    0,
+				Scope:        "",
+			})
+		}
+	})
+	ts := httptest.NewServer(handler)
+	client := NewCiosClient(CiosClientConfig{
+		AutoRefresh: true,
+		Urls:        model.CIOSUrl{StorageUrl: ts.URL, AuthUrl: ts.URL},
+		AuthConfig: RefreshTokenAuth(
+			"clientID",
+			"clientSecret",
+			"assertion",
+			"scope",
+		),
+	})
+	funcs := []func(){
+		func() { client.FileStorage.GetBuckets(MakeGetBucketsOpts(), ctx) },
+		func() { client.FileStorage.CreateBucket("", "", ctx) },
+		func() { client.FileStorage.GetBucket("", ctx) },
+		func() { client.FileStorage.UpdateBucket("", "", ctx) },
+		func() { client.FileStorage.DeleteBucket("", ctx) },
+	}
+	for i, fnc := range funcs {
+		fnc()
+		if _token != "Bearer "+sampleToken {
+			t.Fatal(_token)
+		}
+		if count != i+1 {
+			t.Fatal(count)
+		}
+		_token = ""
+	}
+	for _, fnc := range funcs {
+		client.tokenExp = time.Now().Unix() + 10000
+		fnc()
+		if _token != "Bearer "+sampleToken {
+			t.Fatal(_token)
+		}
+		if count != len(funcs) {
+			t.Fatal(count)
+		}
+		_token = ""
+	}
+
+	ctx = MakeRequestCtx("AAA")
+	count = 0
+	_token = ""
+	client = NewCiosClient(CiosClientConfig{
+		AutoRefresh: true,
+		Urls:        model.CIOSUrl{StorageUrl: ts.URL, AuthUrl: ts.URL},
+		AuthConfig: RefreshTokenAuth(
+			"clientID",
+			"clientSecret",
+			"assertion",
+			"scope",
+		),
+	})
+	for i, fnc := range funcs {
+		fnc()
+		if _token != "Bearer AAA" {
+			t.Fatal(_token)
+		}
+		if count != i+1 {
+			t.Fatal(count)
+		}
+		_token = ""
+	}
+}
 
 func TestFileStorage_GetBuckets(t *testing.T) {
 	var (

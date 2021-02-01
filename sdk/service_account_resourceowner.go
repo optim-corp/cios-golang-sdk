@@ -84,11 +84,7 @@ func (self Account) GetResourceOwner(id string, ctx model.RequestCtx) (cios.Reso
 
 }
 func (self Account) GetResourceOwnerByGroupId(groupID string, ctx model.RequestCtx) (cios.ResourceOwner, *_nethttp.Response, error) {
-	group, httpResponse, err := self.GetGroup(groupID, nil, ctx)
-	if err != nil {
-		return cios.ResourceOwner{}, httpResponse, err
-	}
-	resourceOwners, httpResponse, err := self.GetResourceOwners(cios.ApiGetResourceOwnersRequest{P_groupId: &group.Id}, ctx)
+	resourceOwners, httpResponse, err := self.GetResourceOwners(cios.ApiGetResourceOwnersRequest{P_groupId: &groupID}, ctx)
 	if err != nil {
 		return cios.ResourceOwner{}, httpResponse, err
 	}

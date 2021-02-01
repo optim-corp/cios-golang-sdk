@@ -161,8 +161,7 @@ func (self PubSub) UpdateChannel(channelID string, body cios.ChannelUpdatePropos
 	if err := self.refresh(); err != nil {
 		return cios.MultipleChannel{}, nil, err
 	}
-	request := self.ApiClient.PublishSubscribeApi.UpdateChannel(ctx, channelID).ChannelUpdateProposal(body)
-	return request.Execute()
+	return self.ApiClient.PublishSubscribeApi.UpdateChannel(ctx, channelID).ChannelUpdateProposal(body).Execute()
 }
 func GetDefaultDisplayInfo(displayInfos []cios.DisplayInfo) *cios.DisplayInfo {
 	for _, v := range displayInfos {
