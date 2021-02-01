@@ -8,6 +8,7 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"testing"
+	"time"
 
 	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
 
@@ -18,14 +19,18 @@ import (
 	"github.com/optim-corp/cios-golang-sdk/model"
 )
 
+//　https://auth0.com/docs/tokens/access-tokens/use-access-tokens
+var sampleToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2V4YW1wbGUuYXV0aDAuY29tLyIsImF1ZCI6Imh0dHBzOi8vYXBpLmV4YW1wbGUuY29tL2NhbGFuZGFyL3YxLyIsInN1YiI6InVzcl8xMjMiLCJpYXQiOjE0NTg3ODU3OTYsImV4cCI6MTQ1ODg3MjE5Nn0.CA7eaHjIHz5NxeIJoFK9krqaeZrPLwmMmgI_XiQiIkQ"
+
 func Test_RefreshGroup(t *testing.T) {
-	_token := ""
-	responseHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	count, _token, ctx := 0, "", context.Background()
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
+		_token = r.Header.Get("Authorization")
 		if r.URL.Path == "/connect/token" {
+			count += 1
 			json.NewEncoder(w).Encode(cios.ConnectTokenResponse{
-				//　https://auth0.com/docs/tokens/access-tokens/use-access-tokens
-				AccessToken:  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2V4YW1wbGUuYXV0aDAuY29tLyIsImF1ZCI6Imh0dHBzOi8vYXBpLmV4YW1wbGUuY29tL2NhbGFuZGFyL3YxLyIsInN1YiI6InVzcl8xMjMiLCJpYXQiOjE0NTg3ODU3OTYsImV4cCI6MTQ1ODg3MjE5Nn0.CA7eaHjIHz5NxeIJoFK9krqaeZrPLwmMmgI_XiQiIkQ",
+				AccessToken:  sampleToken,
 				TokenType:    "",
 				RefreshToken: "",
 				ExpiresIn:    0,
@@ -33,18 +38,69 @@ func Test_RefreshGroup(t *testing.T) {
 			})
 		}
 	})
-	ts := httptest.NewServer(responseHandler)
+	ts := httptest.NewServer(handler)
 	client := NewCiosClient(CiosClientConfig{
-		AutoRefresh: false,
-		Debug:       false,
-		Urls:        model.CIOSUrl{AccountsUrl: ts.URL},
-		AuthConfig: DeviceAuthConf(
+		AutoRefresh: true,
+		Urls:        model.CIOSUrl{AccountsUrl: ts.URL, AuthUrl: ts.URL},
+		AuthConfig: RefreshTokenAuth(
 			"clientID",
 			"clientSecret",
 			"assertion",
-			"Scope",
+			"scope",
 		),
 	})
+	funcs := []func(){
+		func() { client.Account.GetGroups(MakeGetGroupsOpts(), ctx) },
+		func() { client.Account.CreateGroup(cios.GroupCreateRequest{}, ctx) },
+		func() { client.Account.GetGroup("", nil, ctx) },
+		func() { client.Account.UpdateGroup("", cios.GroupUpdateRequest{}, ctx) },
+		func() { client.Account.DeleteGroup("", ctx) },
+	}
+	for i, fnc := range funcs {
+		fnc()
+		if _token != "Bearer "+sampleToken {
+			t.Fatal(_token)
+		}
+		if count != i+1 {
+			t.Fatal(count)
+		}
+		_token = ""
+	}
+	for _, fnc := range funcs {
+		client.tokenExp = time.Now().Unix() + 10000
+		fnc()
+		if _token != "Bearer "+sampleToken {
+			t.Fatal(_token)
+		}
+		if count != len(funcs) {
+			t.Fatal(count)
+		}
+		_token = ""
+	}
+
+	ctx = MakeRequestCtx("AAA")
+	count = 0
+	_token = ""
+	client = NewCiosClient(CiosClientConfig{
+		AutoRefresh: true,
+		Urls:        model.CIOSUrl{AccountsUrl: ts.URL, AuthUrl: ts.URL},
+		AuthConfig: RefreshTokenAuth(
+			"clientID",
+			"clientSecret",
+			"assertion",
+			"scope",
+		),
+	})
+	for i, fnc := range funcs {
+		fnc()
+		if _token != "Bearer AAA" {
+			t.Fatal(_token)
+		}
+		if count != i+1 {
+			t.Fatal(count)
+		}
+		_token = ""
+	}
 }
 func TestAccount_Groups(t *testing.T) {
 	var (
@@ -133,31 +189,6 @@ func TestAccount_Groups(t *testing.T) {
 	}
 
 	ts.Close()
-
-	//// Auto Refresh Test
-	//client = NewCiosClient(
-	//	CiosClientConfig{
-	//		Urls:        model.CIOSUrl{AccountsUrl: ts.URL},
-	//		AutoRefresh: true,
-	//	},
-	//)
-	//responseHandler = func(w http.ResponseWriter, r *http.Request) {
-	//	w.Header().Set("Content-Type", "application/json")
-	//	w.WriteHeader(404)
-	//}
-	//ts = httptest.NewServer(responseHandler)
-	//
-	//result := "Failed"
-	//refFunc := func() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
-	//	result = "Accept"
-	//	return "", "", "", 0, nil
-	//}
-	//client.Account.refresh = &refFunc
-	//if result == "Failed" {
-	//	t.Fatal("Cant Refresh", result)
-	//}
-	////　念のためクローズ
-	//ts.Close()
 }
 
 func TestAccount_GetGroupsAll(t *testing.T) {
