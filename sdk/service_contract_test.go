@@ -83,33 +83,7 @@ func TestContract_GetContracts(t *testing.T) {
 		client.Contract.GetContracts(test.params, ctx)
 		test.test()
 	}
-
 	ts.Close()
-
-	//// Auto Refresh Test
-	//client = NewCiosClient(
-	//	CiosClientConfig{
-	//		Urls:        model.CIOSUrl{ContractUrl: ts.URL},
-	//		AutoRefresh: true,
-	//	},
-	//)
-	//responseHandler = func(w http.ResponseWriter, r *http.Request) {
-	//	w.Header().Set("Content-Type", "application/json")
-	//	w.WriteHeader(404)
-	//}
-	//ts = httptest.NewServer(responseHandler)
-	//
-	//result := "Failed"
-	//refFunc := func() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
-	//	result = "Accept"
-	//	return "", "", "", 0, nil
-	//}
-	//client.Contract.refresh = &refFunc
-	//if result == "Failed" {
-	//	t.Fatal("Cant Refresh", result)
-	//}
-	////　念のためクローズ
-	//ts.Close()
 }
 
 func TestContract_GetContractsAll(t *testing.T) {

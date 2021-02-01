@@ -427,24 +427,25 @@ func TestDeviceAssetManagement_GetEntity(t *testing.T) {
 
 func TestDeviceAssetManagement_CreateEntity(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		if r.URL.Path != "/v2/device_models" {
+		if r.URL.Path != "/v2/device_models/name/entities" {
 			t.Fatal(r.URL.Path)
 		}
 		w.Header().Set("Content-Type", "application/json")
-		body := cios.DeviceModelRequest{}
+		body := cios.Inventory{}
 		if r.Method != "POST" {
 			t.Fatal(r.Method)
 		}
-		byts, _ := ioutil.ReadAll(r.Body)
-		convert.UnMarshalJson(byts, &body)
-		if body.Name != "name" || body.ResourceOwnerId != "resource_owner_id" {
+		convert.UnMarshalJson(r.Body, &body)
+		if *body.SerialNumber != "111" {
 			t.Fatal(body)
 		}
 
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
-	client.DeviceAssetManagement.CreateEntity("name", cios.Inventory{}, context.Background())
+	client.DeviceAssetManagement.CreateEntity("name", cios.Inventory{
+		SerialNumber: convert.StringPtr("111"),
+	}, context.Background())
 }
 
 func TestDeviceAssetManagement_DeleteEntity(t *testing.T) {

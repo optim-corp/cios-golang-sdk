@@ -239,6 +239,7 @@ func (self DeviceAssetManagement) GetLifecycles(key string, params cios.ApiGetDe
 	params.P_eventMode = util.ToNil(params.P_eventMode)
 	params.P_eventType = util.ToNil(params.P_eventType)
 	params.P_endEventAt = util.ToNil(params.P_endEventAt)
+	params.P_startEventAt = util.ToNil(params.P_startEventAt)
 	return params.Execute()
 }
 func (self DeviceAssetManagement) GetLifecyclesAll(key string, params cios.ApiGetDeviceEntitiesLifecyclesRequest, ctx model.RequestCtx) ([]cios.LifeCycle, *_nethttp.Response, error) {
