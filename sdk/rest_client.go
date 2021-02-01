@@ -102,6 +102,7 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 		instance.authType = config.AuthConfig._type
 		instance.Auth.clientId = config.AuthConfig.ClientID
 		instance.Auth.clientSecret = config.AuthConfig.ClientSecret
+		instance.Auth.assertion = config.AuthConfig.Assertion
 		instance.Auth.ref = config.AuthConfig.RefreshToken
 		instance.Auth.scope = config.AuthConfig.Scope
 	}
@@ -123,6 +124,11 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 					}
 					instance._accessToken(token)
 				case model.DEVICE_TYPE:
+					token, _, _, _, err := instance.Auth.GetAccessTokenOnDevice()
+					if err != nil {
+						return err
+					}
+					instance._accessToken(token)
 				default:
 				}
 			}

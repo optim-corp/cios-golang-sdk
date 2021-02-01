@@ -158,6 +158,8 @@ github.com/optim-kazuhiro-seida/go-advance-type v1.2.2 h1:eV3yKhRQ0ii78urdWZLn/B
 github.com/optim-kazuhiro-seida/go-advance-type v1.2.2/go.mod h1:t8CQQ6DsvogVqWuXuTIaCQsbfSYqDJ1YOXm+RtZd2H0=
 github.com/optim-kazuhiro-seida/go-advance-type v1.2.3 h1:HJ/fIAXDBaYVU1TvUatZdJs+Cxb9eZtBHOdGvtsicsc=
 github.com/optim-kazuhiro-seida/go-advance-type v1.2.3/go.mod h1:t8CQQ6DsvogVqWuXuTIaCQsbfSYqDJ1YOXm+RtZd2H0=
+github.com/optim-kazuhiro-seida/go-advance-type v1.2.4 h1:LUk8wNjGfO7/SYhW8ejmcrl3A4187jB2aW9VQaLPneI=
+github.com/optim-kazuhiro-seida/go-advance-type v1.2.4/go.mod h1:t8CQQ6DsvogVqWuXuTIaCQsbfSYqDJ1YOXm+RtZd2H0=
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/prometheus/client_model v0.0.0-20190812154241-14fe0d1b01d4/go.mod h1:xMI15A0UPsDsEKsMN9yxemIoYk6Tm2C1GtYGdfGttqA=
 github.com/rogpeppe/go-internal v1.3.0/go.mod h1:M8bDsm7K2OlrFYOpmOWEs/qY81heoFRclV5y23lUDJ4=

@@ -2,7 +2,6 @@ package ciossdk
 
 import (
 	"context"
-	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -65,6 +64,26 @@ func (self Auth) GetAccessTokenOnClient() (model.AccessToken, model.Scope, model
 }
 
 func (self Auth) GetAccessTokenOnDevice() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
-	return "", "", "", 0, errors.New("not implement")
+	responseBody := struct {
+		AccessToken string `json:"access_token"`
+		TokenType   string `json:"token_type"`
+		ExpiresIn   int    `json:"expires_in"`
+		Scope       string `json:"scope"`
+	}{}
+	values := url.Values{
+		"grant_type":    []string{"urn:ietf:params:oauth:grant-type:jwt-bearer"},
+		"client_id":     []string{self.clientId},
+		"client_secret": []string{self.clientSecret},
+		"scope":         []string{self.scope},
+	}
 
+	response, err := http.Post(self.Url+"/connect/token", "application/x-www-form-urlencoded", strings.NewReader(values.Encode()))
+	if err != nil {
+		return "", "", "", 0, err
+	}
+	defer response.Body.Close()
+	if err := convert.UnMarshalJson(response.Body, &responseBody); err != nil {
+		return "", "", "", 0, err
+	}
+	return responseBody.AccessToken, responseBody.Scope, responseBody.TokenType, responseBody.ExpiresIn, nil
 }
