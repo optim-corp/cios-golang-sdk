@@ -4,13 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Component** | [**DeviceEntitiesComponent**](DeviceEntitiesComponent.md) |  | 
+**Component** | [**NullableDeviceEntitiesComponent**](DeviceEntitiesComponent.md) |  | 
 
 ## Methods
 
 ### NewSingleDeviceEntitiesComponent
 
-`func NewSingleDeviceEntitiesComponent(component DeviceEntitiesComponent, ) *SingleDeviceEntitiesComponent`
+`func NewSingleDeviceEntitiesComponent(component NullableDeviceEntitiesComponent, ) *SingleDeviceEntitiesComponent`
 
 NewSingleDeviceEntitiesComponent instantiates a new SingleDeviceEntitiesComponent object
 This constructor will assign default values to properties that have it defined,
@@ -45,6 +45,16 @@ and a boolean to check if the value has been set.
 SetComponent sets Component field to given value.
 
 
+### SetComponentNil
+
+`func (o *SingleDeviceEntitiesComponent) SetComponentNil(b bool)`
+
+ SetComponentNil sets the value for Component to be an explicit nil
+
+### UnsetComponent
+`func (o *SingleDeviceEntitiesComponent) UnsetComponent()`
+
+UnsetComponent ensures that no value is present for Component, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

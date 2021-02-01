@@ -18,32 +18,32 @@ import (
 type DeviceModelsEntity struct {
 	Id string `json:"id"`
 	Key string `json:"key"`
-	DeviceId *string `json:"device_id,omitempty"`
+	DeviceId string `json:"device_id"`
 	Model DeviceModelsEntityModel `json:"model"`
 	SerialNumber *string `json:"serial_number,omitempty"`
 	// ナノ秒
-	StartAt string `json:"start_at"`
+	StartAt NullableString `json:"start_at,omitempty"`
 	CustomInventory *[]map[string]interface{} `json:"custom_inventory,omitempty"`
 	ResourceOwnerId string `json:"resource_owner_id"`
-	Watch Watch `json:"watch"`
-	Components DeviceEntitiesComponent `json:"components"`
-	CreatedAt *string `json:"created_at,omitempty"`
-	UpdatedAt *string `json:"updated_at,omitempty"`
+	Watch NullableWatch `json:"watch,omitempty"`
+	Components NullableDeviceEntitiesComponent `json:"components,omitempty"`
+	CreatedAt string `json:"created_at"`
+	UpdatedAt string `json:"updated_at"`
 }
 
 // NewDeviceModelsEntity instantiates a new DeviceModelsEntity object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDeviceModelsEntity(id string, key string, model DeviceModelsEntityModel, startAt string, resourceOwnerId string, watch Watch, components DeviceEntitiesComponent, ) *DeviceModelsEntity {
+func NewDeviceModelsEntity(id string, key string, deviceId string, model DeviceModelsEntityModel, resourceOwnerId string, createdAt string, updatedAt string, ) *DeviceModelsEntity {
 	this := DeviceModelsEntity{}
 	this.Id = id
 	this.Key = key
+	this.DeviceId = deviceId
 	this.Model = model
-	this.StartAt = startAt
 	this.ResourceOwnerId = resourceOwnerId
-	this.Watch = watch
-	this.Components = components
+	this.CreatedAt = createdAt
+	this.UpdatedAt = updatedAt
 	return &this
 }
 
@@ -103,36 +103,28 @@ func (o *DeviceModelsEntity) SetKey(v string) {
 	o.Key = v
 }
 
-// GetDeviceId returns the DeviceId field value if set, zero value otherwise.
+// GetDeviceId returns the DeviceId field value
 func (o *DeviceModelsEntity) GetDeviceId() string {
-	if o == nil || o.DeviceId == nil {
+	if o == nil  {
 		var ret string
 		return ret
 	}
-	return *o.DeviceId
+
+	return o.DeviceId
 }
 
-// GetDeviceIdOk returns a tuple with the DeviceId field value if set, nil otherwise
+// GetDeviceIdOk returns a tuple with the DeviceId field value
 // and a boolean to check if the value has been set.
 func (o *DeviceModelsEntity) GetDeviceIdOk() (*string, bool) {
-	if o == nil || o.DeviceId == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.DeviceId, true
+	return &o.DeviceId, true
 }
 
-// HasDeviceId returns a boolean if a field has been set.
-func (o *DeviceModelsEntity) HasDeviceId() bool {
-	if o != nil && o.DeviceId != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetDeviceId gets a reference to the given string and assigns it to the DeviceId field.
+// SetDeviceId sets field value
 func (o *DeviceModelsEntity) SetDeviceId(v string) {
-	o.DeviceId = &v
+	o.DeviceId = v
 }
 
 // GetModel returns the Model field value
@@ -191,28 +183,46 @@ func (o *DeviceModelsEntity) SetSerialNumber(v string) {
 	o.SerialNumber = &v
 }
 
-// GetStartAt returns the StartAt field value
+// GetStartAt returns the StartAt field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *DeviceModelsEntity) GetStartAt() string {
-	if o == nil  {
+	if o == nil || o.StartAt.Get() == nil {
 		var ret string
 		return ret
 	}
-
-	return o.StartAt
+	return *o.StartAt.Get()
 }
 
-// GetStartAtOk returns a tuple with the StartAt field value
+// GetStartAtOk returns a tuple with the StartAt field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *DeviceModelsEntity) GetStartAtOk() (*string, bool) {
 	if o == nil  {
 		return nil, false
 	}
-	return &o.StartAt, true
+	return o.StartAt.Get(), o.StartAt.IsSet()
 }
 
-// SetStartAt sets field value
+// HasStartAt returns a boolean if a field has been set.
+func (o *DeviceModelsEntity) HasStartAt() bool {
+	if o != nil && o.StartAt.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetStartAt gets a reference to the given NullableString and assigns it to the StartAt field.
 func (o *DeviceModelsEntity) SetStartAt(v string) {
-	o.StartAt = v
+	o.StartAt.Set(&v)
+}
+// SetStartAtNil sets the value for StartAt to be an explicit nil
+func (o *DeviceModelsEntity) SetStartAtNil() {
+	o.StartAt.Set(nil)
+}
+
+// UnsetStartAt ensures that no value is present for StartAt, not even an explicit nil
+func (o *DeviceModelsEntity) UnsetStartAt() {
+	o.StartAt.Unset()
 }
 
 // GetCustomInventory returns the CustomInventory field value if set, zero value otherwise.
@@ -271,116 +281,136 @@ func (o *DeviceModelsEntity) SetResourceOwnerId(v string) {
 	o.ResourceOwnerId = v
 }
 
-// GetWatch returns the Watch field value
+// GetWatch returns the Watch field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *DeviceModelsEntity) GetWatch() Watch {
-	if o == nil  {
+	if o == nil || o.Watch.Get() == nil {
 		var ret Watch
 		return ret
 	}
-
-	return o.Watch
+	return *o.Watch.Get()
 }
 
-// GetWatchOk returns a tuple with the Watch field value
+// GetWatchOk returns a tuple with the Watch field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *DeviceModelsEntity) GetWatchOk() (*Watch, bool) {
 	if o == nil  {
 		return nil, false
 	}
-	return &o.Watch, true
+	return o.Watch.Get(), o.Watch.IsSet()
 }
 
-// SetWatch sets field value
+// HasWatch returns a boolean if a field has been set.
+func (o *DeviceModelsEntity) HasWatch() bool {
+	if o != nil && o.Watch.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetWatch gets a reference to the given NullableWatch and assigns it to the Watch field.
 func (o *DeviceModelsEntity) SetWatch(v Watch) {
-	o.Watch = v
+	o.Watch.Set(&v)
+}
+// SetWatchNil sets the value for Watch to be an explicit nil
+func (o *DeviceModelsEntity) SetWatchNil() {
+	o.Watch.Set(nil)
 }
 
-// GetComponents returns the Components field value
+// UnsetWatch ensures that no value is present for Watch, not even an explicit nil
+func (o *DeviceModelsEntity) UnsetWatch() {
+	o.Watch.Unset()
+}
+
+// GetComponents returns the Components field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *DeviceModelsEntity) GetComponents() DeviceEntitiesComponent {
-	if o == nil  {
+	if o == nil || o.Components.Get() == nil {
 		var ret DeviceEntitiesComponent
 		return ret
 	}
-
-	return o.Components
+	return *o.Components.Get()
 }
 
-// GetComponentsOk returns a tuple with the Components field value
+// GetComponentsOk returns a tuple with the Components field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *DeviceModelsEntity) GetComponentsOk() (*DeviceEntitiesComponent, bool) {
 	if o == nil  {
 		return nil, false
 	}
-	return &o.Components, true
+	return o.Components.Get(), o.Components.IsSet()
 }
 
-// SetComponents sets field value
+// HasComponents returns a boolean if a field has been set.
+func (o *DeviceModelsEntity) HasComponents() bool {
+	if o != nil && o.Components.IsSet() {
+		return true
+	}
+
+	return false
+}
+
+// SetComponents gets a reference to the given NullableDeviceEntitiesComponent and assigns it to the Components field.
 func (o *DeviceModelsEntity) SetComponents(v DeviceEntitiesComponent) {
-	o.Components = v
+	o.Components.Set(&v)
+}
+// SetComponentsNil sets the value for Components to be an explicit nil
+func (o *DeviceModelsEntity) SetComponentsNil() {
+	o.Components.Set(nil)
 }
 
-// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
+// UnsetComponents ensures that no value is present for Components, not even an explicit nil
+func (o *DeviceModelsEntity) UnsetComponents() {
+	o.Components.Unset()
+}
+
+// GetCreatedAt returns the CreatedAt field value
 func (o *DeviceModelsEntity) GetCreatedAt() string {
-	if o == nil || o.CreatedAt == nil {
+	if o == nil  {
 		var ret string
 		return ret
 	}
-	return *o.CreatedAt
+
+	return o.CreatedAt
 }
 
-// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
 // and a boolean to check if the value has been set.
 func (o *DeviceModelsEntity) GetCreatedAtOk() (*string, bool) {
-	if o == nil || o.CreatedAt == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.CreatedAt, true
+	return &o.CreatedAt, true
 }
 
-// HasCreatedAt returns a boolean if a field has been set.
-func (o *DeviceModelsEntity) HasCreatedAt() bool {
-	if o != nil && o.CreatedAt != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
+// SetCreatedAt sets field value
 func (o *DeviceModelsEntity) SetCreatedAt(v string) {
-	o.CreatedAt = &v
+	o.CreatedAt = v
 }
 
-// GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
+// GetUpdatedAt returns the UpdatedAt field value
 func (o *DeviceModelsEntity) GetUpdatedAt() string {
-	if o == nil || o.UpdatedAt == nil {
+	if o == nil  {
 		var ret string
 		return ret
 	}
-	return *o.UpdatedAt
+
+	return o.UpdatedAt
 }
 
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
 // and a boolean to check if the value has been set.
 func (o *DeviceModelsEntity) GetUpdatedAtOk() (*string, bool) {
-	if o == nil || o.UpdatedAt == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.UpdatedAt, true
+	return &o.UpdatedAt, true
 }
 
-// HasUpdatedAt returns a boolean if a field has been set.
-func (o *DeviceModelsEntity) HasUpdatedAt() bool {
-	if o != nil && o.UpdatedAt != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetUpdatedAt gets a reference to the given string and assigns it to the UpdatedAt field.
+// SetUpdatedAt sets field value
 func (o *DeviceModelsEntity) SetUpdatedAt(v string) {
-	o.UpdatedAt = &v
+	o.UpdatedAt = v
 }
 
 func (o DeviceModelsEntity) MarshalJSON() ([]byte, error) {
@@ -391,7 +421,7 @@ func (o DeviceModelsEntity) MarshalJSON() ([]byte, error) {
 	if true {
 		toSerialize["key"] = o.Key
 	}
-	if o.DeviceId != nil {
+	if true {
 		toSerialize["device_id"] = o.DeviceId
 	}
 	if true {
@@ -400,8 +430,8 @@ func (o DeviceModelsEntity) MarshalJSON() ([]byte, error) {
 	if o.SerialNumber != nil {
 		toSerialize["serial_number"] = o.SerialNumber
 	}
-	if true {
-		toSerialize["start_at"] = o.StartAt
+	if o.StartAt.IsSet() {
+		toSerialize["start_at"] = o.StartAt.Get()
 	}
 	if o.CustomInventory != nil {
 		toSerialize["custom_inventory"] = o.CustomInventory
@@ -409,16 +439,16 @@ func (o DeviceModelsEntity) MarshalJSON() ([]byte, error) {
 	if true {
 		toSerialize["resource_owner_id"] = o.ResourceOwnerId
 	}
-	if true {
-		toSerialize["watch"] = o.Watch
+	if o.Watch.IsSet() {
+		toSerialize["watch"] = o.Watch.Get()
+	}
+	if o.Components.IsSet() {
+		toSerialize["components"] = o.Components.Get()
 	}
 	if true {
-		toSerialize["components"] = o.Components
-	}
-	if o.CreatedAt != nil {
 		toSerialize["created_at"] = o.CreatedAt
 	}
-	if o.UpdatedAt != nil {
+	if true {
 		toSerialize["updated_at"] = o.UpdatedAt
 	}
 	return json.Marshal(toSerialize)

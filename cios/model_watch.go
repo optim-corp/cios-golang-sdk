@@ -16,8 +16,8 @@ import (
 
 // Watch struct for Watch
 type Watch struct {
-	Types *map[string]interface{} `json:"types,omitempty"`
-	ComponentIds *map[string]interface{} `json:"component_ids,omitempty"`
+	Types map[string]interface{} `json:"types,omitempty"`
+	ComponentIds map[string]interface{} `json:"component_ids,omitempty"`
 }
 
 // NewWatch instantiates a new Watch object
@@ -37,22 +37,23 @@ func NewWatchWithDefaults() *Watch {
 	return &this
 }
 
-// GetTypes returns the Types field value if set, zero value otherwise.
+// GetTypes returns the Types field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Watch) GetTypes() map[string]interface{} {
-	if o == nil || o.Types == nil {
+	if o == nil  {
 		var ret map[string]interface{}
 		return ret
 	}
-	return *o.Types
+	return o.Types
 }
 
 // GetTypesOk returns a tuple with the Types field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *Watch) GetTypesOk() (*map[string]interface{}, bool) {
 	if o == nil || o.Types == nil {
 		return nil, false
 	}
-	return o.Types, true
+	return &o.Types, true
 }
 
 // HasTypes returns a boolean if a field has been set.
@@ -66,25 +67,26 @@ func (o *Watch) HasTypes() bool {
 
 // SetTypes gets a reference to the given map[string]interface{} and assigns it to the Types field.
 func (o *Watch) SetTypes(v map[string]interface{}) {
-	o.Types = &v
+	o.Types = v
 }
 
-// GetComponentIds returns the ComponentIds field value if set, zero value otherwise.
+// GetComponentIds returns the ComponentIds field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *Watch) GetComponentIds() map[string]interface{} {
-	if o == nil || o.ComponentIds == nil {
+	if o == nil  {
 		var ret map[string]interface{}
 		return ret
 	}
-	return *o.ComponentIds
+	return o.ComponentIds
 }
 
 // GetComponentIdsOk returns a tuple with the ComponentIds field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *Watch) GetComponentIdsOk() (*map[string]interface{}, bool) {
 	if o == nil || o.ComponentIds == nil {
 		return nil, false
 	}
-	return o.ComponentIds, true
+	return &o.ComponentIds, true
 }
 
 // HasComponentIds returns a boolean if a field has been set.
@@ -98,7 +100,7 @@ func (o *Watch) HasComponentIds() bool {
 
 // SetComponentIds gets a reference to the given map[string]interface{} and assigns it to the ComponentIds field.
 func (o *Watch) SetComponentIds(v map[string]interface{}) {
-	o.ComponentIds = &v
+	o.ComponentIds = v
 }
 
 func (o Watch) MarshalJSON() ([]byte, error) {

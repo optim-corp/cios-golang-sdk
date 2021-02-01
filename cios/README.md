@@ -278,6 +278,7 @@ Class | Method | HTTP request | Description
  - [Label](docs/Label.md)
  - [License](docs/License.md)
  - [LifeCycle](docs/LifeCycle.md)
+ - [LifeCycleRequest](docs/LifeCycleRequest.md)
  - [Location](docs/Location.md)
  - [Me](docs/Me.md)
  - [MeGroups](docs/MeGroups.md)

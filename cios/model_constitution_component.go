@@ -17,12 +17,12 @@ import (
 // ConstitutionComponent struct for ConstitutionComponent
 type ConstitutionComponent struct {
 	Id *string `json:"id,omitempty"`
-	ParentId *string `json:"parent_id,omitempty"`
-	Address *string `json:"address,omitempty"`
+	ParentId NullableString `json:"parent_id,omitempty"`
+	Address NullableString `json:"address,omitempty"`
 	Type *ComponentTypeEnum `json:"type,omitempty"`
-	Attribute *map[string]interface{} `json:"attribute,omitempty"`
+	Attribute map[string]interface{} `json:"attribute,omitempty"`
 	DisplayInfo *[]DisplayInfo `json:"display_info,omitempty"`
-	Components *[]ConstitutionComponent `json:"components,omitempty"`
+	Components []ConstitutionComponent `json:"components,omitempty"`
 }
 
 // NewConstitutionComponent instantiates a new ConstitutionComponent object
@@ -74,68 +74,88 @@ func (o *ConstitutionComponent) SetId(v string) {
 	o.Id = &v
 }
 
-// GetParentId returns the ParentId field value if set, zero value otherwise.
+// GetParentId returns the ParentId field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ConstitutionComponent) GetParentId() string {
-	if o == nil || o.ParentId == nil {
+	if o == nil || o.ParentId.Get() == nil {
 		var ret string
 		return ret
 	}
-	return *o.ParentId
+	return *o.ParentId.Get()
 }
 
 // GetParentIdOk returns a tuple with the ParentId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ConstitutionComponent) GetParentIdOk() (*string, bool) {
-	if o == nil || o.ParentId == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.ParentId, true
+	return o.ParentId.Get(), o.ParentId.IsSet()
 }
 
 // HasParentId returns a boolean if a field has been set.
 func (o *ConstitutionComponent) HasParentId() bool {
-	if o != nil && o.ParentId != nil {
+	if o != nil && o.ParentId.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetParentId gets a reference to the given string and assigns it to the ParentId field.
+// SetParentId gets a reference to the given NullableString and assigns it to the ParentId field.
 func (o *ConstitutionComponent) SetParentId(v string) {
-	o.ParentId = &v
+	o.ParentId.Set(&v)
+}
+// SetParentIdNil sets the value for ParentId to be an explicit nil
+func (o *ConstitutionComponent) SetParentIdNil() {
+	o.ParentId.Set(nil)
 }
 
-// GetAddress returns the Address field value if set, zero value otherwise.
+// UnsetParentId ensures that no value is present for ParentId, not even an explicit nil
+func (o *ConstitutionComponent) UnsetParentId() {
+	o.ParentId.Unset()
+}
+
+// GetAddress returns the Address field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ConstitutionComponent) GetAddress() string {
-	if o == nil || o.Address == nil {
+	if o == nil || o.Address.Get() == nil {
 		var ret string
 		return ret
 	}
-	return *o.Address
+	return *o.Address.Get()
 }
 
 // GetAddressOk returns a tuple with the Address field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ConstitutionComponent) GetAddressOk() (*string, bool) {
-	if o == nil || o.Address == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.Address, true
+	return o.Address.Get(), o.Address.IsSet()
 }
 
 // HasAddress returns a boolean if a field has been set.
 func (o *ConstitutionComponent) HasAddress() bool {
-	if o != nil && o.Address != nil {
+	if o != nil && o.Address.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAddress gets a reference to the given string and assigns it to the Address field.
+// SetAddress gets a reference to the given NullableString and assigns it to the Address field.
 func (o *ConstitutionComponent) SetAddress(v string) {
-	o.Address = &v
+	o.Address.Set(&v)
+}
+// SetAddressNil sets the value for Address to be an explicit nil
+func (o *ConstitutionComponent) SetAddressNil() {
+	o.Address.Set(nil)
+}
+
+// UnsetAddress ensures that no value is present for Address, not even an explicit nil
+func (o *ConstitutionComponent) UnsetAddress() {
+	o.Address.Unset()
 }
 
 // GetType returns the Type field value if set, zero value otherwise.
@@ -170,22 +190,23 @@ func (o *ConstitutionComponent) SetType(v ComponentTypeEnum) {
 	o.Type = &v
 }
 
-// GetAttribute returns the Attribute field value if set, zero value otherwise.
+// GetAttribute returns the Attribute field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ConstitutionComponent) GetAttribute() map[string]interface{} {
-	if o == nil || o.Attribute == nil {
+	if o == nil  {
 		var ret map[string]interface{}
 		return ret
 	}
-	return *o.Attribute
+	return o.Attribute
 }
 
 // GetAttributeOk returns a tuple with the Attribute field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ConstitutionComponent) GetAttributeOk() (*map[string]interface{}, bool) {
 	if o == nil || o.Attribute == nil {
 		return nil, false
 	}
-	return o.Attribute, true
+	return &o.Attribute, true
 }
 
 // HasAttribute returns a boolean if a field has been set.
@@ -199,7 +220,7 @@ func (o *ConstitutionComponent) HasAttribute() bool {
 
 // SetAttribute gets a reference to the given map[string]interface{} and assigns it to the Attribute field.
 func (o *ConstitutionComponent) SetAttribute(v map[string]interface{}) {
-	o.Attribute = &v
+	o.Attribute = v
 }
 
 // GetDisplayInfo returns the DisplayInfo field value if set, zero value otherwise.
@@ -234,22 +255,23 @@ func (o *ConstitutionComponent) SetDisplayInfo(v []DisplayInfo) {
 	o.DisplayInfo = &v
 }
 
-// GetComponents returns the Components field value if set, zero value otherwise.
+// GetComponents returns the Components field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *ConstitutionComponent) GetComponents() []ConstitutionComponent {
-	if o == nil || o.Components == nil {
+	if o == nil  {
 		var ret []ConstitutionComponent
 		return ret
 	}
-	return *o.Components
+	return o.Components
 }
 
 // GetComponentsOk returns a tuple with the Components field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *ConstitutionComponent) GetComponentsOk() (*[]ConstitutionComponent, bool) {
 	if o == nil || o.Components == nil {
 		return nil, false
 	}
-	return o.Components, true
+	return &o.Components, true
 }
 
 // HasComponents returns a boolean if a field has been set.
@@ -263,7 +285,7 @@ func (o *ConstitutionComponent) HasComponents() bool {
 
 // SetComponents gets a reference to the given []ConstitutionComponent and assigns it to the Components field.
 func (o *ConstitutionComponent) SetComponents(v []ConstitutionComponent) {
-	o.Components = &v
+	o.Components = v
 }
 
 func (o ConstitutionComponent) MarshalJSON() ([]byte, error) {
@@ -271,11 +293,11 @@ func (o ConstitutionComponent) MarshalJSON() ([]byte, error) {
 	if o.Id != nil {
 		toSerialize["id"] = o.Id
 	}
-	if o.ParentId != nil {
-		toSerialize["parent_id"] = o.ParentId
+	if o.ParentId.IsSet() {
+		toSerialize["parent_id"] = o.ParentId.Get()
 	}
-	if o.Address != nil {
-		toSerialize["address"] = o.Address
+	if o.Address.IsSet() {
+		toSerialize["address"] = o.Address.Get()
 	}
 	if o.Type != nil {
 		toSerialize["type"] = o.Type

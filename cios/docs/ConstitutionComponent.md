@@ -5,8 +5,8 @@
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Id** | Pointer to **string** |  | [optional] 
-**ParentId** | Pointer to **string** |  | [optional] 
-**Address** | Pointer to **string** |  | [optional] 
+**ParentId** | Pointer to **NullableString** |  | [optional] 
+**Address** | Pointer to **NullableString** |  | [optional] 
 **Type** | Pointer to [**ComponentTypeEnum**](ComponentTypeEnum.md) |  | [optional] 
 **Attribute** | Pointer to **map[string]interface{}** |  | [optional] 
 **DisplayInfo** | Pointer to [**[]DisplayInfo**](DisplayInfo.md) |  | [optional] 
@@ -81,6 +81,16 @@ SetParentId sets ParentId field to given value.
 
 HasParentId returns a boolean if a field has been set.
 
+### SetParentIdNil
+
+`func (o *ConstitutionComponent) SetParentIdNil(b bool)`
+
+ SetParentIdNil sets the value for ParentId to be an explicit nil
+
+### UnsetParentId
+`func (o *ConstitutionComponent) UnsetParentId()`
+
+UnsetParentId ensures that no value is present for ParentId, not even an explicit nil
 ### GetAddress
 
 `func (o *ConstitutionComponent) GetAddress() string`
@@ -106,6 +116,16 @@ SetAddress sets Address field to given value.
 
 HasAddress returns a boolean if a field has been set.
 
+### SetAddressNil
+
+`func (o *ConstitutionComponent) SetAddressNil(b bool)`
+
+ SetAddressNil sets the value for Address to be an explicit nil
+
+### UnsetAddress
+`func (o *ConstitutionComponent) UnsetAddress()`
+
+UnsetAddress ensures that no value is present for Address, not even an explicit nil
 ### GetType
 
 `func (o *ConstitutionComponent) GetType() ComponentTypeEnum`
@@ -156,6 +176,16 @@ SetAttribute sets Attribute field to given value.
 
 HasAttribute returns a boolean if a field has been set.
 
+### SetAttributeNil
+
+`func (o *ConstitutionComponent) SetAttributeNil(b bool)`
+
+ SetAttributeNil sets the value for Attribute to be an explicit nil
+
+### UnsetAttribute
+`func (o *ConstitutionComponent) UnsetAttribute()`
+
+UnsetAttribute ensures that no value is present for Attribute, not even an explicit nil
 ### GetDisplayInfo
 
 `func (o *ConstitutionComponent) GetDisplayInfo() []DisplayInfo`
@@ -206,6 +236,16 @@ SetComponents sets Components field to given value.
 
 HasComponents returns a boolean if a field has been set.
 
+### SetComponentsNil
+
+`func (o *ConstitutionComponent) SetComponentsNil(b bool)`
+
+ SetComponentsNil sets the value for Components to be an explicit nil
+
+### UnsetComponents
+`func (o *ConstitutionComponent) UnsetComponents()`
+
+UnsetComponents ensures that no value is present for Components, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

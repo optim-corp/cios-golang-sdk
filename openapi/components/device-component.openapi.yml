@@ -333,15 +333,6 @@ components:
             008: bnu4hbnrmflais1m02e8
             009: bnu4hbnrmflais1m02e9
             010: bnu4hbnrmflais1m02e0
-    Watch:
-      type: object
-      properties:
-        types:
-          type: object
-        component_ids:
-          type: object
-          example:
-            0x0010: [ "unitSerialNo", "unitStatus", "commandValue" ]
 
     DeviceClientRequest:
       type: object

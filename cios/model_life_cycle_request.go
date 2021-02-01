@@ -14,9 +14,8 @@ import (
 	"encoding/json"
 )
 
-// LifeCycle struct for LifeCycle
-type LifeCycle struct {
-	Id string `json:"id"`
+// LifeCycleRequest struct for LifeCycleRequest
+type LifeCycleRequest struct {
 	EventKind string `json:"event_kind"`
 	EventMode string `json:"event_mode"`
 	EventType string `json:"event_type"`
@@ -27,58 +26,32 @@ type LifeCycle struct {
 	// ナノ秒
 	EventAt string `json:"event_at"`
 	Note *string `json:"note,omitempty"`
-	ResourceOwnerId string `json:"resource_owner_id"`
+	ResourceOwnerId *string `json:"resource_owner_id,omitempty"`
 }
 
-// NewLifeCycle instantiates a new LifeCycle object
+// NewLifeCycleRequest instantiates a new LifeCycleRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewLifeCycle(id string, eventKind string, eventMode string, eventType string, eventAt string, resourceOwnerId string, ) *LifeCycle {
-	this := LifeCycle{}
-	this.Id = id
+func NewLifeCycleRequest(eventKind string, eventMode string, eventType string, eventAt string, ) *LifeCycleRequest {
+	this := LifeCycleRequest{}
 	this.EventKind = eventKind
 	this.EventMode = eventMode
 	this.EventType = eventType
 	this.EventAt = eventAt
-	this.ResourceOwnerId = resourceOwnerId
 	return &this
 }
 
-// NewLifeCycleWithDefaults instantiates a new LifeCycle object
+// NewLifeCycleRequestWithDefaults instantiates a new LifeCycleRequest object
 // This constructor will only assign default values to properties that have it defined,
 // but it doesn't guarantee that properties required by API are set
-func NewLifeCycleWithDefaults() *LifeCycle {
-	this := LifeCycle{}
+func NewLifeCycleRequestWithDefaults() *LifeCycleRequest {
+	this := LifeCycleRequest{}
 	return &this
-}
-
-// GetId returns the Id field value
-func (o *LifeCycle) GetId() string {
-	if o == nil  {
-		var ret string
-		return ret
-	}
-
-	return o.Id
-}
-
-// GetIdOk returns a tuple with the Id field value
-// and a boolean to check if the value has been set.
-func (o *LifeCycle) GetIdOk() (*string, bool) {
-	if o == nil  {
-		return nil, false
-	}
-	return &o.Id, true
-}
-
-// SetId sets field value
-func (o *LifeCycle) SetId(v string) {
-	o.Id = v
 }
 
 // GetEventKind returns the EventKind field value
-func (o *LifeCycle) GetEventKind() string {
+func (o *LifeCycleRequest) GetEventKind() string {
 	if o == nil  {
 		var ret string
 		return ret
@@ -89,7 +62,7 @@ func (o *LifeCycle) GetEventKind() string {
 
 // GetEventKindOk returns a tuple with the EventKind field value
 // and a boolean to check if the value has been set.
-func (o *LifeCycle) GetEventKindOk() (*string, bool) {
+func (o *LifeCycleRequest) GetEventKindOk() (*string, bool) {
 	if o == nil  {
 		return nil, false
 	}
@@ -97,12 +70,12 @@ func (o *LifeCycle) GetEventKindOk() (*string, bool) {
 }
 
 // SetEventKind sets field value
-func (o *LifeCycle) SetEventKind(v string) {
+func (o *LifeCycleRequest) SetEventKind(v string) {
 	o.EventKind = v
 }
 
 // GetEventMode returns the EventMode field value
-func (o *LifeCycle) GetEventMode() string {
+func (o *LifeCycleRequest) GetEventMode() string {
 	if o == nil  {
 		var ret string
 		return ret
@@ -113,7 +86,7 @@ func (o *LifeCycle) GetEventMode() string {
 
 // GetEventModeOk returns a tuple with the EventMode field value
 // and a boolean to check if the value has been set.
-func (o *LifeCycle) GetEventModeOk() (*string, bool) {
+func (o *LifeCycleRequest) GetEventModeOk() (*string, bool) {
 	if o == nil  {
 		return nil, false
 	}
@@ -121,12 +94,12 @@ func (o *LifeCycle) GetEventModeOk() (*string, bool) {
 }
 
 // SetEventMode sets field value
-func (o *LifeCycle) SetEventMode(v string) {
+func (o *LifeCycleRequest) SetEventMode(v string) {
 	o.EventMode = v
 }
 
 // GetEventType returns the EventType field value
-func (o *LifeCycle) GetEventType() string {
+func (o *LifeCycleRequest) GetEventType() string {
 	if o == nil  {
 		var ret string
 		return ret
@@ -137,7 +110,7 @@ func (o *LifeCycle) GetEventType() string {
 
 // GetEventTypeOk returns a tuple with the EventType field value
 // and a boolean to check if the value has been set.
-func (o *LifeCycle) GetEventTypeOk() (*string, bool) {
+func (o *LifeCycleRequest) GetEventTypeOk() (*string, bool) {
 	if o == nil  {
 		return nil, false
 	}
@@ -145,12 +118,12 @@ func (o *LifeCycle) GetEventTypeOk() (*string, bool) {
 }
 
 // SetEventType sets field value
-func (o *LifeCycle) SetEventType(v string) {
+func (o *LifeCycleRequest) SetEventType(v string) {
 	o.EventType = v
 }
 
 // GetBeforeId returns the BeforeId field value if set, zero value otherwise.
-func (o *LifeCycle) GetBeforeId() string {
+func (o *LifeCycleRequest) GetBeforeId() string {
 	if o == nil || o.BeforeId == nil {
 		var ret string
 		return ret
@@ -160,7 +133,7 @@ func (o *LifeCycle) GetBeforeId() string {
 
 // GetBeforeIdOk returns a tuple with the BeforeId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LifeCycle) GetBeforeIdOk() (*string, bool) {
+func (o *LifeCycleRequest) GetBeforeIdOk() (*string, bool) {
 	if o == nil || o.BeforeId == nil {
 		return nil, false
 	}
@@ -168,7 +141,7 @@ func (o *LifeCycle) GetBeforeIdOk() (*string, bool) {
 }
 
 // HasBeforeId returns a boolean if a field has been set.
-func (o *LifeCycle) HasBeforeId() bool {
+func (o *LifeCycleRequest) HasBeforeId() bool {
 	if o != nil && o.BeforeId != nil {
 		return true
 	}
@@ -177,12 +150,12 @@ func (o *LifeCycle) HasBeforeId() bool {
 }
 
 // SetBeforeId gets a reference to the given string and assigns it to the BeforeId field.
-func (o *LifeCycle) SetBeforeId(v string) {
+func (o *LifeCycleRequest) SetBeforeId(v string) {
 	o.BeforeId = &v
 }
 
 // GetBeforeComponent returns the BeforeComponent field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LifeCycle) GetBeforeComponent() DeviceEntitiesComponent {
+func (o *LifeCycleRequest) GetBeforeComponent() DeviceEntitiesComponent {
 	if o == nil || o.BeforeComponent.Get() == nil {
 		var ret DeviceEntitiesComponent
 		return ret
@@ -193,7 +166,7 @@ func (o *LifeCycle) GetBeforeComponent() DeviceEntitiesComponent {
 // GetBeforeComponentOk returns a tuple with the BeforeComponent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LifeCycle) GetBeforeComponentOk() (*DeviceEntitiesComponent, bool) {
+func (o *LifeCycleRequest) GetBeforeComponentOk() (*DeviceEntitiesComponent, bool) {
 	if o == nil  {
 		return nil, false
 	}
@@ -201,7 +174,7 @@ func (o *LifeCycle) GetBeforeComponentOk() (*DeviceEntitiesComponent, bool) {
 }
 
 // HasBeforeComponent returns a boolean if a field has been set.
-func (o *LifeCycle) HasBeforeComponent() bool {
+func (o *LifeCycleRequest) HasBeforeComponent() bool {
 	if o != nil && o.BeforeComponent.IsSet() {
 		return true
 	}
@@ -210,21 +183,21 @@ func (o *LifeCycle) HasBeforeComponent() bool {
 }
 
 // SetBeforeComponent gets a reference to the given NullableDeviceEntitiesComponent and assigns it to the BeforeComponent field.
-func (o *LifeCycle) SetBeforeComponent(v DeviceEntitiesComponent) {
+func (o *LifeCycleRequest) SetBeforeComponent(v DeviceEntitiesComponent) {
 	o.BeforeComponent.Set(&v)
 }
 // SetBeforeComponentNil sets the value for BeforeComponent to be an explicit nil
-func (o *LifeCycle) SetBeforeComponentNil() {
+func (o *LifeCycleRequest) SetBeforeComponentNil() {
 	o.BeforeComponent.Set(nil)
 }
 
 // UnsetBeforeComponent ensures that no value is present for BeforeComponent, not even an explicit nil
-func (o *LifeCycle) UnsetBeforeComponent() {
+func (o *LifeCycleRequest) UnsetBeforeComponent() {
 	o.BeforeComponent.Unset()
 }
 
 // GetAfterId returns the AfterId field value if set, zero value otherwise.
-func (o *LifeCycle) GetAfterId() string {
+func (o *LifeCycleRequest) GetAfterId() string {
 	if o == nil || o.AfterId == nil {
 		var ret string
 		return ret
@@ -234,7 +207,7 @@ func (o *LifeCycle) GetAfterId() string {
 
 // GetAfterIdOk returns a tuple with the AfterId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LifeCycle) GetAfterIdOk() (*string, bool) {
+func (o *LifeCycleRequest) GetAfterIdOk() (*string, bool) {
 	if o == nil || o.AfterId == nil {
 		return nil, false
 	}
@@ -242,7 +215,7 @@ func (o *LifeCycle) GetAfterIdOk() (*string, bool) {
 }
 
 // HasAfterId returns a boolean if a field has been set.
-func (o *LifeCycle) HasAfterId() bool {
+func (o *LifeCycleRequest) HasAfterId() bool {
 	if o != nil && o.AfterId != nil {
 		return true
 	}
@@ -251,12 +224,12 @@ func (o *LifeCycle) HasAfterId() bool {
 }
 
 // SetAfterId gets a reference to the given string and assigns it to the AfterId field.
-func (o *LifeCycle) SetAfterId(v string) {
+func (o *LifeCycleRequest) SetAfterId(v string) {
 	o.AfterId = &v
 }
 
 // GetAfterComponent returns the AfterComponent field value if set, zero value otherwise (both if not set or set to explicit null).
-func (o *LifeCycle) GetAfterComponent() DeviceEntitiesComponent {
+func (o *LifeCycleRequest) GetAfterComponent() DeviceEntitiesComponent {
 	if o == nil || o.AfterComponent.Get() == nil {
 		var ret DeviceEntitiesComponent
 		return ret
@@ -267,7 +240,7 @@ func (o *LifeCycle) GetAfterComponent() DeviceEntitiesComponent {
 // GetAfterComponentOk returns a tuple with the AfterComponent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 // NOTE: If the value is an explicit nil, `nil, true` will be returned
-func (o *LifeCycle) GetAfterComponentOk() (*DeviceEntitiesComponent, bool) {
+func (o *LifeCycleRequest) GetAfterComponentOk() (*DeviceEntitiesComponent, bool) {
 	if o == nil  {
 		return nil, false
 	}
@@ -275,7 +248,7 @@ func (o *LifeCycle) GetAfterComponentOk() (*DeviceEntitiesComponent, bool) {
 }
 
 // HasAfterComponent returns a boolean if a field has been set.
-func (o *LifeCycle) HasAfterComponent() bool {
+func (o *LifeCycleRequest) HasAfterComponent() bool {
 	if o != nil && o.AfterComponent.IsSet() {
 		return true
 	}
@@ -284,21 +257,21 @@ func (o *LifeCycle) HasAfterComponent() bool {
 }
 
 // SetAfterComponent gets a reference to the given NullableDeviceEntitiesComponent and assigns it to the AfterComponent field.
-func (o *LifeCycle) SetAfterComponent(v DeviceEntitiesComponent) {
+func (o *LifeCycleRequest) SetAfterComponent(v DeviceEntitiesComponent) {
 	o.AfterComponent.Set(&v)
 }
 // SetAfterComponentNil sets the value for AfterComponent to be an explicit nil
-func (o *LifeCycle) SetAfterComponentNil() {
+func (o *LifeCycleRequest) SetAfterComponentNil() {
 	o.AfterComponent.Set(nil)
 }
 
 // UnsetAfterComponent ensures that no value is present for AfterComponent, not even an explicit nil
-func (o *LifeCycle) UnsetAfterComponent() {
+func (o *LifeCycleRequest) UnsetAfterComponent() {
 	o.AfterComponent.Unset()
 }
 
 // GetEventAt returns the EventAt field value
-func (o *LifeCycle) GetEventAt() string {
+func (o *LifeCycleRequest) GetEventAt() string {
 	if o == nil  {
 		var ret string
 		return ret
@@ -309,7 +282,7 @@ func (o *LifeCycle) GetEventAt() string {
 
 // GetEventAtOk returns a tuple with the EventAt field value
 // and a boolean to check if the value has been set.
-func (o *LifeCycle) GetEventAtOk() (*string, bool) {
+func (o *LifeCycleRequest) GetEventAtOk() (*string, bool) {
 	if o == nil  {
 		return nil, false
 	}
@@ -317,12 +290,12 @@ func (o *LifeCycle) GetEventAtOk() (*string, bool) {
 }
 
 // SetEventAt sets field value
-func (o *LifeCycle) SetEventAt(v string) {
+func (o *LifeCycleRequest) SetEventAt(v string) {
 	o.EventAt = v
 }
 
 // GetNote returns the Note field value if set, zero value otherwise.
-func (o *LifeCycle) GetNote() string {
+func (o *LifeCycleRequest) GetNote() string {
 	if o == nil || o.Note == nil {
 		var ret string
 		return ret
@@ -332,7 +305,7 @@ func (o *LifeCycle) GetNote() string {
 
 // GetNoteOk returns a tuple with the Note field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LifeCycle) GetNoteOk() (*string, bool) {
+func (o *LifeCycleRequest) GetNoteOk() (*string, bool) {
 	if o == nil || o.Note == nil {
 		return nil, false
 	}
@@ -340,7 +313,7 @@ func (o *LifeCycle) GetNoteOk() (*string, bool) {
 }
 
 // HasNote returns a boolean if a field has been set.
-func (o *LifeCycle) HasNote() bool {
+func (o *LifeCycleRequest) HasNote() bool {
 	if o != nil && o.Note != nil {
 		return true
 	}
@@ -349,39 +322,44 @@ func (o *LifeCycle) HasNote() bool {
 }
 
 // SetNote gets a reference to the given string and assigns it to the Note field.
-func (o *LifeCycle) SetNote(v string) {
+func (o *LifeCycleRequest) SetNote(v string) {
 	o.Note = &v
 }
 
-// GetResourceOwnerId returns the ResourceOwnerId field value
-func (o *LifeCycle) GetResourceOwnerId() string {
-	if o == nil  {
+// GetResourceOwnerId returns the ResourceOwnerId field value if set, zero value otherwise.
+func (o *LifeCycleRequest) GetResourceOwnerId() string {
+	if o == nil || o.ResourceOwnerId == nil {
 		var ret string
 		return ret
 	}
-
-	return o.ResourceOwnerId
+	return *o.ResourceOwnerId
 }
 
-// GetResourceOwnerIdOk returns a tuple with the ResourceOwnerId field value
+// GetResourceOwnerIdOk returns a tuple with the ResourceOwnerId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
-func (o *LifeCycle) GetResourceOwnerIdOk() (*string, bool) {
-	if o == nil  {
+func (o *LifeCycleRequest) GetResourceOwnerIdOk() (*string, bool) {
+	if o == nil || o.ResourceOwnerId == nil {
 		return nil, false
 	}
-	return &o.ResourceOwnerId, true
+	return o.ResourceOwnerId, true
 }
 
-// SetResourceOwnerId sets field value
-func (o *LifeCycle) SetResourceOwnerId(v string) {
-	o.ResourceOwnerId = v
-}
-
-func (o LifeCycle) MarshalJSON() ([]byte, error) {
-	toSerialize := map[string]interface{}{}
-	if true {
-		toSerialize["id"] = o.Id
+// HasResourceOwnerId returns a boolean if a field has been set.
+func (o *LifeCycleRequest) HasResourceOwnerId() bool {
+	if o != nil && o.ResourceOwnerId != nil {
+		return true
 	}
+
+	return false
+}
+
+// SetResourceOwnerId gets a reference to the given string and assigns it to the ResourceOwnerId field.
+func (o *LifeCycleRequest) SetResourceOwnerId(v string) {
+	o.ResourceOwnerId = &v
+}
+
+func (o LifeCycleRequest) MarshalJSON() ([]byte, error) {
+	toSerialize := map[string]interface{}{}
 	if true {
 		toSerialize["event_kind"] = o.EventKind
 	}
@@ -409,44 +387,44 @@ func (o LifeCycle) MarshalJSON() ([]byte, error) {
 	if o.Note != nil {
 		toSerialize["note"] = o.Note
 	}
-	if true {
+	if o.ResourceOwnerId != nil {
 		toSerialize["resource_owner_id"] = o.ResourceOwnerId
 	}
 	return json.Marshal(toSerialize)
 }
 
-type NullableLifeCycle struct {
-	value *LifeCycle
+type NullableLifeCycleRequest struct {
+	value *LifeCycleRequest
 	isSet bool
 }
 
-func (v NullableLifeCycle) Get() *LifeCycle {
+func (v NullableLifeCycleRequest) Get() *LifeCycleRequest {
 	return v.value
 }
 
-func (v *NullableLifeCycle) Set(val *LifeCycle) {
+func (v *NullableLifeCycleRequest) Set(val *LifeCycleRequest) {
 	v.value = val
 	v.isSet = true
 }
 
-func (v NullableLifeCycle) IsSet() bool {
+func (v NullableLifeCycleRequest) IsSet() bool {
 	return v.isSet
 }
 
-func (v *NullableLifeCycle) Unset() {
+func (v *NullableLifeCycleRequest) Unset() {
 	v.value = nil
 	v.isSet = false
 }
 
-func NewNullableLifeCycle(val *LifeCycle) *NullableLifeCycle {
-	return &NullableLifeCycle{value: val, isSet: true}
+func NewNullableLifeCycleRequest(val *LifeCycleRequest) *NullableLifeCycleRequest {
+	return &NullableLifeCycleRequest{value: val, isSet: true}
 }
 
-func (v NullableLifeCycle) MarshalJSON() ([]byte, error) {
+func (v NullableLifeCycleRequest) MarshalJSON() ([]byte, error) {
 	return json.Marshal(v.value)
 }
 
-func (v *NullableLifeCycle) UnmarshalJSON(src []byte) error {
+func (v *NullableLifeCycleRequest) UnmarshalJSON(src []byte) error {
 	v.isSet = true
 	return json.Unmarshal(src, &v.value)
 }

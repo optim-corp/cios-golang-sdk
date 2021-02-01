@@ -100,7 +100,7 @@ No authorization required
 
 ## CreateDeviceEntitiesLifecycle
 
-> SingleLifeCycle CreateDeviceEntitiesLifecycle(ctx, key).EventKind(eventKind).EventMode(eventMode).EventType(eventType).ComponentIdQuery(componentIdQuery).BeforeId(beforeId).AfterId(afterId).StartEventAt(startEventAt).EndEventAt(endEventAt).LifeCycle(lifeCycle).Execute()
+> SingleLifeCycle CreateDeviceEntitiesLifecycle(ctx, key).LifeCycleRequest(lifeCycleRequest).Execute()
 
 
 
@@ -118,19 +118,11 @@ import (
 
 func main() {
     key := "key_example" // string | 
-    eventKind := "eventKind_example" // string |  (optional)
-    eventMode := "eventMode_example" // string |  (optional)
-    eventType := "eventType_example" // string |  (optional)
-    componentIdQuery := "componentIdQuery_example" // string |  (optional)
-    beforeId := "beforeId_example" // string |  (optional)
-    afterId := "afterId_example" // string |  (optional)
-    startEventAt := "startEventAt_example" // string |  (optional)
-    endEventAt := "endEventAt_example" // string |  (optional)
-    lifeCycle := *openapiclient.NewLifeCycle("Id_example", "EventKind_example", "EventMode_example", "EventType_example", "EventAt_example", "ResourceOwnerId_example") // LifeCycle |  (optional)
+    lifeCycleRequest := *openapiclient.NewLifeCycleRequest("EventKind_example", "EventMode_example", "EventType_example", "EventAt_example") // LifeCycleRequest | 
 
     configuration := openapiclient.NewConfiguration()
     api_client := openapiclient.NewAPIClient(configuration)
-    resp, r, err := api_client.DeviceAssetApi.CreateDeviceEntitiesLifecycle(context.Background(), key).EventKind(eventKind).EventMode(eventMode).EventType(eventType).ComponentIdQuery(componentIdQuery).BeforeId(beforeId).AfterId(afterId).StartEventAt(startEventAt).EndEventAt(endEventAt).LifeCycle(lifeCycle).Execute()
+    resp, r, err := api_client.DeviceAssetApi.CreateDeviceEntitiesLifecycle(context.Background(), key).LifeCycleRequest(lifeCycleRequest).Execute()
     if err.Error() != "" {
         fmt.Fprintf(os.Stderr, "Error when calling `DeviceAssetApi.CreateDeviceEntitiesLifecycle``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -156,15 +148,7 @@ Other parameters are passed through a pointer to a apiCreateDeviceEntitiesLifecy
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
 
- **eventKind** | **string** |  | 
- **eventMode** | **string** |  | 
- **eventType** | **string** |  | 
- **componentIdQuery** | **string** |  | 
- **beforeId** | **string** |  | 
- **afterId** | **string** |  | 
- **startEventAt** | **string** |  | 
- **endEventAt** | **string** |  | 
- **lifeCycle** | [**LifeCycle**](LifeCycle.md) |  | 
+ **lifeCycleRequest** | [**LifeCycleRequest**](LifeCycleRequest.md) |  | 
 
 ### Return type
 
@@ -1427,7 +1411,7 @@ import (
 
 func main() {
     key := "key_example" // string | 
-    deviceModelsEntity := *openapiclient.NewDeviceModelsEntity("Id_example", "Key_example", *openapiclient.NewDeviceModelsEntityModel("Version_example"), "StartAt_example", "ResourceOwnerId_example", *openapiclient.NewWatch(), *openapiclient.NewDeviceEntitiesComponent("Id_example", openapiclient.ComponentTypeEnum("product"))) // DeviceModelsEntity | 
+    deviceModelsEntity := *openapiclient.NewDeviceModelsEntity("Id_example", "Key_example", "DeviceId_example", *openapiclient.NewDeviceModelsEntityModel("Id_example", "Name_example", "CreatedAt_example", "UpdatedAt_example"), "ResourceOwnerId_example", "CreatedAt_example", "UpdatedAt_example") // DeviceModelsEntity | 
 
     configuration := openapiclient.NewConfiguration()
     api_client := openapiclient.NewAPIClient(configuration)

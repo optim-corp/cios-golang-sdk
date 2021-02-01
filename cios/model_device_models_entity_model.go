@@ -16,24 +16,27 @@ import (
 
 // DeviceModelsEntityModel struct for DeviceModelsEntityModel
 type DeviceModelsEntityModel struct {
-	Id *string `json:"id,omitempty"`
-	Name *string `json:"name,omitempty"`
+	Id string `json:"id"`
+	Name string `json:"name"`
 	Key *string `json:"key,omitempty"`
 	MakerId *string `json:"maker_id,omitempty"`
-	Version string `json:"version"`
+	Version *string `json:"version,omitempty"`
 	// ナノ秒
-	CreatedAt *string `json:"created_at,omitempty"`
+	CreatedAt string `json:"created_at"`
 	// ナノ秒
-	UpdatedAt *string `json:"updated_at,omitempty"`
+	UpdatedAt string `json:"updated_at"`
 }
 
 // NewDeviceModelsEntityModel instantiates a new DeviceModelsEntityModel object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDeviceModelsEntityModel(version string, ) *DeviceModelsEntityModel {
+func NewDeviceModelsEntityModel(id string, name string, createdAt string, updatedAt string, ) *DeviceModelsEntityModel {
 	this := DeviceModelsEntityModel{}
-	this.Version = version
+	this.Id = id
+	this.Name = name
+	this.CreatedAt = createdAt
+	this.UpdatedAt = updatedAt
 	return &this
 }
 
@@ -45,68 +48,52 @@ func NewDeviceModelsEntityModelWithDefaults() *DeviceModelsEntityModel {
 	return &this
 }
 
-// GetId returns the Id field value if set, zero value otherwise.
+// GetId returns the Id field value
 func (o *DeviceModelsEntityModel) GetId() string {
-	if o == nil || o.Id == nil {
+	if o == nil  {
 		var ret string
 		return ret
 	}
-	return *o.Id
+
+	return o.Id
 }
 
-// GetIdOk returns a tuple with the Id field value if set, nil otherwise
+// GetIdOk returns a tuple with the Id field value
 // and a boolean to check if the value has been set.
 func (o *DeviceModelsEntityModel) GetIdOk() (*string, bool) {
-	if o == nil || o.Id == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.Id, true
+	return &o.Id, true
 }
 
-// HasId returns a boolean if a field has been set.
-func (o *DeviceModelsEntityModel) HasId() bool {
-	if o != nil && o.Id != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetId gets a reference to the given string and assigns it to the Id field.
+// SetId sets field value
 func (o *DeviceModelsEntityModel) SetId(v string) {
-	o.Id = &v
+	o.Id = v
 }
 
-// GetName returns the Name field value if set, zero value otherwise.
+// GetName returns the Name field value
 func (o *DeviceModelsEntityModel) GetName() string {
-	if o == nil || o.Name == nil {
+	if o == nil  {
 		var ret string
 		return ret
 	}
-	return *o.Name
+
+	return o.Name
 }
 
-// GetNameOk returns a tuple with the Name field value if set, nil otherwise
+// GetNameOk returns a tuple with the Name field value
 // and a boolean to check if the value has been set.
 func (o *DeviceModelsEntityModel) GetNameOk() (*string, bool) {
-	if o == nil || o.Name == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.Name, true
+	return &o.Name, true
 }
 
-// HasName returns a boolean if a field has been set.
-func (o *DeviceModelsEntityModel) HasName() bool {
-	if o != nil && o.Name != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetName gets a reference to the given string and assigns it to the Name field.
+// SetName sets field value
 func (o *DeviceModelsEntityModel) SetName(v string) {
-	o.Name = &v
+	o.Name = v
 }
 
 // GetKey returns the Key field value if set, zero value otherwise.
@@ -173,100 +160,92 @@ func (o *DeviceModelsEntityModel) SetMakerId(v string) {
 	o.MakerId = &v
 }
 
-// GetVersion returns the Version field value
+// GetVersion returns the Version field value if set, zero value otherwise.
 func (o *DeviceModelsEntityModel) GetVersion() string {
-	if o == nil  {
+	if o == nil || o.Version == nil {
 		var ret string
 		return ret
 	}
-
-	return o.Version
+	return *o.Version
 }
 
-// GetVersionOk returns a tuple with the Version field value
+// GetVersionOk returns a tuple with the Version field value if set, nil otherwise
 // and a boolean to check if the value has been set.
 func (o *DeviceModelsEntityModel) GetVersionOk() (*string, bool) {
+	if o == nil || o.Version == nil {
+		return nil, false
+	}
+	return o.Version, true
+}
+
+// HasVersion returns a boolean if a field has been set.
+func (o *DeviceModelsEntityModel) HasVersion() bool {
+	if o != nil && o.Version != nil {
+		return true
+	}
+
+	return false
+}
+
+// SetVersion gets a reference to the given string and assigns it to the Version field.
+func (o *DeviceModelsEntityModel) SetVersion(v string) {
+	o.Version = &v
+}
+
+// GetCreatedAt returns the CreatedAt field value
+func (o *DeviceModelsEntityModel) GetCreatedAt() string {
+	if o == nil  {
+		var ret string
+		return ret
+	}
+
+	return o.CreatedAt
+}
+
+// GetCreatedAtOk returns a tuple with the CreatedAt field value
+// and a boolean to check if the value has been set.
+func (o *DeviceModelsEntityModel) GetCreatedAtOk() (*string, bool) {
 	if o == nil  {
 		return nil, false
 	}
-	return &o.Version, true
+	return &o.CreatedAt, true
 }
 
-// SetVersion sets field value
-func (o *DeviceModelsEntityModel) SetVersion(v string) {
-	o.Version = v
-}
-
-// GetCreatedAt returns the CreatedAt field value if set, zero value otherwise.
-func (o *DeviceModelsEntityModel) GetCreatedAt() string {
-	if o == nil || o.CreatedAt == nil {
-		var ret string
-		return ret
-	}
-	return *o.CreatedAt
-}
-
-// GetCreatedAtOk returns a tuple with the CreatedAt field value if set, nil otherwise
-// and a boolean to check if the value has been set.
-func (o *DeviceModelsEntityModel) GetCreatedAtOk() (*string, bool) {
-	if o == nil || o.CreatedAt == nil {
-		return nil, false
-	}
-	return o.CreatedAt, true
-}
-
-// HasCreatedAt returns a boolean if a field has been set.
-func (o *DeviceModelsEntityModel) HasCreatedAt() bool {
-	if o != nil && o.CreatedAt != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetCreatedAt gets a reference to the given string and assigns it to the CreatedAt field.
+// SetCreatedAt sets field value
 func (o *DeviceModelsEntityModel) SetCreatedAt(v string) {
-	o.CreatedAt = &v
+	o.CreatedAt = v
 }
 
-// GetUpdatedAt returns the UpdatedAt field value if set, zero value otherwise.
+// GetUpdatedAt returns the UpdatedAt field value
 func (o *DeviceModelsEntityModel) GetUpdatedAt() string {
-	if o == nil || o.UpdatedAt == nil {
+	if o == nil  {
 		var ret string
 		return ret
 	}
-	return *o.UpdatedAt
+
+	return o.UpdatedAt
 }
 
-// GetUpdatedAtOk returns a tuple with the UpdatedAt field value if set, nil otherwise
+// GetUpdatedAtOk returns a tuple with the UpdatedAt field value
 // and a boolean to check if the value has been set.
 func (o *DeviceModelsEntityModel) GetUpdatedAtOk() (*string, bool) {
-	if o == nil || o.UpdatedAt == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.UpdatedAt, true
+	return &o.UpdatedAt, true
 }
 
-// HasUpdatedAt returns a boolean if a field has been set.
-func (o *DeviceModelsEntityModel) HasUpdatedAt() bool {
-	if o != nil && o.UpdatedAt != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetUpdatedAt gets a reference to the given string and assigns it to the UpdatedAt field.
+// SetUpdatedAt sets field value
 func (o *DeviceModelsEntityModel) SetUpdatedAt(v string) {
-	o.UpdatedAt = &v
+	o.UpdatedAt = v
 }
 
 func (o DeviceModelsEntityModel) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Id != nil {
+	if true {
 		toSerialize["id"] = o.Id
 	}
-	if o.Name != nil {
+	if true {
 		toSerialize["name"] = o.Name
 	}
 	if o.Key != nil {
@@ -275,13 +254,13 @@ func (o DeviceModelsEntityModel) MarshalJSON() ([]byte, error) {
 	if o.MakerId != nil {
 		toSerialize["maker_id"] = o.MakerId
 	}
-	if true {
+	if o.Version != nil {
 		toSerialize["version"] = o.Version
 	}
-	if o.CreatedAt != nil {
+	if true {
 		toSerialize["created_at"] = o.CreatedAt
 	}
-	if o.UpdatedAt != nil {
+	if true {
 		toSerialize["updated_at"] = o.UpdatedAt
 	}
 	return json.Marshal(toSerialize)
