@@ -43,3 +43,10 @@ func (self Geography) DeletePoint(pointID string, ctx model.RequestCtx) (cios.Po
 	}
 	return response.Point, httpResponse, err
 }
+
+func (self Geography) UpdatePoint(pointID string, name string, ctx model.RequestCtx) (*_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return cios.Point{}, nil, err
+	}
+	return self.ApiClient.GeographyApi.UpdatePoint(ctx, pointID).PointRequest(cios.PointName{Name: name}).Execute()
+}
