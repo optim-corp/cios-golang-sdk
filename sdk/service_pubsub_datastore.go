@@ -1,6 +1,7 @@
 package ciossdk
 
 import (
+	"errors"
 	"log"
 	_nethttp "net/http"
 	"net/url"
@@ -179,6 +180,45 @@ func (self PubSub) MapMultiObjectLatestPayloadByChannels(channels []cios.Channel
 	}
 	return self.MapMultiObjectLatestPayload(channelIDs, stc, ctx)
 }
+func (self PubSub) subscribeCiosWebSocket(_url string, beforeFunc *func(*websocket.Conn), logic func(body []byte) (bool, error), ctx model.RequestCtx) error {
+	if ctx != nil {
+		self.token, _ = ctx.Value(cios.ContextAccessToken).(string)
+	}
+	if self.token == "" {
+		if err := self.refresh(); err != nil {
+			return err
+		}
+	}
+	connection, err := self.CreateCIOSWebsocketConnection(_url, ParseAccessToken(self.token))
+	if err != nil {
+		return err
+	}
+	defer connection.Close()
+	if beforeFunc != nil {
+		(*beforeFunc)(connection)
+	}
+	for {
+		messageType, body, err := connection.ReadMessage()
+		switch {
+		case websocket.IsCloseError(err, websocket.CloseNormalClosure):
+			return nil
+		case websocket.IsUnexpectedCloseError(err):
+			if _err := self.refresh(); _err != nil {
+				return _err
+			}
+			connection.Close()
+			if connection, err = self.CreateCIOSWebsocketConnection(_url, ParseAccessToken(self.token)); err != nil {
+				return err
+			}
+		case messageType == websocket.CloseMessage:
+			return errors.New(string(body))
+		case messageType == websocket.TextMessage:
+			if done, err := logic(body); err != nil || done {
+				return err
+			}
+		}
+	}
+}
 
 func (self PubSub) GetStream(channelID string, params model.ApiGetStreamRequest, ctx model.RequestCtx) ([]string, error) {
 	var (
@@ -227,7 +267,7 @@ func (self PubSub) GetStream(channelID string, params model.ApiGetStreamRequest,
 		}
 
 	}
-	err := self.SubscribeCiosWebSocket(_url.String(), &bf,
+	err := self.subscribeCiosWebSocket(_url.String(), &bf,
 		func(body []byte) (bool, error) {
 			result = append(result, string(body))
 			return false, nil

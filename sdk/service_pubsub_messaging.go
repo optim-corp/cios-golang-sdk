@@ -7,6 +7,8 @@ import (
 	"sync"
 	"time"
 
+	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	"github.com/optim-kazuhiro-seida/go-advance-type/check"
 
@@ -18,24 +20,6 @@ import (
 	"github.com/optim-corp/cios-golang-sdk/model"
 )
 
-func (self PubSub) PublishMessage(id string, body interface{}, packerFormat *string, ctx model.RequestCtx) (*_nethttp.Response, error) {
-	if err := self.refresh(); err != nil {
-		return nil, err
-	}
-	request := self.ApiClient.PublishSubscribeApi.PublishMessage(ctx).ChannelId(id).Body(body)
-	if packerFormat != nil {
-		request = request.PackerFormat(*packerFormat)
-	}
-	return request.Execute()
-}
-func (self PubSub) PublishMessagePackerOnly(id string, body interface{}, ctx model.RequestCtx) (*_nethttp.Response, error) {
-	return self.PublishMessage(id, &body, nil, ctx)
-}
-func (self PubSub) PublishMessageJSON(id string, body cios.PackerFormatJson, ctx model.RequestCtx) (*_nethttp.Response, error) {
-	format := "json"
-	return self.PublishMessage(id, &body, &format, ctx)
-}
-
 type (
 	ConnectWebSocketOptions struct {
 		PackerFormat  *string
@@ -46,32 +30,21 @@ type (
 	}
 )
 
-func safeCloseChan(ch chan bool) {
-	isClosed := func() bool {
-		select {
-		case _, ok := <-ch:
-			return !ok
-		default:
-			return false
-		}
+func (self PubSub) PublishMessage(id string, body interface{}, packerFormat *string, ctx model.RequestCtx) (*_nethttp.Response, error) {
+	if err := self.refresh(); err != nil {
+		return nil, err
 	}
-	if !isClosed() {
-		close(ch)
-	}
+	request := self.ApiClient.PublishSubscribeApi.PublishMessage(ctx).ChannelId(id).Body(body)
+	request.P_packerFormat = packerFormat
+	return request.Execute()
 }
-func safeSendChan(ch chan bool, v bool) {
-	isClosed := func() bool {
-		select {
-		case _, ok := <-ch:
-			return !ok
-		default:
-			return false
-		}
-	}
-	if !isClosed() {
-		ch <- v
-	}
+func (self PubSub) PublishMessagePackerOnly(id string, body interface{}, ctx model.RequestCtx) (*_nethttp.Response, error) {
+	return self.PublishMessage(id, &body, nil, ctx)
 }
+func (self PubSub) PublishMessageJSON(id string, body cios.PackerFormatJson, ctx model.RequestCtx) (*_nethttp.Response, error) {
+	return self.PublishMessage(id, &body, convert.StringPtr("json"), ctx)
+}
+
 func (self PubSub) ConnectWebSocket(channelID string, done chan bool, params ConnectWebSocketOptions) (err error) {
 	if params.SubscribeFunc == nil && params.PublishStr == nil {
 		return errors.New("no publish str and subscribe func")
@@ -258,50 +231,6 @@ func (self PubSub) ConnectWebSocket(channelID string, done chan bool, params Con
 	debug(err)
 	return err
 }
-func (self PubSub) SubscribeCiosWebSocket(_url string, beforeFunc *func(*websocket.Conn), logic func(body []byte) (bool, error), ctx model.RequestCtx) error {
-	_token, ok := "", true
-	if ctx != nil {
-		_token, ok = ctx.Value(cios.ContextAccessToken).(string)
-	}
-	if _token == "" && !ok && !check.IsNil(self.refresh) {
-		_ = self.refresh()
-		_token = self.token
-
-	}
-	connection, err := self.CreateCIOSWebsocketConnection(_url, ParseAccessToken(_token))
-	if err != nil {
-		return err
-	}
-	defer connection.Close()
-	if beforeFunc != nil {
-		(*beforeFunc)(connection)
-	}
-	for {
-		messageType, body, err := connection.ReadMessage()
-		switch {
-		case websocket.IsCloseError(err, websocket.CloseNormalClosure):
-			return nil
-		case websocket.IsUnexpectedCloseError(err):
-			connection.Close()
-			connection, err = self.CreateCIOSWebsocketConnection(_url, ParseAccessToken(_token))
-			if err != nil {
-				return err
-			}
-			defer connection.Close()
-			continue
-		case messageType == websocket.CloseMessage:
-			return errors.New(string(body))
-		case messageType == websocket.TextMessage:
-			done, err := logic(body)
-			if err != nil {
-				return err
-			}
-			if done {
-				return nil
-			}
-		}
-	}
-}
 
 func (self PubSub) CreateMessagingURL(channelID string, mode string, packerFormat *string) string {
 	_url, err := url.Parse(strings.Replace(self.Url, "https", "wss", 1) + "/v2/messaging")
@@ -329,4 +258,31 @@ func (self PubSub) CreateCIOSWebsocketConnection(url string, authorization strin
 		return nil, err
 	}
 	return connection, nil
+}
+
+func safeCloseChan(ch chan bool) {
+	isClosed := func() bool {
+		select {
+		case _, ok := <-ch:
+			return !ok
+		default:
+			return false
+		}
+	}
+	if !isClosed() {
+		close(ch)
+	}
+}
+func safeSendChan(ch chan bool, v bool) {
+	isClosed := func() bool {
+		select {
+		case _, ok := <-ch:
+			return !ok
+		default:
+			return false
+		}
+	}
+	if !isClosed() {
+		ch <- v
+	}
 }

@@ -22,6 +22,7 @@ type (
 		Url          string
 		debug        bool
 		scope        string
+		assertion    string
 		ref          string
 		clientId     string
 		clientSecret string

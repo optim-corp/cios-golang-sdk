@@ -18,6 +18,34 @@ import (
 	"github.com/optim-corp/cios-golang-sdk/model"
 )
 
+func Test_RefreshGroup(t *testing.T) {
+	_token := ""
+	responseHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		if r.URL.Path == "/connect/token" {
+			json.NewEncoder(w).Encode(cios.ConnectTokenResponse{
+				//　https://auth0.com/docs/tokens/access-tokens/use-access-tokens
+				AccessToken:  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2V4YW1wbGUuYXV0aDAuY29tLyIsImF1ZCI6Imh0dHBzOi8vYXBpLmV4YW1wbGUuY29tL2NhbGFuZGFyL3YxLyIsInN1YiI6InVzcl8xMjMiLCJpYXQiOjE0NTg3ODU3OTYsImV4cCI6MTQ1ODg3MjE5Nn0.CA7eaHjIHz5NxeIJoFK9krqaeZrPLwmMmgI_XiQiIkQ",
+				TokenType:    "",
+				RefreshToken: "",
+				ExpiresIn:    0,
+				Scope:        "",
+			})
+		}
+	})
+	ts := httptest.NewServer(responseHandler)
+	client := NewCiosClient(CiosClientConfig{
+		AutoRefresh: false,
+		Debug:       false,
+		Urls:        model.CIOSUrl{AccountsUrl: ts.URL},
+		AuthConfig: DeviceAuthConf(
+			"clientID",
+			"clientSecret",
+			"assertion",
+			"Scope",
+		),
+	})
+}
 func TestAccount_Groups(t *testing.T) {
 	var (
 		query url.Values
@@ -88,15 +116,16 @@ func TestAccount_Groups(t *testing.T) {
 			},
 		}
 	)
-
 	// Query Test
 	responseHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		query = r.URL.Query()
 		w.Header().Set("Content-Type", "application/json")
+		query = r.URL.Query()
 		json.NewEncoder(w).Encode(cios.MultipleGroup{Total: 10})
 	})
 	ts := httptest.NewServer(responseHandler)
+
 	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{AccountsUrl: ts.URL}})
+
 	defer ts.Close()
 	for _, test := range tests {
 		client.Account.GetGroups(test.params, ctx)

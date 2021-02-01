@@ -24,10 +24,6 @@ go get -u github.com/optim-corp/cios-golang-sdk
 ```go
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     Debug:             true,
-    ClientID:          "client ID",
-    ClientSecret:      "client secret",
-    RequestScope:      "hogehoge.hoge",
-    RefreshToken:      "refresh token",
     AutoRefresh:       true,
     Urls:              sdkmodel.ProdUrls(),
 })
@@ -38,10 +34,6 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 ```go
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     Debug:             true,
-    ClientID:          "client ID",
-    ClientSecret:      "client secret",
-    RequestScope:      "hogehoge.hoge",
-    RefreshToken:      "refresh token",
     AutoRefresh:       true,
     Urls:              sdkmodel.PreUrls(),
 })
@@ -52,10 +44,6 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 ```go
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     Debug:             true,
-    ClientID:          "client ID",
-    ClientSecret:      "client secret",
-    RequestScope:      "hogehoge.hoge",
-    RefreshToken:      "refresh token",
     AutoRefresh:       true,
     Urls: ciossdk.CIOSUrl{
         MessagingUrl:             " https://",
@@ -72,6 +60,52 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 })
 ```
 
+* If you use Client Auth 
+
+```go
+client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
+    Debug:             true,
+    AutoRefresh:       true,
+    Urls:              sdkmodel.PreUrls(),
+    AuthConfig: ClientAuthConf(
+            "clientID",
+            "clientSecret",
+            "Scope",
+    ),
+})
+```
+
+* If you use Refresh Token Auth 
+
+```go
+client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
+    Debug:             true,
+    AutoRefresh:       true,
+    Urls:              sdkmodel.PreUrls(),
+    AuthConfig: RefreshTokenAuth(
+            "clientID",
+            "clientSecret",
+            "refreshToken",
+            "Scope",
+    ),
+})
+```
+
+* If you use Device Auth
+
+```go
+client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
+    Debug:             true,
+    AutoRefresh:       true,
+    Urls:              sdkmodel.PreUrls(),
+    AuthConfig: DeviceAuthConf(
+            "clientID",
+            "clientSecret",
+            "assertion",
+            "Scope",
+    ),
+})
+```
 ### [Examples] Get Buckets
 
 ```go

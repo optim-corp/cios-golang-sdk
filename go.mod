@@ -8,7 +8,7 @@ require (
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
 	github.com/gorilla/websocket v1.4.2
 	github.com/k-washi/jwt-decode v0.0.0-20191103205416-1902005c657f // indirect
-	github.com/optim-kazuhiro-seida/go-advance-type v1.2.2
+	github.com/optim-kazuhiro-seida/go-advance-type v1.2.3
 	golang.org/x/net v0.0.0-20210119194325-5f4716e94777 // indirect
 	golang.org/x/oauth2 v0.0.0-20210126194326-f9ce19ea3013
 	golang.org/x/sys v0.0.0-20210124154548-22da62e12c0c // indirect
