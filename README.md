@@ -60,6 +60,7 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 })
 ```
 
+#### About Auth
 * If you use Client Auth 
 
 ```go
