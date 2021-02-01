@@ -59,54 +59,64 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     },
 })
 ```
+#### Authentication
 
-#### About Auth
-* If you use Client Auth 
+|OAuthClientType|is Suppoted|
+|---|---|
+|Web|✅|
+|Client|✅|
+|Device|https://github.com/optim-corp/cios-golang-sdk/issues/2|
+|Native|❌|
 
+
+* Client Auth 
+    * client id
+    * client secret
+    * request scope
 ```go
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
-    Debug:             true,
-    AutoRefresh:       true,
-    Urls:              sdkmodel.PreUrls(),
     AuthConfig: ClientAuthConf(
-            "clientID",
-            "clientSecret",
-            "Scope",
-    ),
+           "clientID",
+           "clientSecret",
+           "scope",
+   ),
 })
 ```
 
-* If you use Refresh Token Auth 
-
+* Refresh Token Auth
+    * client id
+    * client secret
+    * refresh token
+    * request scope
 ```go
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
-    Debug:             true,
-    AutoRefresh:       true,
-    Urls:              sdkmodel.PreUrls(),
     AuthConfig: RefreshTokenAuth(
-            "clientID",
-            "clientSecret",
-            "refreshToken",
-            "Scope",
-    ),
+           "clientID",
+           "clientSecret",
+           "refreshToken",
+           "scope",
+   ),
 })
 ```
 
-* If you use Device Auth
-
+* Device Auth
+    * client id
+    * client secret
+    * assertion
+    * request scope
 ```go
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
-    Debug:             true,
-    AutoRefresh:       true,
-    Urls:              sdkmodel.PreUrls(),
     AuthConfig: DeviceAuthConf(
-            "clientID",
-            "clientSecret",
-            "assertion",
-            "Scope",
-    ),
+           "clientID",
+           "clientSecret",
+           "assertion",
+           "scope",
+   ),
 })
 ```
+
+The refresh token will only be executed once if the request fails.
+
 ### [Examples] Get Buckets
 
 ```go
