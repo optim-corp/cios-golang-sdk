@@ -65,7 +65,7 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 |---|---|
 |Web|✅|
 |Client|✅|
-|Device|https://github.com/optim-corp/cios-golang-sdk/issues/2|
+|Device|✅|
 |Native|❌|
 
 
