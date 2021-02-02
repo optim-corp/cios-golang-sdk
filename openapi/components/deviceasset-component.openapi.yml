@@ -44,11 +44,12 @@ components:
           format: uuid
         maker_id:
           type: string
-          format: uuid
+          nullable: true
         version:
           type: string
+          nullable: true
         watch:
-          $ref: './device-component.openapi.yml#/components/schemas/Watch'
+          $ref: '#/components/schemas/Watch'
         components:
           $ref: '#/components/schemas/ConstitutionComponent'
         created_at:
@@ -74,7 +75,7 @@ components:
         version:
           type: string
         watch:
-          $ref: './device-component.openapi.yml#/components/schemas/Watch'
+          $ref: '#/components/schemas/Watch'
         components:
           $ref: '#/components/schemas/ConstitutionComponent'
     DeviceModelUpdateRequest:
@@ -125,12 +126,15 @@ components:
         id:
           type: string
         parent_id:
+          nullable: true
           type: string
         address:
+          nullable: true
           type: string
         type:
           $ref: './device-component.openapi.yml#/components/schemas/ComponentTypeEnum'
         attribute:
+          nullable: true
           type: object
           example:
             model: RASOU001
@@ -141,6 +145,7 @@ components:
           items:
             $ref: './general.yml#/components/schemas/DisplayInfo'
         components:
+          nullable: true
           type: array
           items:
             $ref: '#/components/schemas/ConstitutionComponent'
@@ -168,12 +173,12 @@ components:
       type: object
       required:
         - id
+        - device_id
         - key
         - model
-        - start_at
-        - watch
-        - components
         - resource_owner_id
+        - created_at
+        - updated_at
       properties:
         id:
           type: string
@@ -184,8 +189,10 @@ components:
         model:
           type: object
           required:
-            - marker_id
-            - version
+            - id
+            - name
+            - created_at
+            - updated_at
           properties:
             id:
               type: string
@@ -206,6 +213,7 @@ components:
         serial_number:
           type: string
         start_at:
+          nullable: true
           type: string
           description: ナノ秒
         custom_inventory:
@@ -226,7 +234,7 @@ components:
         resource_owner_id:
           type: string
         watch:
-          $ref: './device-component.openapi.yml#/components/schemas/Watch'
+          $ref: '#/components/schemas/Watch'
         components:
           $ref: '#/components/schemas/DeviceEntitiesComponent'
         created_at:
@@ -255,6 +263,7 @@ components:
           $ref: '#/components/schemas/DeviceEntitiesComponent'
     DeviceEntitiesComponent:
       type: object
+      nullable: true
       required:
         - id
         - type
@@ -309,6 +318,36 @@ components:
       properties:
         lifecycle:
           $ref: '#/components/schemas/LifeCycle'
+
+    LifeCycleRequest:
+      type: object
+      required:
+        - event_at
+        - event_kind
+        - event_mode
+        - event_type
+      properties:
+        event_kind:
+          type: string
+        event_mode:
+          type: string
+        event_type:
+          type: string
+        before_id:
+          type: string
+        before_component:
+          $ref: '#/components/schemas/DeviceEntitiesComponent'
+        after_id:
+          type: string
+        after_component:
+          $ref: '#/components/schemas/DeviceEntitiesComponent'
+        event_at:
+          type: string
+          description: ナノ秒
+        note:
+          type: string
+        resource_owner_id:
+          type: string
     LifeCycle:
       type: object
       required:
@@ -342,3 +381,15 @@ components:
           type: string
         resource_owner_id:
           type: string
+    Watch:
+      type: object
+      nullable: true
+      properties:
+        types:
+          nullable: true
+          type: object
+        component_ids:
+          nullable: true
+          type: object
+          example:
+            0x0010: [ "unitSerialNo", "unitStatus", "commandValue" ]

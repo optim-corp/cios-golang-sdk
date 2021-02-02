@@ -11,7 +11,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
-	"github.com/optim-corp/cios-golang-sdk/model"
 )
 
 var (
@@ -37,22 +36,56 @@ type (
 		Auth                  *Auth
 		License               *License
 		Contract              *Contract
-		authType              model.AuthType
+		authType              sdksdkmodel.AuthType
 		tokenExp              int64
 	}
 	CiosClientConfig struct {
-		AutoRefresh  bool
-		Debug        bool
-		Urls         model.CIOSUrl
-		RefreshToken string
-		ClientID     string
-		ClientSecret string
-		RequestScope string
+		AutoRefresh bool
+		Debug       bool
+		Urls        sdksdkmodel.CIOSUrl
+		AuthConfig  *AuthConfig
+	}
+	AuthConfig struct {
+		sdksdkmodel.ClientID
+		sdksdkmodel.ClientSecret
+		sdksdkmodel.RefreshToken
+		sdksdkmodel.Assertion
+		sdksdkmodel.Scope
+		_type string
 	}
 )
 
+func ClientAuthConf(clientId, clientSecret, scope string) *AuthConfig {
+	return &AuthConfig{
+		ClientID:     clientId,
+		ClientSecret: clientSecret,
+		Scope:        scope,
+		_type:        sdksdkmodel.CLIENT_TYPE,
+	}
+}
+func RefreshTokenAuth(clientId, clientSecret, refreshToken, scope string) *AuthConfig {
+	return &AuthConfig{
+		ClientID:     clientId,
+		ClientSecret: clientSecret,
+		RefreshToken: refreshToken,
+		Scope:        scope,
+		_type:        sdksdkmodel.REFRESH_TYPE,
+	}
+}
+func DeviceAuthConf(clientId, clientSecret, assertion, scope string) *AuthConfig {
+	return &AuthConfig{
+		ClientID:     clientId,
+		ClientSecret: clientSecret,
+		Assertion:    assertion,
+		Scope:        scope,
+		_type:        sdksdkmodel.DEVICE_TYPE,
+	}
+}
 func NewCiosClient(config CiosClientConfig) *CiosClient {
 	instance := new(CiosClient)
+	instance.authType = sdksdkmodel.NONE_TYPE
+
+	// Instance
 	instance.Contract = &Contract{ApiClient: createClient(config.Urls.ContractUrl), Url: config.Urls.ContractUrl}
 	instance.License = &License{ApiClient: createClient(config.Urls.LicenseUrl), Url: config.Urls.LicenseUrl}
 	instance.Auth = &Auth{ApiClient: createClient(config.Urls.AuthUrl), Url: config.Urls.AuthUrl}
@@ -63,39 +96,38 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 	instance.FileStorage = &FileStorage{ApiClient: createClient(config.Urls.StorageUrl), Url: config.Urls.StorageUrl}
 	instance.Geography = &Geography{ApiClient: createClient(config.Urls.LocationUrl), Url: config.Urls.LocationUrl}
 
-	if config.ClientID != "" && config.ClientSecret != "" {
-		instance.authType = model.CLIENT_TYPE
-		instance.Auth.clientId = config.ClientID
-		instance.Auth.clientSecret = config.ClientSecret
-		instance.Auth.scope = config.RequestScope
-		if config.RefreshToken != "" {
-			instance.Auth.ref = config.RefreshToken
-			instance.authType = model.REFRESH_TYPE
-		}
-
-	} else if false {
-		// TODO: Add Device Auth
-		instance.authType = model.DEVICE_TYPE
-	} else {
-		instance.authType = model.NONE_TYPE
+	// AuthConfig
+	if config.AuthConfig != nil {
+		instance.authType = config.AuthConfig._type
+		instance.Auth.clientId = config.AuthConfig.ClientID
+		instance.Auth.clientSecret = config.AuthConfig.ClientSecret
+		instance.Auth.assertion = config.AuthConfig.Assertion
+		instance.Auth.ref = config.AuthConfig.RefreshToken
+		instance.Auth.scope = config.AuthConfig.Scope
 	}
+
 	refFunc := func() error {
 		if config.AutoRefresh {
 			if instance.tokenExp == 0 || instance.tokenExp-60 <= time.Now().Unix() {
 				switch instance.authType {
-				case model.CLIENT_TYPE:
+				case sdksdkmodel.CLIENT_TYPE:
 					token, _, _, _, err := instance.Auth.GetAccessTokenOnClient()
 					if err != nil {
 						return err
 					}
 					instance._accessToken(token)
-				case model.REFRESH_TYPE:
+				case sdksdkmodel.REFRESH_TYPE:
 					token, _, _, _, err := instance.Auth.GetAccessTokenByRefreshToken()
 					if err != nil {
 						return err
 					}
 					instance._accessToken(token)
-				case model.DEVICE_TYPE:
+				case sdksdkmodel.DEVICE_TYPE:
+					token, _, _, _, err := instance.Auth.GetAccessTokenOnDevice()
+					if err != nil {
+						return err
+					}
+					instance._accessToken(token)
 				default:
 				}
 			}
@@ -150,7 +182,7 @@ func (self *CiosClient) RequestScope(scope string) *CiosClient {
 	return self
 }
 
-func MakeRequestCtx(token string) model.RequestCtx {
+func MakeRequestCtx(token string) sdksdkmodel.RequestCtx {
 	if token == "" {
 		return context.Background()
 	}

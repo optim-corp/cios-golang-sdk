@@ -7,9 +7,9 @@ Name | Type | Description | Notes
 **Id** | **string** |  | 
 **Name** | **string** |  | 
 **ResourceOwnerId** | **string** |  | 
-**MakerId** | Pointer to **string** |  | [optional] 
-**Version** | Pointer to **string** |  | [optional] 
-**Watch** | Pointer to [**Watch**](Watch.md) |  | [optional] 
+**MakerId** | Pointer to **NullableString** |  | [optional] 
+**Version** | Pointer to **NullableString** |  | [optional] 
+**Watch** | Pointer to [**NullableWatch**](Watch.md) |  | [optional] 
 **Components** | Pointer to [**ConstitutionComponent**](ConstitutionComponent.md) |  | [optional] 
 **CreatedAt** | **string** | ナノ秒 | 
 **UpdatedAt** | **string** | ナノ秒 | 
@@ -118,6 +118,16 @@ SetMakerId sets MakerId field to given value.
 
 HasMakerId returns a boolean if a field has been set.
 
+### SetMakerIdNil
+
+`func (o *DeviceModel) SetMakerIdNil(b bool)`
+
+ SetMakerIdNil sets the value for MakerId to be an explicit nil
+
+### UnsetMakerId
+`func (o *DeviceModel) UnsetMakerId()`
+
+UnsetMakerId ensures that no value is present for MakerId, not even an explicit nil
 ### GetVersion
 
 `func (o *DeviceModel) GetVersion() string`
@@ -143,6 +153,16 @@ SetVersion sets Version field to given value.
 
 HasVersion returns a boolean if a field has been set.
 
+### SetVersionNil
+
+`func (o *DeviceModel) SetVersionNil(b bool)`
+
+ SetVersionNil sets the value for Version to be an explicit nil
+
+### UnsetVersion
+`func (o *DeviceModel) UnsetVersion()`
+
+UnsetVersion ensures that no value is present for Version, not even an explicit nil
 ### GetWatch
 
 `func (o *DeviceModel) GetWatch() Watch`
@@ -168,6 +188,16 @@ SetWatch sets Watch field to given value.
 
 HasWatch returns a boolean if a field has been set.
 
+### SetWatchNil
+
+`func (o *DeviceModel) SetWatchNil(b bool)`
+
+ SetWatchNil sets the value for Watch to be an explicit nil
+
+### UnsetWatch
+`func (o *DeviceModel) UnsetWatch()`
+
+UnsetWatch ensures that no value is present for Watch, not even an explicit nil
 ### GetComponents
 
 `func (o *DeviceModel) GetComponents() ConstitutionComponent`

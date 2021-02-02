@@ -5,20 +5,19 @@ import (
 	"encoding/base64"
 	_nethttp "net/http"
 
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-corp/cios-golang-sdk/util"
 
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
-
-	"github.com/optim-corp/cios-golang-sdk/model"
 )
 
 func MakeUploadFileOpts() cios.ApiUploadFileRequest {
 	return cios.ApiUploadFileRequest{}
 }
 
-func (self FileStorage) DownloadFile(bucketID string, nodeID string, ctx model.RequestCtx) ([]byte, *_nethttp.Response, error) {
+func (self FileStorage) DownloadFile(bucketID string, nodeID string, ctx sdkmodel.RequestCtx) ([]byte, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, nil, err
 	}
@@ -26,7 +25,7 @@ func (self FileStorage) DownloadFile(bucketID string, nodeID string, ctx model.R
 	f, httpResponse, err := request.Execute()
 	return []byte(f), httpResponse, err
 }
-func (self FileStorage) DownloadFileByKey(bucketID string, key string, ctx model.RequestCtx) ([]byte, *_nethttp.Response, error) {
+func (self FileStorage) DownloadFileByKey(bucketID string, key string, ctx sdkmodel.RequestCtx) ([]byte, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, nil, err
 	}
@@ -35,7 +34,7 @@ func (self FileStorage) DownloadFileByKey(bucketID string, key string, ctx model
 	return []byte(f), httpResponse, err
 }
 
-func (self FileStorage) UploadFile(bucketID string, body []byte, params cios.ApiUploadFileRequest, ctx model.RequestCtx) (*_nethttp.Response, error) {
+func (self FileStorage) UploadFile(bucketID string, body []byte, params cios.ApiUploadFileRequest, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}

@@ -222,6 +222,8 @@ components:
             $ref: '#/components/schemas/ConnectedDeviceResult'
     DeviceMonitoringIDsRequest:
       type: object
+      required:
+        - device_ids
       properties:
         device_ids:
           type: array
@@ -294,6 +296,8 @@ components:
           type: string
     DevicePolicyRequest:
       type: object
+      required:
+        - resource_owner_id
       properties:
         resource_owner_id:
           type: string
@@ -329,12 +333,41 @@ components:
             008: bnu4hbnrmflais1m02e8
             009: bnu4hbnrmflais1m02e9
             010: bnu4hbnrmflais1m02e0
-    Watch:
+
+    DeviceClientRequest:
       type: object
       properties:
-        types:
-          type: object
-        component_ids:
-          type: object
-          example:
-            0x0010: [ "unitSerialNo", "unitStatus", "commandValue" ]
+        client_id_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/DeviceClientRsaKey'
+    DeviceClientRsaKey:
+      type: object
+      required:
+        - client_id
+        - rsa_publickey
+      properties:
+        client_id:
+          type: string
+        rsa_publickey:
+          type: string
+    DeviceClientList:
+      type: object
+      properties:
+        client_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/Client'
+    SingleDeviceClientList:
+      type: object
+      properties:
+        client_list:
+          $ref: '#/components/schemas/Client'
+
+    RsaPublicKey:
+      type: object
+      required:
+        - rsa_publickey
+      properties:
+        rsa_publickey:
+          type: string

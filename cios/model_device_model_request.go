@@ -20,7 +20,7 @@ type DeviceModelRequest struct {
 	ResourceOwnerId string `json:"resource_owner_id"`
 	MakerId *string `json:"maker_id,omitempty"`
 	Version *string `json:"version,omitempty"`
-	Watch *Watch `json:"watch,omitempty"`
+	Watch NullableWatch `json:"watch,omitempty"`
 	Components *ConstitutionComponent `json:"components,omitempty"`
 }
 
@@ -155,36 +155,46 @@ func (o *DeviceModelRequest) SetVersion(v string) {
 	o.Version = &v
 }
 
-// GetWatch returns the Watch field value if set, zero value otherwise.
+// GetWatch returns the Watch field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *DeviceModelRequest) GetWatch() Watch {
-	if o == nil || o.Watch == nil {
+	if o == nil || o.Watch.Get() == nil {
 		var ret Watch
 		return ret
 	}
-	return *o.Watch
+	return *o.Watch.Get()
 }
 
 // GetWatchOk returns a tuple with the Watch field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *DeviceModelRequest) GetWatchOk() (*Watch, bool) {
-	if o == nil || o.Watch == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.Watch, true
+	return o.Watch.Get(), o.Watch.IsSet()
 }
 
 // HasWatch returns a boolean if a field has been set.
 func (o *DeviceModelRequest) HasWatch() bool {
-	if o != nil && o.Watch != nil {
+	if o != nil && o.Watch.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetWatch gets a reference to the given Watch and assigns it to the Watch field.
+// SetWatch gets a reference to the given NullableWatch and assigns it to the Watch field.
 func (o *DeviceModelRequest) SetWatch(v Watch) {
-	o.Watch = &v
+	o.Watch.Set(&v)
+}
+// SetWatchNil sets the value for Watch to be an explicit nil
+func (o *DeviceModelRequest) SetWatchNil() {
+	o.Watch.Set(nil)
+}
+
+// UnsetWatch ensures that no value is present for Watch, not even an explicit nil
+func (o *DeviceModelRequest) UnsetWatch() {
+	o.Watch.Unset()
 }
 
 // GetComponents returns the Components field value if set, zero value otherwise.
@@ -233,8 +243,8 @@ func (o DeviceModelRequest) MarshalJSON() ([]byte, error) {
 	if o.Version != nil {
 		toSerialize["version"] = o.Version
 	}
-	if o.Watch != nil {
-		toSerialize["watch"] = o.Watch
+	if o.Watch.IsSet() {
+		toSerialize["watch"] = o.Watch.Get()
 	}
 	if o.Components != nil {
 		toSerialize["components"] = o.Components

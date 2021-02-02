@@ -1,4 +1,4 @@
-package model
+package sdkmodel
 
 import (
 	"context"
@@ -18,14 +18,14 @@ type (
 	AccessToken  = string
 	ClientID     = string
 	ClientSecret = string
+	RefreshToken = string
 	Scope        = string
+	Assertion    = string
 	TokenType    = string
 	Stage        = string
 	ExpiresIn    = int
 	RequestCtx   context.Context
-)
-type (
-	CIOSUrl struct {
+	CIOSUrl      struct {
 		LicenseUrl               string
 		ContractUrl              string
 		MessagingUrl             string

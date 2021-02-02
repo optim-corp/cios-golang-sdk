@@ -531,26 +531,18 @@ paths:
           $ref: '../components/responses.yml#/components/responses/InternalServerError'
         503:
           $ref: '../components/responses.yml#/components/responses/ServerTemporarilyUnavailable'
-
     post:
       tags:
         - device-asset
       parameters:
         - $ref: '../components/parameters.yml#/components/parameters/key'
-        - $ref: '../components/parameters.yml#/components/parameters/event_kind'
-        - $ref: '../components/parameters.yml#/components/parameters/event_mode'
-        - $ref: '../components/parameters.yml#/components/parameters/event_type'
-        - $ref: '../components/parameters.yml#/components/parameters/component_id_query'
-        - $ref: '../components/parameters.yml#/components/parameters/before_id'
-        - $ref: '../components/parameters.yml#/components/parameters/after_id'
-        - $ref: '../components/parameters.yml#/components/parameters/start_event_at'
-        - $ref: '../components/parameters.yml#/components/parameters/end_event_at'
       operationId: createDeviceEntitiesLifecycle
       requestBody:
+        required: true
         content:
           application/json:
             schema:
-              $ref: '../components/deviceasset-component.openapi.yml#/components/schemas/LifeCycle'
+              $ref: '../components/deviceasset-component.openapi.yml#/components/schemas/LifeCycleRequest'
       responses:
         200:
           description: "Processing success"

@@ -6,22 +6,22 @@ Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
 **Id** | **string** |  | 
 **Key** | **string** |  | 
-**DeviceId** | Pointer to **string** |  | [optional] 
-**Model** | [**DeviceModelsEntityModel**](DeviceModelsEntity_model.md) |  | 
+**DeviceId** | **string** |  | 
+**Model** | [**DeviceModelsEntityModel**](DeviceModelsEntity_sdkmodel.md) |  | 
 **SerialNumber** | Pointer to **string** |  | [optional] 
-**StartAt** | **string** | ナノ秒 | 
+**StartAt** | Pointer to **NullableString** | ナノ秒 | [optional] 
 **CustomInventory** | Pointer to **[]map[string]interface{}** |  | [optional] 
 **ResourceOwnerId** | **string** |  | 
-**Watch** | [**Watch**](Watch.md) |  | 
-**Components** | [**DeviceEntitiesComponent**](DeviceEntitiesComponent.md) |  | 
-**CreatedAt** | Pointer to **string** |  | [optional] 
-**UpdatedAt** | Pointer to **string** |  | [optional] 
+**Watch** | Pointer to [**NullableWatch**](Watch.md) |  | [optional] 
+**Components** | Pointer to [**NullableDeviceEntitiesComponent**](DeviceEntitiesComponent.md) |  | [optional] 
+**CreatedAt** | **string** |  | 
+**UpdatedAt** | **string** |  | 
 
 ## Methods
 
 ### NewDeviceModelsEntity
 
-`func NewDeviceModelsEntity(id string, key string, model DeviceModelsEntityModel, startAt string, resourceOwnerId string, watch Watch, components DeviceEntitiesComponent, ) *DeviceModelsEntity`
+`func NewDeviceModelsEntity(id string, key string, deviceId string, model DeviceModelsEntityModel, resourceOwnerId string, createdAt string, updatedAt string, ) *DeviceModelsEntity`
 
 NewDeviceModelsEntity instantiates a new DeviceModelsEntity object
 This constructor will assign default values to properties that have it defined,
@@ -95,11 +95,6 @@ and a boolean to check if the value has been set.
 
 SetDeviceId sets DeviceId field to given value.
 
-### HasDeviceId
-
-`func (o *DeviceModelsEntity) HasDeviceId() bool`
-
-HasDeviceId returns a boolean if a field has been set.
 
 ### GetModel
 
@@ -165,7 +160,22 @@ and a boolean to check if the value has been set.
 
 SetStartAt sets StartAt field to given value.
 
+### HasStartAt
 
+`func (o *DeviceModelsEntity) HasStartAt() bool`
+
+HasStartAt returns a boolean if a field has been set.
+
+### SetStartAtNil
+
+`func (o *DeviceModelsEntity) SetStartAtNil(b bool)`
+
+ SetStartAtNil sets the value for StartAt to be an explicit nil
+
+### UnsetStartAt
+`func (o *DeviceModelsEntity) UnsetStartAt()`
+
+UnsetStartAt ensures that no value is present for StartAt, not even an explicit nil
 ### GetCustomInventory
 
 `func (o *DeviceModelsEntity) GetCustomInventory() []map[string]interface{}`
@@ -230,7 +240,22 @@ and a boolean to check if the value has been set.
 
 SetWatch sets Watch field to given value.
 
+### HasWatch
 
+`func (o *DeviceModelsEntity) HasWatch() bool`
+
+HasWatch returns a boolean if a field has been set.
+
+### SetWatchNil
+
+`func (o *DeviceModelsEntity) SetWatchNil(b bool)`
+
+ SetWatchNil sets the value for Watch to be an explicit nil
+
+### UnsetWatch
+`func (o *DeviceModelsEntity) UnsetWatch()`
+
+UnsetWatch ensures that no value is present for Watch, not even an explicit nil
 ### GetComponents
 
 `func (o *DeviceModelsEntity) GetComponents() DeviceEntitiesComponent`
@@ -250,7 +275,22 @@ and a boolean to check if the value has been set.
 
 SetComponents sets Components field to given value.
 
+### HasComponents
 
+`func (o *DeviceModelsEntity) HasComponents() bool`
+
+HasComponents returns a boolean if a field has been set.
+
+### SetComponentsNil
+
+`func (o *DeviceModelsEntity) SetComponentsNil(b bool)`
+
+ SetComponentsNil sets the value for Components to be an explicit nil
+
+### UnsetComponents
+`func (o *DeviceModelsEntity) UnsetComponents()`
+
+UnsetComponents ensures that no value is present for Components, not even an explicit nil
 ### GetCreatedAt
 
 `func (o *DeviceModelsEntity) GetCreatedAt() string`
@@ -270,11 +310,6 @@ and a boolean to check if the value has been set.
 
 SetCreatedAt sets CreatedAt field to given value.
 
-### HasCreatedAt
-
-`func (o *DeviceModelsEntity) HasCreatedAt() bool`
-
-HasCreatedAt returns a boolean if a field has been set.
 
 ### GetUpdatedAt
 
@@ -295,11 +330,6 @@ and a boolean to check if the value has been set.
 
 SetUpdatedAt sets UpdatedAt field to given value.
 
-### HasUpdatedAt
-
-`func (o *DeviceModelsEntity) HasUpdatedAt() bool`
-
-HasUpdatedAt returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

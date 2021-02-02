@@ -143,6 +143,126 @@ func (a *DeviceApiService) CreateDeviceExecute(r ApiCreateDeviceRequest) (Single
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ApiCreateDeviceClientRequest struct {
+	Ctx _context.Context
+	ApiService *DeviceApiService
+	P_deviceId string
+	P_deviceClientRequest *DeviceClientRequest
+}
+
+func (r ApiCreateDeviceClientRequest) DeviceClientRequest(deviceClientRequest DeviceClientRequest) ApiCreateDeviceClientRequest {
+	r.P_deviceClientRequest = &deviceClientRequest
+	return r
+}
+
+func (r ApiCreateDeviceClientRequest) Execute() (DeviceClientList, *_nethttp.Response, error) {
+	return r.ApiService.CreateDeviceClientExecute(r)
+}
+
+/*
+ * CreateDeviceClient Method for CreateDeviceClient
+ * * 指定したデバイスにクライアントを作成します。
+* 指定したデバイスIDが存在しない場合は、エラー(404 Not Found)となります。
+* 指定したデバイスにクライアントが存在しない状態で作成した場合、デバイス管理区分を一部管理に変更します。
+ * @param Ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param deviceId
+ * @return ApiCreateDeviceClientRequest
+ */
+func (a *DeviceApiService) CreateDeviceClient(Ctx _context.Context, deviceId string) ApiCreateDeviceClientRequest {
+	return ApiCreateDeviceClientRequest{
+		ApiService: a,
+		Ctx: Ctx,
+		P_deviceId: deviceId,
+	}
+}
+
+/*
+ * Execute executes the request
+ * @return DeviceClientList
+ */
+func (a *DeviceApiService) CreateDeviceClientExecute(r ApiCreateDeviceClientRequest) (DeviceClientList, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod   = _nethttp.MethodPost
+		localVarPostBody     interface{}
+		localVarFormFileName string
+		localVarFileName     string
+		localVarFileBytes    []byte
+		localVarReturnValue  DeviceClientList
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.Ctx, "DeviceApiService.CreateDeviceClient")
+	if localBasePath == "/" {
+	    localBasePath = ""
+	}
+	if err != nil {
+		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v2/devices/{device_id}/device_clients"
+	localVarPath = strings.Replace(localVarPath, "{"+"device_id"+"}", _neturl.PathEscape(parameterToString(r.P_deviceId, "")) , -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if r.P_deviceClientRequest == nil {
+		return localVarReturnValue, nil, reportError("deviceClientRequest is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.P_deviceClientRequest
+	req, err := a.client.prepareRequest(r.Ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiCreateDevicePolicyRequest struct {
 	Ctx _context.Context
 	ApiService *DeviceApiService
@@ -303,6 +423,107 @@ func (a *DeviceApiService) DeleteDeviceExecute(r ApiDeleteDeviceRequest) (*_neth
 
 	localVarPath := localBasePath + "/v2/devices/{device_id}"
 	localVarPath = strings.Replace(localVarPath, "{"+"device_id"+"}", _neturl.PathEscape(parameterToString(r.P_deviceId, "")) , -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.Ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarHTTPResponse, err
+	}
+
+	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	if err != nil {
+		return localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarHTTPResponse, newErr
+	}
+
+	return localVarHTTPResponse, nil
+}
+
+type ApiDeleteDeviceClientRequest struct {
+	Ctx _context.Context
+	ApiService *DeviceApiService
+	P_deviceId string
+	P_clientId string
+}
+
+
+func (r ApiDeleteDeviceClientRequest) Execute() (*_nethttp.Response, error) {
+	return r.ApiService.DeleteDeviceClientExecute(r)
+}
+
+/*
+ * DeleteDeviceClient device.write
+ * -| * 指定したアプリケーションクライアントIDに紐づくデバイスクライアントを削除します。 * 指定したデバイスID、またはアプリケーションクライアントIDが存在しない場合は、エラー(404 Not Found)となります。 * 指定したデバイスクライアントを削除後、デバイスに紐づくデバイスクライアントが存在しない場合は、デバイス管理区分を管理外に変更します。 * デバイス管理区分が完全管理のデバイス管理エージェント固有のデバイスクライアントに関しては、ディアクティベーションでのみ削除可能です。
+ * @param Ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param deviceId
+ * @param clientId
+ * @return ApiDeleteDeviceClientRequest
+ */
+func (a *DeviceApiService) DeleteDeviceClient(Ctx _context.Context, deviceId string, clientId string) ApiDeleteDeviceClientRequest {
+	return ApiDeleteDeviceClientRequest{
+		ApiService: a,
+		Ctx: Ctx,
+		P_deviceId: deviceId,
+		P_clientId: clientId,
+	}
+}
+
+/*
+ * Execute executes the request
+ */
+func (a *DeviceApiService) DeleteDeviceClientExecute(r ApiDeleteDeviceClientRequest) (*_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod   = _nethttp.MethodDelete
+		localVarPostBody     interface{}
+		localVarFormFileName string
+		localVarFileName     string
+		localVarFileBytes    []byte
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.Ctx, "DeviceApiService.DeleteDeviceClient")
+	if localBasePath == "/" {
+	    localBasePath = ""
+	}
+	if err != nil {
+		return nil, GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v2/devices/{device_id}/device_clients/{client_id}"
+	localVarPath = strings.Replace(localVarPath, "{"+"device_id"+"}", _neturl.PathEscape(parameterToString(r.P_deviceId, "")) , -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"client_id"+"}", _neturl.PathEscape(parameterToString(r.P_clientId, "")) , -1)
 
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
@@ -1043,6 +1264,125 @@ func (a *DeviceApiService) GetDevicePoliciesExecute(r ApiGetDevicePoliciesReques
 	return localVarReturnValue, localVarHTTPResponse, nil
 }
 
+type ApiGetDeviceProfileRequest struct {
+	Ctx _context.Context
+	ApiService *DeviceApiService
+	P_lang *string
+	P_isDev *bool
+}
+
+func (r ApiGetDeviceProfileRequest) Lang(lang string) ApiGetDeviceProfileRequest {
+	r.P_lang = &lang
+	return r
+}
+func (r ApiGetDeviceProfileRequest) IsDev(isDev bool) ApiGetDeviceProfileRequest {
+	r.P_isDev = &isDev
+	return r
+}
+
+func (r ApiGetDeviceProfileRequest) Execute() (SingleDevice, *_nethttp.Response, error) {
+	return r.ApiService.GetDeviceProfileExecute(r)
+}
+
+/*
+ * GetDeviceProfile device.profile
+ * @param Ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @return ApiGetDeviceProfileRequest
+ */
+func (a *DeviceApiService) GetDeviceProfile(Ctx _context.Context) ApiGetDeviceProfileRequest {
+	return ApiGetDeviceProfileRequest{
+		ApiService: a,
+		Ctx: Ctx,
+	}
+}
+
+/*
+ * Execute executes the request
+ * @return SingleDevice
+ */
+func (a *DeviceApiService) GetDeviceProfileExecute(r ApiGetDeviceProfileRequest) (SingleDevice, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod   = _nethttp.MethodGet
+		localVarPostBody     interface{}
+		localVarFormFileName string
+		localVarFileName     string
+		localVarFileBytes    []byte
+		localVarReturnValue  SingleDevice
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.Ctx, "DeviceApiService.GetDeviceProfile")
+	if localBasePath == "/" {
+	    localBasePath = ""
+	}
+	if err != nil {
+		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v2/devices/profile"
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+
+	if r.P_lang != nil {
+		localVarQueryParams.Add("lang", parameterToString(*r.P_lang, ""))
+	}
+	if r.P_isDev != nil {
+		localVarQueryParams.Add("is_dev", parameterToString(*r.P_isDev, ""))
+	}
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	req, err := a.client.prepareRequest(r.Ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
 type ApiGetDevicesRequest struct {
 	Ctx _context.Context
 	ApiService *DeviceApiService
@@ -1330,6 +1670,128 @@ func (a *DeviceApiService) UpdateDeviceExecute(r ApiUpdateDeviceRequest) (Single
 	}
 	// body params
 	localVarPostBody = r.P_deviceUpdateRequest
+	req, err := a.client.prepareRequest(r.Ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
+	if err != nil {
+		return localVarReturnValue, nil, err
+	}
+
+	localVarHTTPResponse, err := a.client.callAPI(req)
+	if err != nil || localVarHTTPResponse == nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	localVarBody, err := _ioutil.ReadAll(localVarHTTPResponse.Body)
+	localVarHTTPResponse.Body.Close()
+	if err != nil {
+		return localVarReturnValue, localVarHTTPResponse, err
+	}
+
+	if localVarHTTPResponse.StatusCode >= 300 {
+		newErr := GenericOpenAPIError{
+			body:  localVarBody,
+			error: localVarHTTPResponse.Status,
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	err = a.client.decode(&localVarReturnValue, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+	if err != nil {
+		newErr := GenericOpenAPIError{
+			body:  localVarBody,
+			error: err.Error(),
+		}
+		return localVarReturnValue, localVarHTTPResponse, newErr
+	}
+
+	return localVarReturnValue, localVarHTTPResponse, nil
+}
+
+type ApiUpdateDeviceClientRequest struct {
+	Ctx _context.Context
+	ApiService *DeviceApiService
+	P_deviceId string
+	P_clientId string
+	P_rsaPublicKey *RsaPublicKey
+}
+
+func (r ApiUpdateDeviceClientRequest) RsaPublicKey(rsaPublicKey RsaPublicKey) ApiUpdateDeviceClientRequest {
+	r.P_rsaPublicKey = &rsaPublicKey
+	return r
+}
+
+func (r ApiUpdateDeviceClientRequest) Execute() (SingleDeviceClientList, *_nethttp.Response, error) {
+	return r.ApiService.UpdateDeviceClientExecute(r)
+}
+
+/*
+ * UpdateDeviceClient device.write
+ * -| * 指定したアプリケーションクライアントIDに紐づくデバイスクライアントのRSA公開鍵を更新します。 * 指定したデバイスID、またはアプリケーションクライアントIDが存在しない場合は、エラー(404 Not Found)となります。
+ * @param Ctx _context.Context - for authentication, logging, cancellation, deadlines, tracing, etc. Passed from http.Request or context.Background().
+ * @param deviceId
+ * @param clientId
+ * @return ApiUpdateDeviceClientRequest
+ */
+func (a *DeviceApiService) UpdateDeviceClient(Ctx _context.Context, deviceId string, clientId string) ApiUpdateDeviceClientRequest {
+	return ApiUpdateDeviceClientRequest{
+		ApiService: a,
+		Ctx: Ctx,
+		P_deviceId: deviceId,
+		P_clientId: clientId,
+	}
+}
+
+/*
+ * Execute executes the request
+ * @return SingleDeviceClientList
+ */
+func (a *DeviceApiService) UpdateDeviceClientExecute(r ApiUpdateDeviceClientRequest) (SingleDeviceClientList, *_nethttp.Response, error) {
+	var (
+		localVarHTTPMethod   = _nethttp.MethodPatch
+		localVarPostBody     interface{}
+		localVarFormFileName string
+		localVarFileName     string
+		localVarFileBytes    []byte
+		localVarReturnValue  SingleDeviceClientList
+	)
+
+	localBasePath, err := a.client.cfg.ServerURLWithContext(r.Ctx, "DeviceApiService.UpdateDeviceClient")
+	if localBasePath == "/" {
+	    localBasePath = ""
+	}
+	if err != nil {
+		return localVarReturnValue, nil, GenericOpenAPIError{error: err.Error()}
+	}
+
+	localVarPath := localBasePath + "/v2/devices/{device_id}/device_clients/{client_id}"
+	localVarPath = strings.Replace(localVarPath, "{"+"device_id"+"}", _neturl.PathEscape(parameterToString(r.P_deviceId, "")) , -1)
+	localVarPath = strings.Replace(localVarPath, "{"+"client_id"+"}", _neturl.PathEscape(parameterToString(r.P_clientId, "")) , -1)
+
+	localVarHeaderParams := make(map[string]string)
+	localVarQueryParams := _neturl.Values{}
+	localVarFormParams := _neturl.Values{}
+	if r.P_rsaPublicKey == nil {
+		return localVarReturnValue, nil, reportError("rsaPublicKey is required and must be specified")
+	}
+
+	// to determine the Content-Type header
+	localVarHTTPContentTypes := []string{"application/json"}
+
+	// set Content-Type header
+	localVarHTTPContentType := selectHeaderContentType(localVarHTTPContentTypes)
+	if localVarHTTPContentType != "" {
+		localVarHeaderParams["Content-Type"] = localVarHTTPContentType
+	}
+
+	// to determine the Accept header
+	localVarHTTPHeaderAccepts := []string{"application/json"}
+
+	// set Accept header
+	localVarHTTPHeaderAccept := selectHeaderAccept(localVarHTTPHeaderAccepts)
+	if localVarHTTPHeaderAccept != "" {
+		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
+	}
+	// body params
+	localVarPostBody = r.P_rsaPublicKey
 	req, err := a.client.prepareRequest(r.Ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err

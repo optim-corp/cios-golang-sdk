@@ -16,14 +16,14 @@ import (
 
 // SingleDeviceEntitiesComponent struct for SingleDeviceEntitiesComponent
 type SingleDeviceEntitiesComponent struct {
-	Component DeviceEntitiesComponent `json:"component"`
+	Component NullableDeviceEntitiesComponent `json:"component"`
 }
 
 // NewSingleDeviceEntitiesComponent instantiates a new SingleDeviceEntitiesComponent object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSingleDeviceEntitiesComponent(component DeviceEntitiesComponent, ) *SingleDeviceEntitiesComponent {
+func NewSingleDeviceEntitiesComponent(component NullableDeviceEntitiesComponent, ) *SingleDeviceEntitiesComponent {
 	this := SingleDeviceEntitiesComponent{}
 	this.Component = component
 	return &this
@@ -38,33 +38,35 @@ func NewSingleDeviceEntitiesComponentWithDefaults() *SingleDeviceEntitiesCompone
 }
 
 // GetComponent returns the Component field value
+// If the value is explicit nil, the zero value for DeviceEntitiesComponent will be returned
 func (o *SingleDeviceEntitiesComponent) GetComponent() DeviceEntitiesComponent {
-	if o == nil  {
+	if o == nil || o.Component.Get() == nil {
 		var ret DeviceEntitiesComponent
 		return ret
 	}
 
-	return o.Component
+	return *o.Component.Get()
 }
 
 // GetComponentOk returns a tuple with the Component field value
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *SingleDeviceEntitiesComponent) GetComponentOk() (*DeviceEntitiesComponent, bool) {
 	if o == nil  {
 		return nil, false
 	}
-	return &o.Component, true
+	return o.Component.Get(), o.Component.IsSet()
 }
 
 // SetComponent sets field value
 func (o *SingleDeviceEntitiesComponent) SetComponent(v DeviceEntitiesComponent) {
-	o.Component = v
+	o.Component.Set(&v)
 }
 
 func (o SingleDeviceEntitiesComponent) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
 	if true {
-		toSerialize["component"] = o.Component
+		toSerialize["component"] = o.Component.Get()
 	}
 	return json.Marshal(toSerialize)
 }

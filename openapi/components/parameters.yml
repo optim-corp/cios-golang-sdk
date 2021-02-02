@@ -57,6 +57,12 @@ components:
       required: true
       schema:
         type: string
+    client_id:
+      name: client_id
+      in: path
+      required: true
+      schema:
+        type: string
     device_id_required:
       name: device_id
       in: path

@@ -2,7 +2,6 @@ package ciossdk
 
 import (
 	"context"
-	"errors"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -11,10 +10,10 @@ import (
 
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
-func (self Auth) GetAccessTokenByRefreshToken() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
+func (self Auth) GetAccessTokenByRefreshToken() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
 	if self.debug {
 		log.Printf("%s", "Refresh AccessToken.")
 	}
@@ -33,7 +32,7 @@ func (self Auth) GetAccessTokenByRefreshToken() (model.AccessToken, model.Scope,
 
 }
 
-func (self Auth) GetAccessTokenOnClient() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
+func (self Auth) GetAccessTokenOnClient() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
 	responseData := struct {
 		AccessToken string `json:"access_token"`
 		TokenType   string `json:"token_type"`
@@ -64,7 +63,27 @@ func (self Auth) GetAccessTokenOnClient() (model.AccessToken, model.Scope, model
 	return responseData.AccessToken, responseData.Scope, responseData.TokenType, responseData.ExpiresIn, nil
 }
 
-func (self Auth) GetAccessTokenOnDevice() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
-	return "", "", "", 0, errors.New("not implement")
+func (self Auth) GetAccessTokenOnDevice() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
+	responseBody := struct {
+		AccessToken string `json:"access_token"`
+		TokenType   string `json:"token_type"`
+		ExpiresIn   int    `json:"expires_in"`
+		Scope       string `json:"scope"`
+	}{}
+	values := url.Values{
+		"grant_type":    []string{"urn:ietf:params:oauth:grant-type:jwt-bearer"},
+		"client_id":     []string{self.clientId},
+		"client_secret": []string{self.clientSecret},
+		"scope":         []string{self.scope},
+	}
 
+	response, err := http.Post(self.Url+"/connect/token", "application/x-www-form-urlencoded", strings.NewReader(values.Encode()))
+	if err != nil {
+		return "", "", "", 0, err
+	}
+	defer response.Body.Close()
+	if err := convert.UnMarshalJson(response.Body, &responseBody); err != nil {
+		return "", "", "", 0, err
+	}
+	return responseBody.AccessToken, responseBody.Scope, responseBody.TokenType, responseBody.ExpiresIn, nil
 }

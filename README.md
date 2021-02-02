@@ -25,11 +25,7 @@ go get -u github.com/optim-corp/cios-golang-sdk
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     Debug:             true,
     AutoRefresh:       true,
-    ClientID:          "client ID",
-    ClientSecret:      "client secret",
-    RequestScope:      "hogehoge.hoge",
-    RefreshToken:      "refresh token",
-    Urls:              sdkmodel.ProdUrls(),
+    Urls:              sdksdkmodel.ProdUrls(),
 })
 ```
 
@@ -39,11 +35,7 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     Debug:             true,
     AutoRefresh:       true,
-    ClientID:          "client ID",
-    ClientSecret:      "client secret",
-    RequestScope:      "hogehoge.hoge",
-    RefreshToken:      "refresh token",
-    Urls:              sdkmodel.PreUrls(),
+    Urls:              sdksdkmodel.PreUrls(),
 })
 ```
 
@@ -53,10 +45,6 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     Debug:             true,
     AutoRefresh:       true,
-    ClientID:          "client ID",
-    ClientSecret:      "client secret",
-    RequestScope:      "hogehoge.hoge",
-    RefreshToken:      "refresh token",
     Urls: ciossdk.CIOSUrl{
         MessagingUrl:             " https://",
         LocationUrl:              " https://",
@@ -77,7 +65,7 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 |---|---|
 |Web|✅|
 |Client|✅|
-|Device|https://github.com/optim-corp/cios-golang-sdk/issues/2|
+|Device|✅|
 |Native|❌|
 
 
@@ -87,9 +75,11 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     * request scope
 ```go
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
-    ClientID:          "client ID",
-    ClientSecret:      "client secret",
-    RequestScope:      "hogehoge.hoge",
+    AuthConfig: ClientAuthConf(
+           "clientID",
+           "clientSecret",
+           "scope",
+   ),
 })
 ```
 
@@ -100,10 +90,28 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     * request scope
 ```go
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
-    ClientID:          "client ID",
-    ClientSecret:      "client secret",
-    RefreshToken:      "refresh token",
-    RequestScope:      "hogehoge.hoge",
+    AuthConfig: RefreshTokenAuth(
+           "clientID",
+           "clientSecret",
+           "refreshToken",
+           "scope",
+   ),
+})
+```
+
+* Device Auth
+    * client id
+    * client secret
+    * assertion
+    * request scope
+```go
+client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
+    AuthConfig: DeviceAuthConf(
+           "clientID",
+           "clientSecret",
+           "assertion",
+           "scope",
+   ),
 })
 ```
 

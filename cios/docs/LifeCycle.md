@@ -9,9 +9,9 @@ Name | Type | Description | Notes
 **EventMode** | **string** |  | 
 **EventType** | **string** |  | 
 **BeforeId** | Pointer to **string** |  | [optional] 
-**BeforeComponent** | Pointer to [**DeviceEntitiesComponent**](DeviceEntitiesComponent.md) |  | [optional] 
+**BeforeComponent** | Pointer to [**NullableDeviceEntitiesComponent**](DeviceEntitiesComponent.md) |  | [optional] 
 **AfterId** | Pointer to **string** |  | [optional] 
-**AfterComponent** | Pointer to [**DeviceEntitiesComponent**](DeviceEntitiesComponent.md) |  | [optional] 
+**AfterComponent** | Pointer to [**NullableDeviceEntitiesComponent**](DeviceEntitiesComponent.md) |  | [optional] 
 **EventAt** | **string** | ナノ秒 | 
 **Note** | Pointer to **string** |  | [optional] 
 **ResourceOwnerId** | **string** |  | 
@@ -165,6 +165,16 @@ SetBeforeComponent sets BeforeComponent field to given value.
 
 HasBeforeComponent returns a boolean if a field has been set.
 
+### SetBeforeComponentNil
+
+`func (o *LifeCycle) SetBeforeComponentNil(b bool)`
+
+ SetBeforeComponentNil sets the value for BeforeComponent to be an explicit nil
+
+### UnsetBeforeComponent
+`func (o *LifeCycle) UnsetBeforeComponent()`
+
+UnsetBeforeComponent ensures that no value is present for BeforeComponent, not even an explicit nil
 ### GetAfterId
 
 `func (o *LifeCycle) GetAfterId() string`
@@ -215,6 +225,16 @@ SetAfterComponent sets AfterComponent field to given value.
 
 HasAfterComponent returns a boolean if a field has been set.
 
+### SetAfterComponentNil
+
+`func (o *LifeCycle) SetAfterComponentNil(b bool)`
+
+ SetAfterComponentNil sets the value for AfterComponent to be an explicit nil
+
+### UnsetAfterComponent
+`func (o *LifeCycle) UnsetAfterComponent()`
+
+UnsetAfterComponent ensures that no value is present for AfterComponent, not even an explicit nil
 ### GetEventAt
 
 `func (o *LifeCycle) GetEventAt() string`

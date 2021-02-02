@@ -1,6 +1,7 @@
 package ciossdk
 
 import (
+	"errors"
 	"log"
 	_nethttp "net/http"
 	"net/url"
@@ -9,7 +10,7 @@ import (
 	"time"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-corp/cios-golang-sdk/util"
 
 	"github.com/optim-kazuhiro-seida/go-advance-type/check"
@@ -27,10 +28,10 @@ func MakeGetDataStoreChannelsOpts() cios.ApiGetDataStoreChannelsRequest {
 func MakeGetObjectsOpts() cios.ApiGetDataStoreObjectsRequest {
 	return cios.ApiGetDataStoreObjectsRequest{}
 }
-func MakeGetStreamOpts() model.ApiGetStreamRequest {
-	return model.ApiGetStreamRequest{}
+func MakeGetStreamOpts() sdkmodel.ApiGetStreamRequest {
+	return sdkmodel.ApiGetStreamRequest{}
 }
-func (self PubSub) GetDataStoreChannels(params cios.ApiGetDataStoreChannelsRequest, ctx model.RequestCtx) (response cios.MultipleDataStoreChannel, httpResponse *_nethttp.Response, err error) {
+func (self PubSub) GetDataStoreChannels(params cios.ApiGetDataStoreChannelsRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleDataStoreChannel, httpResponse *_nethttp.Response, err error) {
 	if err = self.refresh(); err != nil {
 		return
 	}
@@ -41,7 +42,7 @@ func (self PubSub) GetDataStoreChannels(params cios.ApiGetDataStoreChannelsReque
 	params.P_channelProtocolId = util.ToNil(params.P_channelProtocolId)
 	return params.Execute()
 }
-func (self PubSub) GetDataStoreChannel(channelID string, ctx model.RequestCtx) (cios.DataStoreChannel, *_nethttp.Response, error) {
+func (self PubSub) GetDataStoreChannel(channelID string, ctx sdkmodel.RequestCtx) (cios.DataStoreChannel, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.DataStoreChannel{}, nil, err
 	}
@@ -53,7 +54,7 @@ func (self PubSub) GetDataStoreChannel(channelID string, ctx model.RequestCtx) (
 
 	return response.Channel, httpResponse, err
 }
-func (self PubSub) GetObjects(channelID string, params cios.ApiGetDataStoreObjectsRequest, ctx model.RequestCtx) (response cios.MultipleDataStoreObject, httpResponse *_nethttp.Response, err error) {
+func (self PubSub) GetObjects(channelID string, params cios.ApiGetDataStoreObjectsRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleDataStoreObject, httpResponse *_nethttp.Response, err error) {
 	if err = self.refresh(); err != nil {
 		return
 	}
@@ -69,7 +70,7 @@ func (self PubSub) GetObjects(channelID string, params cios.ApiGetDataStoreObjec
 	params.P_channelProtocolId = util.ToNil(params.P_channelProtocolId)
 	return params.Execute()
 }
-func (self PubSub) GetObjectsAll(channelID string, params cios.ApiGetDataStoreObjectsRequest, ctx model.RequestCtx) ([]cios.DataStoreObject, *_nethttp.Response, error) {
+func (self PubSub) GetObjectsAll(channelID string, params cios.ApiGetDataStoreObjectsRequest, ctx sdkmodel.RequestCtx) ([]cios.DataStoreObject, *_nethttp.Response, error) {
 	var (
 		result      []cios.DataStoreObject
 		httpRes     *_nethttp.Response
@@ -115,11 +116,11 @@ func (self PubSub) GetObjectsAll(channelID string, params cios.ApiGetDataStoreOb
 	}
 	return result, httpRes, err
 }
-func (self PubSub) GetObjectsUnlimited(channelID string, params cios.ApiGetDataStoreObjectsRequest, ctx model.RequestCtx) ([]cios.DataStoreObject, *_nethttp.Response, error) {
+func (self PubSub) GetObjectsUnlimited(channelID string, params cios.ApiGetDataStoreObjectsRequest, ctx sdkmodel.RequestCtx) ([]cios.DataStoreObject, *_nethttp.Response, error) {
 	params.P_limit = nil
 	return self.GetObjectsAll(channelID, params, ctx)
 }
-func (self PubSub) GetObject(channelID string, objectID string, packerFormat *string, ctx model.RequestCtx) (interface{}, *_nethttp.Response, error) {
+func (self PubSub) GetObject(channelID string, objectID string, packerFormat *string, ctx sdkmodel.RequestCtx) (interface{}, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return map[string]interface{}{}, nil, err
 	}
@@ -129,7 +130,7 @@ func (self PubSub) GetObject(channelID string, objectID string, packerFormat *st
 	}
 	return request.Execute()
 }
-func (self PubSub) GetObjectLatest(channelID string, packerFormat *string, ctx model.RequestCtx) (interface{}, *_nethttp.Response, error) {
+func (self PubSub) GetObjectLatest(channelID string, packerFormat *string, ctx sdkmodel.RequestCtx) (interface{}, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return map[string]interface{}{}, nil, err
 	}
@@ -140,7 +141,7 @@ func (self PubSub) GetObjectLatest(channelID string, packerFormat *string, ctx m
 	return request.Execute()
 
 }
-func (self PubSub) MapObjectLatest(channelID string, packerFormat *string, stc interface{}, ctx model.RequestCtx) (*_nethttp.Response, error) {
+func (self PubSub) MapObjectLatest(channelID string, packerFormat *string, stc interface{}, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
@@ -150,21 +151,21 @@ func (self PubSub) MapObjectLatest(channelID string, packerFormat *string, stc i
 	}
 	return httpResponse, convert.DeepCopy(response, stc)
 }
-func (self PubSub) GetMultiObjectLatest(channelIDs []string, ctx model.RequestCtx) (cios.MultipleDataStoreDataLatest, *_nethttp.Response, error) {
+func (self PubSub) GetMultiObjectLatest(channelIDs []string, ctx sdkmodel.RequestCtx) (cios.MultipleDataStoreDataLatest, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.MultipleDataStoreDataLatest{}, nil, err
 	}
 	request := self.ApiClient.PublishSubscribeApi.GetDataStoreMultiObjectDataLatest(ctx).Ids(cios.Ids{Ids: &channelIDs})
 	return request.Execute()
 }
-func (self PubSub) GetMultiObjectLatestByChannels(channels []cios.Channel, ctx model.RequestCtx) (cios.MultipleDataStoreDataLatest, *_nethttp.Response, error) {
+func (self PubSub) GetMultiObjectLatestByChannels(channels []cios.Channel, ctx sdkmodel.RequestCtx) (cios.MultipleDataStoreDataLatest, *_nethttp.Response, error) {
 	var channelIDs []string
 	for _, channel := range channels {
 		channelIDs = append(channelIDs, channel.Id)
 	}
 	return self.GetMultiObjectLatest(channelIDs, ctx)
 }
-func (self PubSub) MapMultiObjectLatestPayload(channelIDs []string, stc interface{}, ctx model.RequestCtx) ([]cios.PackerFormatJsonHeader, *_nethttp.Response, error) {
+func (self PubSub) MapMultiObjectLatestPayload(channelIDs []string, stc interface{}, ctx sdkmodel.RequestCtx) ([]cios.PackerFormatJsonHeader, *_nethttp.Response, error) {
 	var headers []cios.PackerFormatJsonHeader
 	objects, httpResponse, err := self.GetMultiObjectLatest(channelIDs, ctx)
 	if err == nil {
@@ -172,15 +173,54 @@ func (self PubSub) MapMultiObjectLatestPayload(channelIDs []string, stc interfac
 	}
 	return headers, httpResponse, err
 }
-func (self PubSub) MapMultiObjectLatestPayloadByChannels(channels []cios.Channel, stc interface{}, ctx model.RequestCtx) ([]cios.PackerFormatJsonHeader, *_nethttp.Response, error) {
+func (self PubSub) MapMultiObjectLatestPayloadByChannels(channels []cios.Channel, stc interface{}, ctx sdkmodel.RequestCtx) ([]cios.PackerFormatJsonHeader, *_nethttp.Response, error) {
 	var channelIDs []string
 	for _, channel := range channels {
 		channelIDs = append(channelIDs, channel.Id)
 	}
 	return self.MapMultiObjectLatestPayload(channelIDs, stc, ctx)
 }
+func (self PubSub) subscribeCiosWebSocket(_url string, beforeFunc *func(*websocket.Conn), logic func(body []byte) (bool, error), ctx sdkmodel.RequestCtx) error {
+	if ctx != nil {
+		self.token, _ = ctx.Value(cios.ContextAccessToken).(string)
+	}
+	if self.token == "" {
+		if err := self.refresh(); err != nil {
+			return err
+		}
+	}
+	connection, err := self.CreateCIOSWebsocketConnection(_url, ParseAccessToken(self.token))
+	if err != nil {
+		return err
+	}
+	defer connection.Close()
+	if beforeFunc != nil {
+		(*beforeFunc)(connection)
+	}
+	for {
+		messageType, body, err := connection.ReadMessage()
+		switch {
+		case websocket.IsCloseError(err, websocket.CloseNormalClosure):
+			return nil
+		case websocket.IsUnexpectedCloseError(err):
+			if _err := self.refresh(); _err != nil {
+				return _err
+			}
+			connection.Close()
+			if connection, err = self.CreateCIOSWebsocketConnection(_url, ParseAccessToken(self.token)); err != nil {
+				return err
+			}
+		case messageType == websocket.CloseMessage:
+			return errors.New(string(body))
+		case messageType == websocket.TextMessage:
+			if done, err := logic(body); err != nil || done {
+				return err
+			}
+		}
+	}
+}
 
-func (self PubSub) GetStream(channelID string, params model.ApiGetStreamRequest, ctx model.RequestCtx) ([]string, error) {
+func (self PubSub) GetStream(channelID string, params sdkmodel.ApiGetStreamRequest, ctx sdkmodel.RequestCtx) ([]string, error) {
 	var (
 		result                    []string
 		channelProtocolVersionStr *string
@@ -227,7 +267,7 @@ func (self PubSub) GetStream(channelID string, params model.ApiGetStreamRequest,
 		}
 
 	}
-	err := self.SubscribeCiosWebSocket(_url.String(), &bf,
+	err := self.subscribeCiosWebSocket(_url.String(), &bf,
 		func(body []byte) (bool, error) {
 			result = append(result, string(body))
 			return false, nil
@@ -238,7 +278,7 @@ func (self PubSub) GetStream(channelID string, params model.ApiGetStreamRequest,
 	}
 	return result, err
 }
-func (self PubSub) GetStreamAll(channelID string, params model.ApiGetStreamRequest, ctx model.RequestCtx) ([]string, error) {
+func (self PubSub) GetStreamAll(channelID string, params sdkmodel.ApiGetStreamRequest, ctx sdkmodel.RequestCtx) ([]string, error) {
 	var (
 		result      []string
 		err         error
@@ -300,14 +340,14 @@ func (self PubSub) GetStreamAll(channelID string, params model.ApiGetStreamReque
 	}
 	return result, err
 }
-func (self PubSub) MapStreamAll(channelID string, params model.ApiGetStreamRequest, stc interface{}, ctx model.RequestCtx) error {
+func (self PubSub) MapStreamAll(channelID string, params sdkmodel.ApiGetStreamRequest, stc interface{}, ctx sdkmodel.RequestCtx) error {
 	data, err := self.GetStreamAll(channelID, params, ctx)
 	if err != nil {
 		return err
 	}
 	return util.DataStoreStreamToStruct(data, stc)
 }
-func (self PubSub) GetStreamUnlimited(channelID string, params model.ApiGetStreamRequest, ctx model.RequestCtx) ([]string, error) {
+func (self PubSub) GetStreamUnlimited(channelID string, params sdkmodel.ApiGetStreamRequest, ctx sdkmodel.RequestCtx) ([]string, error) {
 	if params.TimestampRangeParam == nil {
 		timestampRange := ":" + convert.MustStr(time.Now().UnixNano())
 		params.TimestampRangeParam = &timestampRange
@@ -315,14 +355,14 @@ func (self PubSub) GetStreamUnlimited(channelID string, params model.ApiGetStrea
 	params.LimitParam = nil
 	return self.GetStreamAll(channelID, params, ctx)
 }
-func (self PubSub) MapStreamUnlimited(channelID string, params model.ApiGetStreamRequest, stc interface{}, ctx model.RequestCtx) error {
+func (self PubSub) MapStreamUnlimited(channelID string, params sdkmodel.ApiGetStreamRequest, stc interface{}, ctx sdkmodel.RequestCtx) error {
 	data, err := self.GetStreamUnlimited(channelID, params, ctx)
 	if err != nil {
 		return err
 	}
 	return util.DataStoreStreamToStruct(data, stc)
 }
-func (self PubSub) GetJsonStreamUnlimited(channelID string, params model.ApiGetStreamRequest, ctx model.RequestCtx) (result []cios.PackerFormatJson, err error) {
+func (self PubSub) GetJsonStreamUnlimited(channelID string, params sdkmodel.ApiGetStreamRequest, ctx sdkmodel.RequestCtx) (result []cios.PackerFormatJson, err error) {
 	params.PackerFormatParam = convert.StringPtr("json")
 	data, _err := self.GetStreamUnlimited(channelID, params, ctx)
 	if _err != nil {
@@ -331,7 +371,7 @@ func (self PubSub) GetJsonStreamUnlimited(channelID string, params model.ApiGetS
 	err = util.DataStoreStreamToStruct(data, &result)
 	return
 }
-func (self PubSub) GetStreamFirst(channelID string, params model.ApiGetStreamRequest, ctx model.RequestCtx) (string, error) {
+func (self PubSub) GetStreamFirst(channelID string, params sdkmodel.ApiGetStreamRequest, ctx sdkmodel.RequestCtx) (string, error) {
 	value, err := self.GetStreamAll(channelID, params.Limit(1), ctx)
 	if err != nil {
 		if value, err = self.GetStreamAll(channelID, params.Limit(1), ctx); err != nil {
@@ -343,14 +383,14 @@ func (self PubSub) GetStreamFirst(channelID string, params model.ApiGetStreamReq
 	}
 	return value[0], err
 }
-func (self PubSub) MapStreamFirst(channelID string, params model.ApiGetStreamRequest, stc interface{}, ctx model.RequestCtx) error {
+func (self PubSub) MapStreamFirst(channelID string, params sdkmodel.ApiGetStreamRequest, stc interface{}, ctx sdkmodel.RequestCtx) error {
 	value, err := self.GetStreamFirst(channelID, params, ctx)
 	if err != nil {
 		return err
 	}
 	return convert.UnMarshalJson([]byte(value), stc)
 }
-func (self PubSub) DeleteDataByChannel(channelID string, ctx model.RequestCtx) (*_nethttp.Response, error) {
+func (self PubSub) DeleteDataByChannel(channelID string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
@@ -361,7 +401,7 @@ func (self PubSub) DeleteDataByChannel(channelID string, ctx model.RequestCtx) (
 	}
 	return httpResponse, err
 }
-func (self PubSub) DeleteObject(channelID string, objectID string, ctx model.RequestCtx) (*_nethttp.Response, error) {
+func (self PubSub) DeleteObject(channelID string, objectID string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}

@@ -22,15 +22,16 @@ type (
 		Url          string
 		debug        bool
 		scope        string
+		assertion    string
 		ref          string
 		clientId     string
 		clientSecret string
 	}
-	Account               _instance
 	Contract              _instance
 	DeviceAssetManagement _instance
 	DeviceManagement      _instance
 	FileStorage           _instance
 	Geography             _instance
 	License               _instance
+	Account               _instance
 )

@@ -8,15 +8,96 @@ import (
 	"net/http/httptest"
 	"net/url"
 	"testing"
+	"time"
 
 	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
 
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
-
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
+
+func Test_RefreshBucket(t *testing.T) {
+	count, _token, ctx := 0, "", context.Background()
+	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		_token = r.Header.Get("Authorization")
+		if r.URL.Path == "/connect/token" {
+			count += 1
+			json.NewEncoder(w).Encode(cios.ConnectTokenResponse{
+				AccessToken:  sampleToken,
+				TokenType:    "",
+				RefreshToken: "",
+				ExpiresIn:    0,
+				Scope:        "",
+			})
+		}
+	})
+	ts := httptest.NewServer(handler)
+	client := NewCiosClient(CiosClientConfig{
+		AutoRefresh: true,
+		Urls:        sdkmodel.CIOSUrl{StorageUrl: ts.URL, AuthUrl: ts.URL},
+		AuthConfig: RefreshTokenAuth(
+			"clientID",
+			"clientSecret",
+			"assertion",
+			"scope",
+		),
+	})
+	funcs := []func(){
+		func() { client.FileStorage.GetBuckets(MakeGetBucketsOpts(), ctx) },
+		func() { client.FileStorage.CreateBucket("", "", ctx) },
+		func() { client.FileStorage.GetBucket("", ctx) },
+		func() { client.FileStorage.UpdateBucket("", "", ctx) },
+		func() { client.FileStorage.DeleteBucket("", ctx) },
+	}
+	for i, fnc := range funcs {
+		fnc()
+		if _token != "Bearer "+sampleToken {
+			t.Fatal(_token)
+		}
+		if count != i+1 {
+			t.Fatal(count)
+		}
+		_token = ""
+	}
+	for _, fnc := range funcs {
+		client.tokenExp = time.Now().Unix() + 10000
+		fnc()
+		if _token != "Bearer "+sampleToken {
+			t.Fatal(_token)
+		}
+		if count != len(funcs) {
+			t.Fatal(count)
+		}
+		_token = ""
+	}
+
+	ctx = MakeRequestCtx("AAA")
+	count = 0
+	_token = ""
+	client = NewCiosClient(CiosClientConfig{
+		AutoRefresh: true,
+		Urls:        sdkmodel.CIOSUrl{StorageUrl: ts.URL, AuthUrl: ts.URL},
+		AuthConfig: RefreshTokenAuth(
+			"clientID",
+			"clientSecret",
+			"assertion",
+			"scope",
+		),
+	})
+	for i, fnc := range funcs {
+		fnc()
+		if _token != "Bearer AAA" {
+			t.Fatal(_token)
+		}
+		if count != i+1 {
+			t.Fatal(count)
+		}
+		_token = ""
+	}
+}
 
 func TestFileStorage_GetBuckets(t *testing.T) {
 	var (
@@ -100,7 +181,7 @@ func TestFileStorage_GetBuckets(t *testing.T) {
 	ts := httptest.NewServer(bucketHandler)
 	client := NewCiosClient(
 		CiosClientConfig{
-			Urls: model.CIOSUrl{StorageUrl: ts.URL},
+			Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL},
 		},
 	)
 	defer ts.Close()
@@ -114,7 +195,7 @@ func TestFileStorage_GetBuckets(t *testing.T) {
 	//// Auto Refresh Test
 	//client = NewCiosClient(
 	//	CiosClientConfig{
-	//		Urls:        model.CIOSUrl{StorageUrl: ts.URL},
+	//		Urls:        sdkmodel.CIOSUrl{StorageUrl: ts.URL},
 	//		AutoRefresh: true,
 	//	},
 	//)
@@ -125,7 +206,7 @@ func TestFileStorage_GetBuckets(t *testing.T) {
 	//ts = httptest.NewServer(bucketHandler)
 	//
 	//result := "Failed"
-	//refFunc := func() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
+	//refFunc := func() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
 	//	result = "Accept"
 	//	return "", "", "", 0, nil
 	//}
@@ -153,7 +234,7 @@ func TestFileStorage_GetBucketsAll(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 
 	buckets, _, _ := client.FileStorage.GetBucketsAll(MakeGetBucketsOpts().Limit(999), context.Background())
 	if len(buckets) != 999 || offsets[0] != 0 && limits[0] != 1000 {
@@ -197,7 +278,7 @@ func TestFileStorage_GetBucketsUnlimited(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 
 	buckets, _, _ := client.FileStorage.GetBucketsUnlimited(MakeGetBucketsOpts().Limit(1), context.Background())
 	if len(buckets) != 3500 {
@@ -223,7 +304,7 @@ func TestFileStorage_GetBucket(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 	bucket, response, err := client.FileStorage.GetBucket("test", context.Background())
 	if bucket.Id != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(bucket)
@@ -245,7 +326,7 @@ func TestFileStorage_CreateBucket(t *testing.T) {
 
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 	client.FileStorage.CreateBucket("resource_owner_id", "name", context.Background())
 }
 
@@ -260,7 +341,7 @@ func TestFileStorage_DeleteBucket(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 	client.FileStorage.DeleteBucket("bucketid", context.Background())
 }
 func TestFileStorage_UpdateBucket(t *testing.T) {
@@ -280,6 +361,6 @@ func TestFileStorage_UpdateBucket(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 	client.FileStorage.UpdateBucket("bucketid", "test", context.Background())
 }

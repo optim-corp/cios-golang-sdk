@@ -147,51 +147,11 @@ type ApiCreateDeviceEntitiesLifecycleRequest struct {
 	Ctx _context.Context
 	ApiService *DeviceAssetApiService
 	P_key string
-	P_eventKind *string
-	P_eventMode *string
-	P_eventType *string
-	P_componentIdQuery *string
-	P_beforeId *string
-	P_afterId *string
-	P_startEventAt *string
-	P_endEventAt *string
-	P_lifeCycle *LifeCycle
+	P_lifeCycleRequest *LifeCycleRequest
 }
 
-func (r ApiCreateDeviceEntitiesLifecycleRequest) EventKind(eventKind string) ApiCreateDeviceEntitiesLifecycleRequest {
-	r.P_eventKind = &eventKind
-	return r
-}
-func (r ApiCreateDeviceEntitiesLifecycleRequest) EventMode(eventMode string) ApiCreateDeviceEntitiesLifecycleRequest {
-	r.P_eventMode = &eventMode
-	return r
-}
-func (r ApiCreateDeviceEntitiesLifecycleRequest) EventType(eventType string) ApiCreateDeviceEntitiesLifecycleRequest {
-	r.P_eventType = &eventType
-	return r
-}
-func (r ApiCreateDeviceEntitiesLifecycleRequest) ComponentIdQuery(componentIdQuery string) ApiCreateDeviceEntitiesLifecycleRequest {
-	r.P_componentIdQuery = &componentIdQuery
-	return r
-}
-func (r ApiCreateDeviceEntitiesLifecycleRequest) BeforeId(beforeId string) ApiCreateDeviceEntitiesLifecycleRequest {
-	r.P_beforeId = &beforeId
-	return r
-}
-func (r ApiCreateDeviceEntitiesLifecycleRequest) AfterId(afterId string) ApiCreateDeviceEntitiesLifecycleRequest {
-	r.P_afterId = &afterId
-	return r
-}
-func (r ApiCreateDeviceEntitiesLifecycleRequest) StartEventAt(startEventAt string) ApiCreateDeviceEntitiesLifecycleRequest {
-	r.P_startEventAt = &startEventAt
-	return r
-}
-func (r ApiCreateDeviceEntitiesLifecycleRequest) EndEventAt(endEventAt string) ApiCreateDeviceEntitiesLifecycleRequest {
-	r.P_endEventAt = &endEventAt
-	return r
-}
-func (r ApiCreateDeviceEntitiesLifecycleRequest) LifeCycle(lifeCycle LifeCycle) ApiCreateDeviceEntitiesLifecycleRequest {
-	r.P_lifeCycle = &lifeCycle
+func (r ApiCreateDeviceEntitiesLifecycleRequest) LifeCycleRequest(lifeCycleRequest LifeCycleRequest) ApiCreateDeviceEntitiesLifecycleRequest {
+	r.P_lifeCycleRequest = &lifeCycleRequest
 	return r
 }
 
@@ -241,31 +201,10 @@ func (a *DeviceAssetApiService) CreateDeviceEntitiesLifecycleExecute(r ApiCreate
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
+	if r.P_lifeCycleRequest == nil {
+		return localVarReturnValue, nil, reportError("lifeCycleRequest is required and must be specified")
+	}
 
-	if r.P_eventKind != nil {
-		localVarQueryParams.Add("event_kind", parameterToString(*r.P_eventKind, ""))
-	}
-	if r.P_eventMode != nil {
-		localVarQueryParams.Add("event_mode", parameterToString(*r.P_eventMode, ""))
-	}
-	if r.P_eventType != nil {
-		localVarQueryParams.Add("event_type", parameterToString(*r.P_eventType, ""))
-	}
-	if r.P_componentIdQuery != nil {
-		localVarQueryParams.Add("component_id_query", parameterToString(*r.P_componentIdQuery, ""))
-	}
-	if r.P_beforeId != nil {
-		localVarQueryParams.Add("before_id", parameterToString(*r.P_beforeId, ""))
-	}
-	if r.P_afterId != nil {
-		localVarQueryParams.Add("after_id", parameterToString(*r.P_afterId, ""))
-	}
-	if r.P_startEventAt != nil {
-		localVarQueryParams.Add("start_event_at", parameterToString(*r.P_startEventAt, ""))
-	}
-	if r.P_endEventAt != nil {
-		localVarQueryParams.Add("end_event_at", parameterToString(*r.P_endEventAt, ""))
-	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}
 
@@ -284,7 +223,7 @@ func (a *DeviceAssetApiService) CreateDeviceEntitiesLifecycleExecute(r ApiCreate
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
 	// body params
-	localVarPostBody = r.P_lifeCycle
+	localVarPostBody = r.P_lifeCycleRequest
 	req, err := a.client.prepareRequest(r.Ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, localVarFormFileName, localVarFileName, localVarFileBytes)
 	if err != nil {
 		return localVarReturnValue, nil, err

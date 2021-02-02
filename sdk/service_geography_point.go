@@ -4,14 +4,14 @@ import (
 	_nethttp "net/http"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
 func MakeGetPointsOpts() cios.ApiGetPointsRequest {
 	return cios.ApiGetPointsRequest{}
 }
 
-func (self Geography) GetPoints(params cios.ApiGetPointsRequest, ctx model.RequestCtx) (response cios.MultiplePoint, httpResponse *_nethttp.Response, err error) {
+func (self Geography) GetPoints(params cios.ApiGetPointsRequest, ctx sdkmodel.RequestCtx) (response cios.MultiplePoint, httpResponse *_nethttp.Response, err error) {
 	if err = self.refresh(); err != nil {
 		return
 	}
@@ -20,7 +20,7 @@ func (self Geography) GetPoints(params cios.ApiGetPointsRequest, ctx model.Reque
 	return params.Execute()
 
 }
-func (self Geography) CreatePoint(body cios.PointRequest, ctx model.RequestCtx) (cios.Point, *_nethttp.Response, error) {
+func (self Geography) CreatePoint(body cios.PointRequest, ctx sdkmodel.RequestCtx) (cios.Point, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Point{}, nil, err
 	}
@@ -32,7 +32,7 @@ func (self Geography) CreatePoint(body cios.PointRequest, ctx model.RequestCtx) 
 	return response.Point, httpResponse, err
 }
 
-func (self Geography) DeletePoint(pointID string, ctx model.RequestCtx) (cios.Point, *_nethttp.Response, error) {
+func (self Geography) DeletePoint(pointID string, ctx sdkmodel.RequestCtx) (cios.Point, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Point{}, nil, err
 	}

@@ -21,9 +21,9 @@ type LifeCycle struct {
 	EventMode string `json:"event_mode"`
 	EventType string `json:"event_type"`
 	BeforeId *string `json:"before_id,omitempty"`
-	BeforeComponent *DeviceEntitiesComponent `json:"before_component,omitempty"`
+	BeforeComponent NullableDeviceEntitiesComponent `json:"before_component,omitempty"`
 	AfterId *string `json:"after_id,omitempty"`
-	AfterComponent *DeviceEntitiesComponent `json:"after_component,omitempty"`
+	AfterComponent NullableDeviceEntitiesComponent `json:"after_component,omitempty"`
 	// ナノ秒
 	EventAt string `json:"event_at"`
 	Note *string `json:"note,omitempty"`
@@ -181,36 +181,46 @@ func (o *LifeCycle) SetBeforeId(v string) {
 	o.BeforeId = &v
 }
 
-// GetBeforeComponent returns the BeforeComponent field value if set, zero value otherwise.
+// GetBeforeComponent returns the BeforeComponent field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *LifeCycle) GetBeforeComponent() DeviceEntitiesComponent {
-	if o == nil || o.BeforeComponent == nil {
+	if o == nil || o.BeforeComponent.Get() == nil {
 		var ret DeviceEntitiesComponent
 		return ret
 	}
-	return *o.BeforeComponent
+	return *o.BeforeComponent.Get()
 }
 
 // GetBeforeComponentOk returns a tuple with the BeforeComponent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *LifeCycle) GetBeforeComponentOk() (*DeviceEntitiesComponent, bool) {
-	if o == nil || o.BeforeComponent == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.BeforeComponent, true
+	return o.BeforeComponent.Get(), o.BeforeComponent.IsSet()
 }
 
 // HasBeforeComponent returns a boolean if a field has been set.
 func (o *LifeCycle) HasBeforeComponent() bool {
-	if o != nil && o.BeforeComponent != nil {
+	if o != nil && o.BeforeComponent.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetBeforeComponent gets a reference to the given DeviceEntitiesComponent and assigns it to the BeforeComponent field.
+// SetBeforeComponent gets a reference to the given NullableDeviceEntitiesComponent and assigns it to the BeforeComponent field.
 func (o *LifeCycle) SetBeforeComponent(v DeviceEntitiesComponent) {
-	o.BeforeComponent = &v
+	o.BeforeComponent.Set(&v)
+}
+// SetBeforeComponentNil sets the value for BeforeComponent to be an explicit nil
+func (o *LifeCycle) SetBeforeComponentNil() {
+	o.BeforeComponent.Set(nil)
+}
+
+// UnsetBeforeComponent ensures that no value is present for BeforeComponent, not even an explicit nil
+func (o *LifeCycle) UnsetBeforeComponent() {
+	o.BeforeComponent.Unset()
 }
 
 // GetAfterId returns the AfterId field value if set, zero value otherwise.
@@ -245,36 +255,46 @@ func (o *LifeCycle) SetAfterId(v string) {
 	o.AfterId = &v
 }
 
-// GetAfterComponent returns the AfterComponent field value if set, zero value otherwise.
+// GetAfterComponent returns the AfterComponent field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *LifeCycle) GetAfterComponent() DeviceEntitiesComponent {
-	if o == nil || o.AfterComponent == nil {
+	if o == nil || o.AfterComponent.Get() == nil {
 		var ret DeviceEntitiesComponent
 		return ret
 	}
-	return *o.AfterComponent
+	return *o.AfterComponent.Get()
 }
 
 // GetAfterComponentOk returns a tuple with the AfterComponent field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *LifeCycle) GetAfterComponentOk() (*DeviceEntitiesComponent, bool) {
-	if o == nil || o.AfterComponent == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.AfterComponent, true
+	return o.AfterComponent.Get(), o.AfterComponent.IsSet()
 }
 
 // HasAfterComponent returns a boolean if a field has been set.
 func (o *LifeCycle) HasAfterComponent() bool {
-	if o != nil && o.AfterComponent != nil {
+	if o != nil && o.AfterComponent.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetAfterComponent gets a reference to the given DeviceEntitiesComponent and assigns it to the AfterComponent field.
+// SetAfterComponent gets a reference to the given NullableDeviceEntitiesComponent and assigns it to the AfterComponent field.
 func (o *LifeCycle) SetAfterComponent(v DeviceEntitiesComponent) {
-	o.AfterComponent = &v
+	o.AfterComponent.Set(&v)
+}
+// SetAfterComponentNil sets the value for AfterComponent to be an explicit nil
+func (o *LifeCycle) SetAfterComponentNil() {
+	o.AfterComponent.Set(nil)
+}
+
+// UnsetAfterComponent ensures that no value is present for AfterComponent, not even an explicit nil
+func (o *LifeCycle) UnsetAfterComponent() {
+	o.AfterComponent.Unset()
 }
 
 // GetEventAt returns the EventAt field value
@@ -374,14 +394,14 @@ func (o LifeCycle) MarshalJSON() ([]byte, error) {
 	if o.BeforeId != nil {
 		toSerialize["before_id"] = o.BeforeId
 	}
-	if o.BeforeComponent != nil {
-		toSerialize["before_component"] = o.BeforeComponent
+	if o.BeforeComponent.IsSet() {
+		toSerialize["before_component"] = o.BeforeComponent.Get()
 	}
 	if o.AfterId != nil {
 		toSerialize["after_id"] = o.AfterId
 	}
-	if o.AfterComponent != nil {
-		toSerialize["after_component"] = o.AfterComponent
+	if o.AfterComponent.IsSet() {
+		toSerialize["after_component"] = o.AfterComponent.Get()
 	}
 	if true {
 		toSerialize["event_at"] = o.EventAt

@@ -16,15 +16,16 @@ import (
 
 // DevicePolicyRequest struct for DevicePolicyRequest
 type DevicePolicyRequest struct {
-	ResourceOwnerId *string `json:"resource_owner_id,omitempty"`
+	ResourceOwnerId string `json:"resource_owner_id"`
 }
 
 // NewDevicePolicyRequest instantiates a new DevicePolicyRequest object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewDevicePolicyRequest() *DevicePolicyRequest {
+func NewDevicePolicyRequest(resourceOwnerId string, ) *DevicePolicyRequest {
 	this := DevicePolicyRequest{}
+	this.ResourceOwnerId = resourceOwnerId
 	return &this
 }
 
@@ -36,41 +37,33 @@ func NewDevicePolicyRequestWithDefaults() *DevicePolicyRequest {
 	return &this
 }
 
-// GetResourceOwnerId returns the ResourceOwnerId field value if set, zero value otherwise.
+// GetResourceOwnerId returns the ResourceOwnerId field value
 func (o *DevicePolicyRequest) GetResourceOwnerId() string {
-	if o == nil || o.ResourceOwnerId == nil {
+	if o == nil  {
 		var ret string
 		return ret
 	}
-	return *o.ResourceOwnerId
+
+	return o.ResourceOwnerId
 }
 
-// GetResourceOwnerIdOk returns a tuple with the ResourceOwnerId field value if set, nil otherwise
+// GetResourceOwnerIdOk returns a tuple with the ResourceOwnerId field value
 // and a boolean to check if the value has been set.
 func (o *DevicePolicyRequest) GetResourceOwnerIdOk() (*string, bool) {
-	if o == nil || o.ResourceOwnerId == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.ResourceOwnerId, true
+	return &o.ResourceOwnerId, true
 }
 
-// HasResourceOwnerId returns a boolean if a field has been set.
-func (o *DevicePolicyRequest) HasResourceOwnerId() bool {
-	if o != nil && o.ResourceOwnerId != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetResourceOwnerId gets a reference to the given string and assigns it to the ResourceOwnerId field.
+// SetResourceOwnerId sets field value
 func (o *DevicePolicyRequest) SetResourceOwnerId(v string) {
-	o.ResourceOwnerId = &v
+	o.ResourceOwnerId = v
 }
 
 func (o DevicePolicyRequest) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.ResourceOwnerId != nil {
+	if true {
 		toSerialize["resource_owner_id"] = o.ResourceOwnerId
 	}
 	return json.Marshal(toSerialize)

@@ -51,6 +51,16 @@ SetTypes sets Types field to given value.
 
 HasTypes returns a boolean if a field has been set.
 
+### SetTypesNil
+
+`func (o *Watch) SetTypesNil(b bool)`
+
+ SetTypesNil sets the value for Types to be an explicit nil
+
+### UnsetTypes
+`func (o *Watch) UnsetTypes()`
+
+UnsetTypes ensures that no value is present for Types, not even an explicit nil
 ### GetComponentIds
 
 `func (o *Watch) GetComponentIds() map[string]interface{}`
@@ -76,6 +86,16 @@ SetComponentIds sets ComponentIds field to given value.
 
 HasComponentIds returns a boolean if a field has been set.
 
+### SetComponentIdsNil
+
+`func (o *Watch) SetComponentIdsNil(b bool)`
+
+ SetComponentIdsNil sets the value for ComponentIds to be an explicit nil
+
+### UnsetComponentIds
+`func (o *Watch) UnsetComponentIds()`
+
+UnsetComponentIds ensures that no value is present for ComponentIds, not even an explicit nil
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)
 

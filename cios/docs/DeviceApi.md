@@ -5,16 +5,20 @@ All URIs are relative to *http://localhost*
 Method | HTTP request | Description
 ------------- | ------------- | -------------
 [**CreateDevice**](DeviceApi.md#CreateDevice) | **Post** /v2/devices | デバイスの登録
+[**CreateDeviceClient**](DeviceApi.md#CreateDeviceClient) | **Post** /v2/devices/{device_id}/device_clients | 
 [**CreateDevicePolicy**](DeviceApi.md#CreateDevicePolicy) | **Post** /v2/devices/group_policies | 
 [**DeleteDevice**](DeviceApi.md#DeleteDevice) | **Delete** /v2/devices/{device_id} | 
+[**DeleteDeviceClient**](DeviceApi.md#DeleteDeviceClient) | **Delete** /v2/devices/{device_id}/device_clients/{client_id} | device.write
 [**DeletePolicy**](DeviceApi.md#DeletePolicy) | **Delete** /v2/devices/group_policies/{policy_id} | 
 [**GetDevice**](DeviceApi.md#GetDevice) | **Get** /v2/devices/{device_id} | 指定したidのデバイスの情報を取得する
 [**GetDeviceInventoryLatest**](DeviceApi.md#GetDeviceInventoryLatest) | **Get** /v2/devices/{device_id}/inventory/latest | 
 [**GetDeviceMonitoringLatest**](DeviceApi.md#GetDeviceMonitoringLatest) | **Get** /v2/devices/{device_id}/monitoring/latest | 
 [**GetDeviceMonitoringsLatest**](DeviceApi.md#GetDeviceMonitoringsLatest) | **Post** /v2/devices/monitoring/latest | 
 [**GetDevicePolicies**](DeviceApi.md#GetDevicePolicies) | **Get** /v2/devices/group_policies | 
+[**GetDeviceProfile**](DeviceApi.md#GetDeviceProfile) | **Get** /v2/devices/profile | device.profile
 [**GetDevices**](DeviceApi.md#GetDevices) | **Get** /v2/devices | デバイスの一覧を取得する
 [**UpdateDevice**](DeviceApi.md#UpdateDevice) | **Patch** /v2/devices/{device_id} | 指定したidのデバイス情報を更新する
+[**UpdateDeviceClient**](DeviceApi.md#UpdateDeviceClient) | **Patch** /v2/devices/{device_id}/device_clients/{client_id} | device.write
 
 
 
@@ -84,6 +88,78 @@ Name | Type | Description  | Notes
 [[Back to README]](../README.md)
 
 
+## CreateDeviceClient
+
+> DeviceClientList CreateDeviceClient(ctx, deviceId).DeviceClientRequest(deviceClientRequest).Execute()
+
+
+
+
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    openapiclient "./openapi"
+)
+
+func main() {
+    deviceId := "deviceId_example" // string | 
+    deviceClientRequest := *openapiclient.NewDeviceClientRequest() // DeviceClientRequest | 
+
+    configuration := openapiclient.NewConfiguration()
+    api_client := openapiclient.NewAPIClient(configuration)
+    resp, r, err := api_client.DeviceApi.CreateDeviceClient(context.Background(), deviceId).DeviceClientRequest(deviceClientRequest).Execute()
+    if err.Error() != "" {
+        fmt.Fprintf(os.Stderr, "Error when calling `DeviceApi.CreateDeviceClient``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `CreateDeviceClient`: DeviceClientList
+    fmt.Fprintf(os.Stdout, "Response from `DeviceApi.CreateDeviceClient`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**deviceId** | **string** |  | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiCreateDeviceClientRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+ **deviceClientRequest** | [**DeviceClientRequest**](DeviceClientRequest.md) |  | 
+
+### Return type
+
+[**DeviceClientList**](DeviceClientList.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
 ## CreateDevicePolicy
 
 > DevicePolicy CreateDevicePolicy(ctx).DevicePolicyRequest(devicePolicyRequest).Execute()
@@ -103,7 +179,7 @@ import (
 )
 
 func main() {
-    devicePolicyRequest := *openapiclient.NewDevicePolicyRequest() // DevicePolicyRequest | 
+    devicePolicyRequest := *openapiclient.NewDevicePolicyRequest("ResourceOwnerId_example") // DevicePolicyRequest | 
 
     configuration := openapiclient.NewConfiguration()
     api_client := openapiclient.NewAPIClient(configuration)
@@ -203,6 +279,77 @@ Name | Type | Description  | Notes
 ### Authorization
 
 [bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: Not defined
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## DeleteDeviceClient
+
+> DeleteDeviceClient(ctx, deviceId, clientId).Execute()
+
+device.write
+
+
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    openapiclient "./openapi"
+)
+
+func main() {
+    deviceId := "deviceId_example" // string | 
+    clientId := "clientId_example" // string | 
+
+    configuration := openapiclient.NewConfiguration()
+    api_client := openapiclient.NewAPIClient(configuration)
+    resp, r, err := api_client.DeviceApi.DeleteDeviceClient(context.Background(), deviceId, clientId).Execute()
+    if err.Error() != "" {
+        fmt.Fprintf(os.Stderr, "Error when calling `DeviceApi.DeleteDeviceClient``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**deviceId** | **string** |  | 
+**clientId** | **string** |  | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiDeleteDeviceClientRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+
+
+### Return type
+
+ (empty response body)
+
+### Authorization
+
+No authorization required
 
 ### HTTP request headers
 
@@ -509,7 +656,7 @@ import (
 )
 
 func main() {
-    deviceMonitoringIDsRequest := *openapiclient.NewDeviceMonitoringIDsRequest() // DeviceMonitoringIDsRequest | 
+    deviceMonitoringIDsRequest := *openapiclient.NewDeviceMonitoringIDsRequest([]string{"DeviceIds_example"}) // DeviceMonitoringIDsRequest | 
 
     configuration := openapiclient.NewConfiguration()
     api_client := openapiclient.NewAPIClient(configuration)
@@ -615,6 +762,72 @@ Name | Type | Description  | Notes
 ### Authorization
 
 [bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: Not defined
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## GetDeviceProfile
+
+> SingleDevice GetDeviceProfile(ctx).Lang(lang).IsDev(isDev).Execute()
+
+device.profile
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    openapiclient "./openapi"
+)
+
+func main() {
+    lang := "lang_example" // string | 言語指定 (optional)
+    isDev := true // bool | 開発者モードの有効・無効 (optional)
+
+    configuration := openapiclient.NewConfiguration()
+    api_client := openapiclient.NewAPIClient(configuration)
+    resp, r, err := api_client.DeviceApi.GetDeviceProfile(context.Background()).Lang(lang).IsDev(isDev).Execute()
+    if err.Error() != "" {
+        fmt.Fprintf(os.Stderr, "Error when calling `DeviceApi.GetDeviceProfile``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `GetDeviceProfile`: SingleDevice
+    fmt.Fprintf(os.Stdout, "Response from `DeviceApi.GetDeviceProfile`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiGetDeviceProfileRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **lang** | **string** | 言語指定 | 
+ **isDev** | **bool** | 開発者モードの有効・無効 | 
+
+### Return type
+
+[**SingleDevice**](SingleDevice.md)
+
+### Authorization
+
+No authorization required
 
 ### HTTP request headers
 
@@ -775,6 +988,81 @@ Name | Type | Description  | Notes
 ### Authorization
 
 [bearerAuth](../README.md#bearerAuth)
+
+### HTTP request headers
+
+- **Content-Type**: application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## UpdateDeviceClient
+
+> SingleDeviceClientList UpdateDeviceClient(ctx, deviceId, clientId).RsaPublicKey(rsaPublicKey).Execute()
+
+device.write
+
+
+
+### Example
+
+```go
+package main
+
+import (
+    "context"
+    "fmt"
+    "os"
+    openapiclient "./openapi"
+)
+
+func main() {
+    deviceId := "deviceId_example" // string | 
+    clientId := "clientId_example" // string | 
+    rsaPublicKey := *openapiclient.NewRsaPublicKey("RsaPublickey_example") // RsaPublicKey | 
+
+    configuration := openapiclient.NewConfiguration()
+    api_client := openapiclient.NewAPIClient(configuration)
+    resp, r, err := api_client.DeviceApi.UpdateDeviceClient(context.Background(), deviceId, clientId).RsaPublicKey(rsaPublicKey).Execute()
+    if err.Error() != "" {
+        fmt.Fprintf(os.Stderr, "Error when calling `DeviceApi.UpdateDeviceClient``: %v\n", err)
+        fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+    }
+    // response from `UpdateDeviceClient`: SingleDeviceClientList
+    fmt.Fprintf(os.Stdout, "Response from `DeviceApi.UpdateDeviceClient`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+**ctx** | **context.Context** | context for authentication, logging, cancellation, deadlines, tracing, etc.
+**deviceId** | **string** |  | 
+**clientId** | **string** |  | 
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiUpdateDeviceClientRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+
+
+ **rsaPublicKey** | [**RsaPublicKey**](RsaPublicKey.md) |  | 
+
+### Return type
+
+[**SingleDeviceClientList**](SingleDeviceClientList.md)
+
+### Authorization
+
+No authorization required
 
 ### HTTP request headers
 

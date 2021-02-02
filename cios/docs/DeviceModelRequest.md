@@ -8,7 +8,7 @@ Name | Type | Description | Notes
 **ResourceOwnerId** | **string** |  | 
 **MakerId** | Pointer to **string** |  | [optional] 
 **Version** | Pointer to **string** |  | [optional] 
-**Watch** | Pointer to [**Watch**](Watch.md) |  | [optional] 
+**Watch** | Pointer to [**NullableWatch**](Watch.md) |  | [optional] 
 **Components** | Pointer to [**ConstitutionComponent**](ConstitutionComponent.md) |  | [optional] 
 
 ## Methods
@@ -145,6 +145,16 @@ SetWatch sets Watch field to given value.
 
 HasWatch returns a boolean if a field has been set.
 
+### SetWatchNil
+
+`func (o *DeviceModelRequest) SetWatchNil(b bool)`
+
+ SetWatchNil sets the value for Watch to be an explicit nil
+
+### UnsetWatch
+`func (o *DeviceModelRequest) UnsetWatch()`
+
+UnsetWatch ensures that no value is present for Watch, not even an explicit nil
 ### GetComponents
 
 `func (o *DeviceModelRequest) GetComponents() ConstitutionComponent`

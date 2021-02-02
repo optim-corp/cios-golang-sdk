@@ -4,19 +4,19 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Id** | Pointer to **string** |  | [optional] 
-**Name** | Pointer to **string** |  | [optional] 
+**Id** | **string** |  | 
+**Name** | **string** |  | 
 **Key** | Pointer to **string** |  | [optional] 
 **MakerId** | Pointer to **string** |  | [optional] 
-**Version** | **string** |  | 
-**CreatedAt** | Pointer to **string** | ナノ秒 | [optional] 
-**UpdatedAt** | Pointer to **string** | ナノ秒 | [optional] 
+**Version** | Pointer to **string** |  | [optional] 
+**CreatedAt** | **string** | ナノ秒 | 
+**UpdatedAt** | **string** | ナノ秒 | 
 
 ## Methods
 
 ### NewDeviceModelsEntityModel
 
-`func NewDeviceModelsEntityModel(version string, ) *DeviceModelsEntityModel`
+`func NewDeviceModelsEntityModel(id string, name string, createdAt string, updatedAt string, ) *DeviceModelsEntityModel`
 
 NewDeviceModelsEntityModel instantiates a new DeviceModelsEntityModel object
 This constructor will assign default values to properties that have it defined,
@@ -50,11 +50,6 @@ and a boolean to check if the value has been set.
 
 SetId sets Id field to given value.
 
-### HasId
-
-`func (o *DeviceModelsEntityModel) HasId() bool`
-
-HasId returns a boolean if a field has been set.
 
 ### GetName
 
@@ -75,11 +70,6 @@ and a boolean to check if the value has been set.
 
 SetName sets Name field to given value.
 
-### HasName
-
-`func (o *DeviceModelsEntityModel) HasName() bool`
-
-HasName returns a boolean if a field has been set.
 
 ### GetKey
 
@@ -150,6 +140,11 @@ and a boolean to check if the value has been set.
 
 SetVersion sets Version field to given value.
 
+### HasVersion
+
+`func (o *DeviceModelsEntityModel) HasVersion() bool`
+
+HasVersion returns a boolean if a field has been set.
 
 ### GetCreatedAt
 
@@ -170,11 +165,6 @@ and a boolean to check if the value has been set.
 
 SetCreatedAt sets CreatedAt field to given value.
 
-### HasCreatedAt
-
-`func (o *DeviceModelsEntityModel) HasCreatedAt() bool`
-
-HasCreatedAt returns a boolean if a field has been set.
 
 ### GetUpdatedAt
 
@@ -195,11 +185,6 @@ and a boolean to check if the value has been set.
 
 SetUpdatedAt sets UpdatedAt field to given value.
 
-### HasUpdatedAt
-
-`func (o *DeviceModelsEntityModel) HasUpdatedAt() bool`
-
-HasUpdatedAt returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

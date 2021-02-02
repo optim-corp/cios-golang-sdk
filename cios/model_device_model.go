@@ -19,9 +19,9 @@ type DeviceModel struct {
 	Id string `json:"id"`
 	Name string `json:"name"`
 	ResourceOwnerId string `json:"resource_owner_id"`
-	MakerId *string `json:"maker_id,omitempty"`
-	Version *string `json:"version,omitempty"`
-	Watch *Watch `json:"watch,omitempty"`
+	MakerId NullableString `json:"maker_id,omitempty"`
+	Version NullableString `json:"version,omitempty"`
+	Watch NullableWatch `json:"watch,omitempty"`
 	Components *ConstitutionComponent `json:"components,omitempty"`
 	// ナノ秒
 	CreatedAt string `json:"created_at"`
@@ -123,100 +123,130 @@ func (o *DeviceModel) SetResourceOwnerId(v string) {
 	o.ResourceOwnerId = v
 }
 
-// GetMakerId returns the MakerId field value if set, zero value otherwise.
+// GetMakerId returns the MakerId field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *DeviceModel) GetMakerId() string {
-	if o == nil || o.MakerId == nil {
+	if o == nil || o.MakerId.Get() == nil {
 		var ret string
 		return ret
 	}
-	return *o.MakerId
+	return *o.MakerId.Get()
 }
 
 // GetMakerIdOk returns a tuple with the MakerId field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *DeviceModel) GetMakerIdOk() (*string, bool) {
-	if o == nil || o.MakerId == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.MakerId, true
+	return o.MakerId.Get(), o.MakerId.IsSet()
 }
 
 // HasMakerId returns a boolean if a field has been set.
 func (o *DeviceModel) HasMakerId() bool {
-	if o != nil && o.MakerId != nil {
+	if o != nil && o.MakerId.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetMakerId gets a reference to the given string and assigns it to the MakerId field.
+// SetMakerId gets a reference to the given NullableString and assigns it to the MakerId field.
 func (o *DeviceModel) SetMakerId(v string) {
-	o.MakerId = &v
+	o.MakerId.Set(&v)
+}
+// SetMakerIdNil sets the value for MakerId to be an explicit nil
+func (o *DeviceModel) SetMakerIdNil() {
+	o.MakerId.Set(nil)
 }
 
-// GetVersion returns the Version field value if set, zero value otherwise.
+// UnsetMakerId ensures that no value is present for MakerId, not even an explicit nil
+func (o *DeviceModel) UnsetMakerId() {
+	o.MakerId.Unset()
+}
+
+// GetVersion returns the Version field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *DeviceModel) GetVersion() string {
-	if o == nil || o.Version == nil {
+	if o == nil || o.Version.Get() == nil {
 		var ret string
 		return ret
 	}
-	return *o.Version
+	return *o.Version.Get()
 }
 
 // GetVersionOk returns a tuple with the Version field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *DeviceModel) GetVersionOk() (*string, bool) {
-	if o == nil || o.Version == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.Version, true
+	return o.Version.Get(), o.Version.IsSet()
 }
 
 // HasVersion returns a boolean if a field has been set.
 func (o *DeviceModel) HasVersion() bool {
-	if o != nil && o.Version != nil {
+	if o != nil && o.Version.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetVersion gets a reference to the given string and assigns it to the Version field.
+// SetVersion gets a reference to the given NullableString and assigns it to the Version field.
 func (o *DeviceModel) SetVersion(v string) {
-	o.Version = &v
+	o.Version.Set(&v)
+}
+// SetVersionNil sets the value for Version to be an explicit nil
+func (o *DeviceModel) SetVersionNil() {
+	o.Version.Set(nil)
 }
 
-// GetWatch returns the Watch field value if set, zero value otherwise.
+// UnsetVersion ensures that no value is present for Version, not even an explicit nil
+func (o *DeviceModel) UnsetVersion() {
+	o.Version.Unset()
+}
+
+// GetWatch returns the Watch field value if set, zero value otherwise (both if not set or set to explicit null).
 func (o *DeviceModel) GetWatch() Watch {
-	if o == nil || o.Watch == nil {
+	if o == nil || o.Watch.Get() == nil {
 		var ret Watch
 		return ret
 	}
-	return *o.Watch
+	return *o.Watch.Get()
 }
 
 // GetWatchOk returns a tuple with the Watch field value if set, nil otherwise
 // and a boolean to check if the value has been set.
+// NOTE: If the value is an explicit nil, `nil, true` will be returned
 func (o *DeviceModel) GetWatchOk() (*Watch, bool) {
-	if o == nil || o.Watch == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.Watch, true
+	return o.Watch.Get(), o.Watch.IsSet()
 }
 
 // HasWatch returns a boolean if a field has been set.
 func (o *DeviceModel) HasWatch() bool {
-	if o != nil && o.Watch != nil {
+	if o != nil && o.Watch.IsSet() {
 		return true
 	}
 
 	return false
 }
 
-// SetWatch gets a reference to the given Watch and assigns it to the Watch field.
+// SetWatch gets a reference to the given NullableWatch and assigns it to the Watch field.
 func (o *DeviceModel) SetWatch(v Watch) {
-	o.Watch = &v
+	o.Watch.Set(&v)
+}
+// SetWatchNil sets the value for Watch to be an explicit nil
+func (o *DeviceModel) SetWatchNil() {
+	o.Watch.Set(nil)
+}
+
+// UnsetWatch ensures that no value is present for Watch, not even an explicit nil
+func (o *DeviceModel) UnsetWatch() {
+	o.Watch.Unset()
 }
 
 // GetComponents returns the Components field value if set, zero value otherwise.
@@ -310,14 +340,14 @@ func (o DeviceModel) MarshalJSON() ([]byte, error) {
 	if true {
 		toSerialize["resource_owner_id"] = o.ResourceOwnerId
 	}
-	if o.MakerId != nil {
-		toSerialize["maker_id"] = o.MakerId
+	if o.MakerId.IsSet() {
+		toSerialize["maker_id"] = o.MakerId.Get()
 	}
-	if o.Version != nil {
-		toSerialize["version"] = o.Version
+	if o.Version.IsSet() {
+		toSerialize["version"] = o.Version.Get()
 	}
-	if o.Watch != nil {
-		toSerialize["watch"] = o.Watch
+	if o.Watch.IsSet() {
+		toSerialize["watch"] = o.Watch.Get()
 	}
 	if o.Components != nil {
 		toSerialize["components"] = o.Components

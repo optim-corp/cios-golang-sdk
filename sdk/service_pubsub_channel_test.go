@@ -3,7 +3,6 @@ package ciossdk
 import (
 	"context"
 	"encoding/json"
-	"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
@@ -15,7 +14,7 @@ import (
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
 func TestPubSub_Channels(t *testing.T) {
@@ -101,13 +100,13 @@ func TestPubSub_Channels(t *testing.T) {
 	)
 
 	// Query Test
-	bucketHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	responseHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		query = r.URL.Query()
 		w.Header().Set("Content-Type", "application/json")
 		json.NewEncoder(w).Encode(cios.MultipleChannel{Total: 10})
 	})
-	ts := httptest.NewServer(bucketHandler)
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{MessagingUrl: ts.URL}})
+	ts := httptest.NewServer(responseHandler)
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
 	defer ts.Close()
 	for _, test := range tests {
 		client.PubSub.GetChannels(test.params, ctx)
@@ -115,31 +114,6 @@ func TestPubSub_Channels(t *testing.T) {
 	}
 
 	ts.Close()
-
-	//// Auto Refresh Test
-	//client = NewCiosClient(
-	//	CiosClientConfig{
-	//		Urls:        model.CIOSUrl{MessagingUrl: ts.URL},
-	//		AutoRefresh: true,
-	//	},
-	//)
-	//bucketHandler = func(w http.ResponseWriter, r *http.Request) {
-	//	w.Header().Set("Content-Type", "application/json")
-	//	w.WriteHeader(404)
-	//}
-	//ts = httptest.NewServer(bucketHandler)
-	//
-	//result := "Failed"
-	//refFunc := func() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
-	//	result = "Accept"
-	//	return "", "", "", 0, nil
-	//}
-	//client.PubSub.refresh = &refFunc
-	//if result == "Failed" {
-	//	t.Fatal("Cant Refresh", result)
-	//}
-	////　念のためクローズ
-	//ts.Close()
 }
 
 func TestPubSub_GetChannelsAll(t *testing.T) {
@@ -158,35 +132,35 @@ func TestPubSub_GetChannelsAll(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{MessagingUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
 
-	buckets, _, _ := client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(999), context.Background())
-	if len(buckets) != 999 || offsets[0] != 0 && limits[0] != 1000 {
-		t.Fatal(len(buckets))
+	responses, _, _ := client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(999), context.Background())
+	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
+		t.Fatal(len(responses))
 	}
 
 	offsets = []int{}
 	limits = []int{}
-	buckets, _, _ = client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(1500), context.Background())
-	if len(buckets) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
-		t.Fatal(len(buckets), limits, offsets)
+	responses, _, _ = client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(1500), context.Background())
+	if len(responses) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
+		t.Fatal(len(responses), limits, offsets)
 	}
 	offsets = []int{}
 	limits = []int{}
-	buckets, _, _ = client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(2001), context.Background())
-	if len(buckets) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
-		t.Fatal(len(buckets), limits, offsets)
+	responses, _, _ = client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(2001), context.Background())
+	if len(responses) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
+		t.Fatal(len(responses), limits, offsets)
 
 	}
 	offsets = []int{}
 	limits = []int{}
-	buckets, _, _ = client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(3501), context.Background())
-	if len(buckets) != 3500 ||
+	responses, _, _ = client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(3501), context.Background())
+	if len(responses) != 3500 ||
 		offsets[0] != 0 || limits[0] != 1000 ||
 		offsets[1] != 1000 && limits[1] != 1000 ||
 		offsets[2] != 2000 || limits[2] != 1000 ||
 		offsets[3] != 3000 || limits[3] != 501 {
-		t.Fatal(len(buckets), limits, offsets)
+		t.Fatal(len(responses), limits, offsets)
 	}
 }
 
@@ -202,7 +176,7 @@ func TestPubSub_GetChannelsUnlimited(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{MessagingUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
 
 	response, _, _ := client.PubSub.GetChannelsUnlimited(MakeGetChannelsOpts().Limit(1), context.Background())
 	if len(response) != 3500 {
@@ -225,7 +199,7 @@ func TestPubSub_GetChannel(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{MessagingUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
 	responseB, response, err := client.PubSub.GetChannel("test", nil, nil, context.Background())
 	if responseB.Id != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(responseB)
@@ -236,11 +210,7 @@ func TestPubSub_CreateChannel(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		body := cios.ChannelProposal{}
-		if r.Method != "POST" {
-			t.Fatal(r.Method)
-		}
-		byts, _ := ioutil.ReadAll(r.Body)
-		convert.UnMarshalJson(byts, &body)
+		convert.UnMarshalJson(r.Body, &body)
 		if body.ResourceOwnerId != "resource_owner_id" ||
 			*body.DatastoreConfig.Enabled != true ||
 			*body.DatastoreConfig.MaxCount != "222" ||
@@ -255,10 +225,12 @@ func TestPubSub_CreateChannel(t *testing.T) {
 			body.DisplayInfo[0].Language != "ja" {
 			t.Fatal(body, *body.Labels, *body.MessagingConfig.Enabled, *body.DatastoreConfig.MaxSize)
 		}
-
+		if r.Method != "POST" {
+			t.Fatal(r.Method)
+		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{MessagingUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
 	client.PubSub.CreateChannel(cios.ChannelProposal{
 		ResourceOwnerId:  "resource_owner_id",
 		ChannelProtocols: nil,
@@ -302,7 +274,7 @@ func TestPubSub_DeleteChannel(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{MessagingUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
 	client.PubSub.DeleteChannel("id", context.Background())
 }
 func TestPubSub_UpdateChannel(t *testing.T) {
@@ -316,7 +288,7 @@ func TestPubSub_UpdateChannel(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{MessagingUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
 	client.PubSub.UpdateChannel("id", cios.ChannelUpdateProposal{
 		ChannelProtocols: nil,
 		DisplayInfo:      nil,
