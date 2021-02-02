@@ -40,6 +40,7 @@ func Test_RefreshGroup(t *testing.T) {
 			})
 		}
 		if r.URL.Path == "/v2/groups" && r.Method == http.MethodGet {
+			time.Sleep(time.Microsecond * time.Duration(rand.Int63n(1000)))
 			json.NewEncoder(w).Encode(cios.MultipleGroup{
 				Groups: []cios.Group{
 					{
@@ -105,7 +106,7 @@ func Test_RefreshGroup(t *testing.T) {
 
 	// リクエストごとのトークンを識別しているかテスト
 	wg := sync.WaitGroup{}
-	asyncTestNumber := 100 //　非同期にリクエストする回数
+	asyncTestNumber := 10 //　非同期にリクエストする回数
 	wg.Add(asyncTestNumber)
 	for i := 0; i < asyncTestNumber; i++ {
 		go func(i int) {
@@ -114,6 +115,7 @@ func Test_RefreshGroup(t *testing.T) {
 			if response.Groups[0].Id != "async "+convert.MustStr(i)+":Bearer "+convert.MustStr(i) {
 				t.Fatal(response.Groups)
 			}
+			t.Log(response)
 			wg.Done()
 		}(i)
 	}
