@@ -13,7 +13,7 @@ func MakeGetLicensesOpts() cios.ApiGetMyLicensesRequest {
 	return cios.ApiGetMyLicensesRequest{}
 }
 
-func (self License) GetLicenses(params cios.ApiGetMyLicensesRequest, ctx sdkmodel.RequestCtx) (response []cios.License, httpResponse *_nethttp.Response, err error) {
+func (self *License) GetLicenses(params cios.ApiGetMyLicensesRequest, ctx sdkmodel.RequestCtx) (response []cios.License, httpResponse *_nethttp.Response, err error) {
 	if err = self.refresh(); err != nil {
 		return
 	}

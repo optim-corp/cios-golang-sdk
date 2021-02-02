@@ -16,7 +16,7 @@ func MakeGetGroupsOpts() cios.ApiGetGroupsRequest {
 	return cios.ApiGetGroupsRequest{}
 }
 
-func (self Account) GetGroups(params cios.ApiGetGroupsRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleGroup, httpResponse *_nethttp.Response, err error) {
+func (self *Account) GetGroups(params cios.ApiGetGroupsRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleGroup, httpResponse *_nethttp.Response, err error) {
 	if err := self.refresh(); err != nil {
 		return cios.MultipleGroup{}, nil, err
 	}
@@ -38,7 +38,7 @@ func (self Account) GetGroups(params cios.ApiGetGroupsRequest, ctx sdkmodel.Requ
 	params.P_type_ = util.ToNil(params.P_type_)
 	return params.Execute()
 }
-func (self Account) GetGroupsAll(params cios.ApiGetGroupsRequest, ctx sdkmodel.RequestCtx) ([]cios.Group, *_nethttp.Response, error) {
+func (self *Account) GetGroupsAll(params cios.ApiGetGroupsRequest, ctx sdkmodel.RequestCtx) ([]cios.Group, *_nethttp.Response, error) {
 	var (
 		result      []cios.Group
 		httpRes     *_nethttp.Response
@@ -84,12 +84,12 @@ func (self Account) GetGroupsAll(params cios.ApiGetGroupsRequest, ctx sdkmodel.R
 	}
 	return result, httpRes, err
 }
-func (self Account) GetGroupsUnlimited(params cios.ApiGetGroupsRequest, ctx sdkmodel.RequestCtx) ([]cios.Group, *_nethttp.Response, error) {
+func (self *Account) GetGroupsUnlimited(params cios.ApiGetGroupsRequest, ctx sdkmodel.RequestCtx) ([]cios.Group, *_nethttp.Response, error) {
 	params.P_limit = nil
 	return self.GetGroupsAll(params, ctx)
 }
 
-func (self Account) GetGroup(groupId string, includes *string, ctx sdkmodel.RequestCtx) (cios.Group, *_nethttp.Response, error) {
+func (self *Account) GetGroup(groupId string, includes *string, ctx sdkmodel.RequestCtx) (cios.Group, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Group{}, nil, err
 	}
@@ -99,7 +99,7 @@ func (self Account) GetGroup(groupId string, includes *string, ctx sdkmodel.Requ
 	}
 	return req.Execute()
 }
-func (self Account) GetGroupByResourceOwnerId(resourceOwnerID string, includes *string, ctx sdkmodel.RequestCtx) (cios.Group, *_nethttp.Response, error) {
+func (self *Account) GetGroupByResourceOwnerId(resourceOwnerID string, includes *string, ctx sdkmodel.RequestCtx) (cios.Group, *_nethttp.Response, error) {
 	resourceOwner, httpResponse, err := self.GetResourceOwner(resourceOwnerID, ctx)
 	if err != nil {
 		return cios.Group{}, httpResponse, err
@@ -110,7 +110,7 @@ func (self Account) GetGroupByResourceOwnerId(resourceOwnerID string, includes *
 	return cios.Group{}, nil, errors.New("No Group")
 }
 
-func (self Account) GetGroupMapByResourceOwner(p1 cios.ApiGetGroupsRequest, p2 cios.ApiGetResourceOwnersRequest, ctx sdkmodel.RequestCtx) (map[string]cios.Group, *_nethttp.Response, error) {
+func (self *Account) GetGroupMapByResourceOwner(p1 cios.ApiGetGroupsRequest, p2 cios.ApiGetResourceOwnersRequest, ctx sdkmodel.RequestCtx) (map[string]cios.Group, *_nethttp.Response, error) {
 	ros, httpResponse, err := self.GetResourceOwnersUnlimited(p2, ctx)
 	if err != nil {
 		return nil, httpResponse, err
@@ -130,21 +130,21 @@ func (self Account) GetGroupMapByResourceOwner(p1 cios.ApiGetGroupsRequest, p2 c
 	return result, nil, nil
 }
 
-func (self Account) DeleteGroup(groupID string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
+func (self *Account) DeleteGroup(groupID string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
 	return self.ApiClient.GroupApi.DeleteGroup(ctx, groupID).Execute()
 }
 
-func (self Account) CreateGroup(body cios.GroupCreateRequest, ctx sdkmodel.RequestCtx) (cios.Group, *_nethttp.Response, error) {
+func (self *Account) CreateGroup(body cios.GroupCreateRequest, ctx sdkmodel.RequestCtx) (cios.Group, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Group{}, nil, err
 	}
 	return self.ApiClient.GroupApi.CreateGroup(ctx).GroupCreateRequest(body).Execute()
 }
 
-func (self Account) UpdateGroup(groupID string, body cios.GroupUpdateRequest, ctx sdkmodel.RequestCtx) (cios.Group, *_nethttp.Response, error) {
+func (self *Account) UpdateGroup(groupID string, body cios.GroupUpdateRequest, ctx sdkmodel.RequestCtx) (cios.Group, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Group{}, nil, err
 	}

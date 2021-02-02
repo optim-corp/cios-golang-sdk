@@ -3,15 +3,11 @@ package ciossdk
 import (
 	_nethttp "net/http"
 
-	"github.com/optim-corp/cios-golang-sdk/util"
-
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
-
-	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
-
 	"github.com/optim-corp/cios-golang-sdk/cios"
-
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
+	"github.com/optim-corp/cios-golang-sdk/util"
+	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
 )
 
 func MakeGetModelsOpts() cios.ApiGetDeviceModelsRequest {
@@ -25,7 +21,7 @@ func MakeGetLifecyclesOpts() cios.ApiGetDeviceEntitiesLifecyclesRequest {
 	return cios.ApiGetDeviceEntitiesLifecyclesRequest{}
 }
 
-func (self DeviceAssetManagement) GetModels(params cios.ApiGetDeviceModelsRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleDeviceModel, httpResponse *_nethttp.Response, err error) {
+func (self *DeviceAssetManagement) GetModels(params cios.ApiGetDeviceModelsRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleDeviceModel, httpResponse *_nethttp.Response, err error) {
 	if err := self.refresh(); err != nil {
 		return cios.MultipleDeviceModel{}, nil, err
 	}
@@ -41,7 +37,7 @@ func (self DeviceAssetManagement) GetModels(params cios.ApiGetDeviceModelsReques
 	params.P_version = util.ToNil(params.P_version)
 	return params.Execute()
 }
-func (self DeviceAssetManagement) GetModelsAll(params cios.ApiGetDeviceModelsRequest, ctx sdkmodel.RequestCtx) ([]cios.DeviceModel, *_nethttp.Response, error) {
+func (self *DeviceAssetManagement) GetModelsAll(params cios.ApiGetDeviceModelsRequest, ctx sdkmodel.RequestCtx) ([]cios.DeviceModel, *_nethttp.Response, error) {
 	var (
 		result      []cios.DeviceModel
 		httpRes     *_nethttp.Response
@@ -82,11 +78,11 @@ func (self DeviceAssetManagement) GetModelsAll(params cios.ApiGetDeviceModelsReq
 	}
 	return result, httpRes, err
 }
-func (self DeviceAssetManagement) GetModelsUnlimited(params cios.ApiGetDeviceModelsRequest, ctx sdkmodel.RequestCtx) ([]cios.DeviceModel, *_nethttp.Response, error) {
+func (self *DeviceAssetManagement) GetModelsUnlimited(params cios.ApiGetDeviceModelsRequest, ctx sdkmodel.RequestCtx) ([]cios.DeviceModel, *_nethttp.Response, error) {
 	params.P_limit = nil
 	return self.GetModelsAll(params, ctx)
 }
-func (self DeviceAssetManagement) GetModelsMapByID(params cios.ApiGetDeviceModelsRequest, ctx sdkmodel.RequestCtx) (map[string]cios.DeviceModel, error) {
+func (self *DeviceAssetManagement) GetModelsMapByID(params cios.ApiGetDeviceModelsRequest, ctx sdkmodel.RequestCtx) (map[string]cios.DeviceModel, error) {
 	models, _, err := self.GetModelsUnlimited(params, ctx)
 	if err != nil {
 		return nil, err
@@ -97,7 +93,7 @@ func (self DeviceAssetManagement) GetModelsMapByID(params cios.ApiGetDeviceModel
 	}
 	return m, nil
 }
-func (self DeviceAssetManagement) GetModel(name string, ctx sdkmodel.RequestCtx) (cios.DeviceModel, *_nethttp.Response, error) {
+func (self *DeviceAssetManagement) GetModel(name string, ctx sdkmodel.RequestCtx) (cios.DeviceModel, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.DeviceModel{}, nil, err
 	}
@@ -107,7 +103,7 @@ func (self DeviceAssetManagement) GetModel(name string, ctx sdkmodel.RequestCtx)
 	}
 	return response.Model, httpResponse, err
 }
-func (self DeviceAssetManagement) CreateModel(body cios.DeviceModelRequest, ctx sdkmodel.RequestCtx) (cios.DeviceModel, *_nethttp.Response, error) {
+func (self *DeviceAssetManagement) CreateModel(body cios.DeviceModelRequest, ctx sdkmodel.RequestCtx) (cios.DeviceModel, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.DeviceModel{}, nil, err
 	}
@@ -117,14 +113,14 @@ func (self DeviceAssetManagement) CreateModel(body cios.DeviceModelRequest, ctx 
 	}
 	return response.Model, httpResponse, err
 }
-func (self DeviceAssetManagement) DeleteModel(name string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
+func (self *DeviceAssetManagement) DeleteModel(name string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
 	return self.ApiClient.DeviceAssetApi.DeleteDeviceModel(ctx, name).Execute()
 }
 
-func (self DeviceAssetManagement) GetEntities(params cios.ApiGetDeviceEntitiesRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleDeviceModelEntity, httpResponse *_nethttp.Response, err error) {
+func (self *DeviceAssetManagement) GetEntities(params cios.ApiGetDeviceEntitiesRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleDeviceModelEntity, httpResponse *_nethttp.Response, err error) {
 	if err = self.refresh(); err != nil {
 		return
 	}
@@ -140,7 +136,7 @@ func (self DeviceAssetManagement) GetEntities(params cios.ApiGetDeviceEntitiesRe
 	params.P_deviceId = util.ToNil(params.P_deviceId)
 	return params.Execute()
 }
-func (self DeviceAssetManagement) GetEntitiesAll(params cios.ApiGetDeviceEntitiesRequest, ctx sdkmodel.RequestCtx) ([]cios.DeviceModelsEntity, *_nethttp.Response, error) {
+func (self *DeviceAssetManagement) GetEntitiesAll(params cios.ApiGetDeviceEntitiesRequest, ctx sdkmodel.RequestCtx) ([]cios.DeviceModelsEntity, *_nethttp.Response, error) {
 	var (
 		result      []cios.DeviceModelsEntity
 		httpRes     *_nethttp.Response
@@ -181,11 +177,11 @@ func (self DeviceAssetManagement) GetEntitiesAll(params cios.ApiGetDeviceEntitie
 	}
 	return result, httpRes, err
 }
-func (self DeviceAssetManagement) GetEntitiesUnlimited(params cios.ApiGetDeviceEntitiesRequest, ctx sdkmodel.RequestCtx) ([]cios.DeviceModelsEntity, *_nethttp.Response, error) {
+func (self *DeviceAssetManagement) GetEntitiesUnlimited(params cios.ApiGetDeviceEntitiesRequest, ctx sdkmodel.RequestCtx) ([]cios.DeviceModelsEntity, *_nethttp.Response, error) {
 	params.P_limit = nil
 	return self.GetEntitiesAll(params, ctx)
 }
-func (self DeviceAssetManagement) GetEntitiesMapByID(params cios.ApiGetDeviceEntitiesRequest, ctx sdkmodel.RequestCtx) (map[string]cios.DeviceModelsEntity, error) {
+func (self *DeviceAssetManagement) GetEntitiesMapByID(params cios.ApiGetDeviceEntitiesRequest, ctx sdkmodel.RequestCtx) (map[string]cios.DeviceModelsEntity, error) {
 	devices, _, err := self.GetEntitiesUnlimited(params, ctx)
 	if err != nil {
 		return nil, err
@@ -196,7 +192,7 @@ func (self DeviceAssetManagement) GetEntitiesMapByID(params cios.ApiGetDeviceEnt
 	}
 	return m, nil
 }
-func (self DeviceAssetManagement) GetEntity(key string, ctx sdkmodel.RequestCtx) (cios.DeviceModelsEntity, *_nethttp.Response, error) {
+func (self *DeviceAssetManagement) GetEntity(key string, ctx sdkmodel.RequestCtx) (cios.DeviceModelsEntity, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.DeviceModelsEntity{}, nil, err
 	}
@@ -206,13 +202,13 @@ func (self DeviceAssetManagement) GetEntity(key string, ctx sdkmodel.RequestCtx)
 	}
 	return response.Entity, httpResponse, err
 }
-func (self DeviceAssetManagement) DeleteEntity(key string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
+func (self *DeviceAssetManagement) DeleteEntity(key string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
 	return self.ApiClient.DeviceAssetApi.DeleteDeviceEntity(ctx, key).Execute()
 }
-func (self DeviceAssetManagement) CreateEntity(name string, body cios.Inventory, ctx sdkmodel.RequestCtx) (cios.DeviceModelsEntity, *_nethttp.Response, error) {
+func (self *DeviceAssetManagement) CreateEntity(name string, body cios.Inventory, ctx sdkmodel.RequestCtx) (cios.DeviceModelsEntity, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.DeviceModelsEntity{}, nil, err
 	}
@@ -223,7 +219,7 @@ func (self DeviceAssetManagement) CreateEntity(name string, body cios.Inventory,
 	return response.Entity, httpResponse, err
 }
 
-func (self DeviceAssetManagement) GetLifecycles(key string, params cios.ApiGetDeviceEntitiesLifecyclesRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleLifeCycle, httpResponse *_nethttp.Response, err error) {
+func (self *DeviceAssetManagement) GetLifecycles(key string, params cios.ApiGetDeviceEntitiesLifecyclesRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleLifeCycle, httpResponse *_nethttp.Response, err error) {
 	if err := self.refresh(); err != nil {
 		return cios.MultipleLifeCycle{}, nil, err
 	}
@@ -242,7 +238,7 @@ func (self DeviceAssetManagement) GetLifecycles(key string, params cios.ApiGetDe
 	params.P_startEventAt = util.ToNil(params.P_startEventAt)
 	return params.Execute()
 }
-func (self DeviceAssetManagement) GetLifecyclesAll(key string, params cios.ApiGetDeviceEntitiesLifecyclesRequest, ctx sdkmodel.RequestCtx) ([]cios.LifeCycle, *_nethttp.Response, error) {
+func (self *DeviceAssetManagement) GetLifecyclesAll(key string, params cios.ApiGetDeviceEntitiesLifecyclesRequest, ctx sdkmodel.RequestCtx) ([]cios.LifeCycle, *_nethttp.Response, error) {
 	var (
 		httpResponse *_nethttp.Response
 		err          error
@@ -288,7 +284,7 @@ func (self DeviceAssetManagement) GetLifecyclesAll(key string, params cios.ApiGe
 	}
 	return result, httpResponse, err
 }
-func (self DeviceAssetManagement) GetLifecyclesUnlimitedByEntities(entities []cios.DeviceModelsEntity, params cios.ApiGetDeviceEntitiesLifecyclesRequest, ctx sdkmodel.RequestCtx) ([][]cios.LifeCycle, *_nethttp.Response, error) {
+func (self *DeviceAssetManagement) GetLifecyclesUnlimitedByEntities(entities []cios.DeviceModelsEntity, params cios.ApiGetDeviceEntitiesLifecyclesRequest, ctx sdkmodel.RequestCtx) ([][]cios.LifeCycle, *_nethttp.Response, error) {
 	var allLifecycles [][]cios.LifeCycle
 	for _, modelEntity := range entities {
 		lifecycles, httpResponse, err := self.GetLifecyclesUnlimited(modelEntity.Key, params, ctx)
@@ -299,11 +295,11 @@ func (self DeviceAssetManagement) GetLifecyclesUnlimitedByEntities(entities []ci
 	}
 	return allLifecycles, nil, nil
 }
-func (self DeviceAssetManagement) GetLifecyclesUnlimited(key string, params cios.ApiGetDeviceEntitiesLifecyclesRequest, ctx sdkmodel.RequestCtx) ([]cios.LifeCycle, *_nethttp.Response, error) {
+func (self *DeviceAssetManagement) GetLifecyclesUnlimited(key string, params cios.ApiGetDeviceEntitiesLifecyclesRequest, ctx sdkmodel.RequestCtx) ([]cios.LifeCycle, *_nethttp.Response, error) {
 	params.P_limit = nil
 	return self.GetLifecyclesAll(key, params, ctx)
 }
-func (self DeviceAssetManagement) GetLifecycle(key, id string, ctx sdkmodel.RequestCtx) (cios.LifeCycle, *_nethttp.Response, error) {
+func (self *DeviceAssetManagement) GetLifecycle(key, id string, ctx sdkmodel.RequestCtx) (cios.LifeCycle, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.LifeCycle{}, nil, err
 	}
@@ -313,7 +309,7 @@ func (self DeviceAssetManagement) GetLifecycle(key, id string, ctx sdkmodel.Requ
 	}
 	return response.Lifecycle, httpResponse, err
 }
-func (self DeviceAssetManagement) CreateLifecycle(key string, body cios.LifeCycleRequest, ctx sdkmodel.RequestCtx) (cios.LifeCycle, *_nethttp.Response, error) {
+func (self *DeviceAssetManagement) CreateLifecycle(key string, body cios.LifeCycleRequest, ctx sdkmodel.RequestCtx) (cios.LifeCycle, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.LifeCycle{}, nil, err
 	}
@@ -323,7 +319,7 @@ func (self DeviceAssetManagement) CreateLifecycle(key string, body cios.LifeCycl
 	}
 	return response.Lifecycle, httpResponse, err
 }
-func (self DeviceAssetManagement) DeleteLifecycle(key string, id string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
+func (self *DeviceAssetManagement) DeleteLifecycle(key string, id string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
