@@ -16,7 +16,7 @@ func MakeGetChannelsOpts() cios.ApiGetChannelsRequest {
 	return cios.ApiGetChannelsRequest{}
 }
 
-func (self PubSub) GetChannels(params cios.ApiGetChannelsRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleChannel, httpResponse *_nethttp.Response, err error) {
+func (self *PubSub) GetChannels(params cios.ApiGetChannelsRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleChannel, httpResponse *_nethttp.Response, err error) {
 	if err = self.refresh(); err != nil {
 		return
 	}
@@ -35,7 +35,7 @@ func (self PubSub) GetChannels(params cios.ApiGetChannelsRequest, ctx sdkmodel.R
 	params.P_messagingPersisted = util.ToNil(params.P_messagingPersisted)
 	return params.Execute()
 }
-func (self PubSub) GetChannelsAll(params cios.ApiGetChannelsRequest, ctx sdkmodel.RequestCtx) ([]cios.Channel, *_nethttp.Response, error) {
+func (self *PubSub) GetChannelsAll(params cios.ApiGetChannelsRequest, ctx sdkmodel.RequestCtx) ([]cios.Channel, *_nethttp.Response, error) {
 	var (
 		result      []cios.Channel
 		httpRes     *_nethttp.Response
@@ -76,11 +76,11 @@ func (self PubSub) GetChannelsAll(params cios.ApiGetChannelsRequest, ctx sdkmode
 	}
 	return result, httpRes, err
 }
-func (self PubSub) GetChannelsUnlimited(params cios.ApiGetChannelsRequest, ctx sdkmodel.RequestCtx) ([]cios.Channel, *_nethttp.Response, error) {
+func (self *PubSub) GetChannelsUnlimited(params cios.ApiGetChannelsRequest, ctx sdkmodel.RequestCtx) ([]cios.Channel, *_nethttp.Response, error) {
 	params.P_limit = nil
 	return self.GetChannelsAll(params, ctx)
 }
-func (self PubSub) GetChannel(channelID string, isDev *bool, lang *string, ctx sdkmodel.RequestCtx) (cios.Channel, *_nethttp.Response, error) {
+func (self *PubSub) GetChannel(channelID string, isDev *bool, lang *string, ctx sdkmodel.RequestCtx) (cios.Channel, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Channel{}, nil, err
 	}
@@ -97,14 +97,14 @@ func (self PubSub) GetChannel(channelID string, isDev *bool, lang *string, ctx s
 	}
 	return response.Channel, httpResponse, err
 }
-func (self PubSub) GetChannelFirst(params cios.ApiGetChannelsRequest, ctx sdkmodel.RequestCtx) (cios.Channel, *_nethttp.Response, error) {
+func (self *PubSub) GetChannelFirst(params cios.ApiGetChannelsRequest, ctx sdkmodel.RequestCtx) (cios.Channel, *_nethttp.Response, error) {
 	response, httpResponse, err := self.GetChannels(params.Limit(1), ctx)
 	if err != nil || len(response.Channels) == 0 {
 		return cios.Channel{}, httpResponse, fmt.Errorf("not found")
 	}
 	return response.Channels[0], httpResponse, err
 }
-func (self PubSub) GetChannelsMapByID(params cios.ApiGetChannelsRequest, ctx sdkmodel.RequestCtx) (map[string]cios.Channel, *_nethttp.Response, error) {
+func (self *PubSub) GetChannelsMapByID(params cios.ApiGetChannelsRequest, ctx sdkmodel.RequestCtx) (map[string]cios.Channel, *_nethttp.Response, error) {
 	channels, httpResponse, err := self.GetChannelsUnlimited(params, ctx)
 	if err != nil {
 		return nil, httpResponse, err
@@ -115,7 +115,7 @@ func (self PubSub) GetChannelsMapByID(params cios.ApiGetChannelsRequest, ctx sdk
 	}
 	return channelsMap, httpResponse, nil
 }
-func (self PubSub) GetChannelsMapByResourceOwnerID(params cios.ApiGetChannelsRequest, ctx sdkmodel.RequestCtx) (map[string][]cios.Channel, *_nethttp.Response, error) {
+func (self *PubSub) GetChannelsMapByResourceOwnerID(params cios.ApiGetChannelsRequest, ctx sdkmodel.RequestCtx) (map[string][]cios.Channel, *_nethttp.Response, error) {
 	channels, httpResponse, err := self.GetChannelsUnlimited(params, ctx)
 	if err != nil {
 		return nil, httpResponse, err
@@ -126,7 +126,7 @@ func (self PubSub) GetChannelsMapByResourceOwnerID(params cios.ApiGetChannelsReq
 	}
 	return channelsMap, httpResponse, nil
 }
-func (self PubSub) DeleteChannel(channelID string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
+func (self *PubSub) DeleteChannel(channelID string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
@@ -138,14 +138,14 @@ func (self PubSub) DeleteChannel(channelID string, ctx sdkmodel.RequestCtx) (*_n
 	httpResponse, err := request.Execute()
 	return httpResponse, err
 }
-func (self PubSub) GetOrCreateChannel(params cios.ApiGetChannelsRequest, body cios.ChannelProposal, ctx sdkmodel.RequestCtx) (cios.Channel, *_nethttp.Response, error) {
+func (self *PubSub) GetOrCreateChannel(params cios.ApiGetChannelsRequest, body cios.ChannelProposal, ctx sdkmodel.RequestCtx) (cios.Channel, *_nethttp.Response, error) {
 	channels, httpResponse, err := self.GetChannelsUnlimited(params, ctx)
 	if len(channels) == 0 {
 		return self.CreateChannel(body, ctx)
 	}
 	return channels[0], httpResponse, err
 }
-func (self PubSub) CreateChannel(body cios.ChannelProposal, ctx sdkmodel.RequestCtx) (cios.Channel, *_nethttp.Response, error) {
+func (self *PubSub) CreateChannel(body cios.ChannelProposal, ctx sdkmodel.RequestCtx) (cios.Channel, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Channel{}, nil, err
 	}
@@ -156,7 +156,7 @@ func (self PubSub) CreateChannel(body cios.ChannelProposal, ctx sdkmodel.Request
 	}
 	return response.Channel, httpResponse, err
 }
-func (self PubSub) UpdateChannel(channelID string, body cios.ChannelUpdateProposal, ctx sdkmodel.RequestCtx) (cios.MultipleChannel, *_nethttp.Response, error) {
+func (self *PubSub) UpdateChannel(channelID string, body cios.ChannelUpdateProposal, ctx sdkmodel.RequestCtx) (cios.MultipleChannel, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.MultipleChannel{}, nil, err
 	}

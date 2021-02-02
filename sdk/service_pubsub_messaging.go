@@ -30,7 +30,7 @@ type (
 	}
 )
 
-func (self PubSub) PublishMessage(id string, body interface{}, packerFormat *string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
+func (self *PubSub) PublishMessage(id string, body interface{}, packerFormat *string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
@@ -38,14 +38,14 @@ func (self PubSub) PublishMessage(id string, body interface{}, packerFormat *str
 	request.P_packerFormat = packerFormat
 	return request.Execute()
 }
-func (self PubSub) PublishMessagePackerOnly(id string, body interface{}, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
+func (self *PubSub) PublishMessagePackerOnly(id string, body interface{}, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	return self.PublishMessage(id, &body, nil, ctx)
 }
-func (self PubSub) PublishMessageJSON(id string, body cios.PackerFormatJson, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
+func (self *PubSub) PublishMessageJSON(id string, body cios.PackerFormatJson, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	return self.PublishMessage(id, &body, convert.StringPtr("json"), ctx)
 }
 
-func (self PubSub) ConnectWebSocket(channelID string, done chan bool, params ConnectWebSocketOptions) (err error) {
+func (self *PubSub) ConnectWebSocket(channelID string, done chan bool, params ConnectWebSocketOptions) (err error) {
 	if params.SubscribeFunc == nil && params.PublishStr == nil {
 		return errors.New("no publish str and subscribe func")
 	}
@@ -232,7 +232,7 @@ func (self PubSub) ConnectWebSocket(channelID string, done chan bool, params Con
 	return err
 }
 
-func (self PubSub) CreateMessagingURL(channelID string, mode string, packerFormat *string) string {
+func (self *PubSub) CreateMessagingURL(channelID string, mode string, packerFormat *string) string {
 	_url, err := url.Parse(strings.Replace(self.Url, "https", "wss", 1) + "/v2/messaging")
 	if err != nil {
 		return ""
@@ -247,7 +247,7 @@ func (self PubSub) CreateMessagingURL(channelID string, mode string, packerForma
 	return _url.String()
 }
 
-func (self PubSub) CreateCIOSWebsocketConnection(url string, authorization string) (*websocket.Conn, error) {
+func (self *PubSub) CreateCIOSWebsocketConnection(url string, authorization string) (*websocket.Conn, error) {
 	if self.debug {
 		log.Printf("Websocket URL: %s\nAuthorization: %s", url, authorization)
 	}

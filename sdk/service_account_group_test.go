@@ -4,9 +4,11 @@ import (
 	"context"
 	"encoding/json"
 	"io/ioutil"
+	"math/rand"
 	"net/http"
 	"net/http/httptest"
 	"net/url"
+	"sync"
 	"testing"
 	"time"
 
@@ -35,6 +37,16 @@ func Test_RefreshGroup(t *testing.T) {
 				RefreshToken: "",
 				ExpiresIn:    0,
 				Scope:        "",
+			})
+		}
+		if r.URL.Path == "/v2/groups" && r.Method == http.MethodGet {
+			time.Sleep(time.Microsecond * time.Duration(rand.Int63n(1000)))
+			json.NewEncoder(w).Encode(cios.MultipleGroup{
+				Groups: []cios.Group{
+					{
+						Id: r.URL.Query().Get("name") + ":" + r.Header.Get("Authorization"),
+					},
+				},
 			})
 		}
 	})
@@ -91,16 +103,23 @@ func Test_RefreshGroup(t *testing.T) {
 			"scope",
 		),
 	})
-	for i, fnc := range funcs {
-		fnc()
-		if _token != "Bearer AAA" {
-			t.Fatal(_token)
-		}
-		if count != i+1 {
-			t.Fatal(count)
-		}
-		_token = ""
+
+	// リクエストごとのトークンを識別しているかテスト
+	wg := sync.WaitGroup{}
+	asyncTestNumber := 10 //　非同期にリクエストする回数
+	wg.Add(asyncTestNumber)
+	for i := 0; i < asyncTestNumber; i++ {
+		go func(i int) {
+			time.Sleep(time.Microsecond * time.Duration(rand.Int63n(100)))
+			response, _, _ := client.Account.GetGroups(MakeGetGroupsOpts().Name("async "+convert.MustStr(i)), MakeRequestCtx(convert.MustStr(i)))
+			if response.Groups[0].Id != "async "+convert.MustStr(i)+":Bearer "+convert.MustStr(i) {
+				t.Fatal(response.Groups)
+			}
+			t.Log(response)
+			wg.Done()
+		}(i)
 	}
+	wg.Wait()
 }
 func TestAccount_Groups(t *testing.T) {
 	var (
