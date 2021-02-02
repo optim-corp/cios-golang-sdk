@@ -14,8 +14,7 @@ import (
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
-
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
 func TestFileStorage_GetNodes(t *testing.T) {
@@ -102,7 +101,7 @@ func TestFileStorage_GetNodes(t *testing.T) {
 	ts := httptest.NewServer(bucketHandler)
 	client := NewCiosClient(
 		CiosClientConfig{
-			Urls: model.CIOSUrl{StorageUrl: ts.URL},
+			Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL},
 		},
 	)
 	defer ts.Close()
@@ -116,7 +115,7 @@ func TestFileStorage_GetNodes(t *testing.T) {
 	//// Auto Refresh Test
 	//client = NewCiosClient(
 	//	CiosClientConfig{
-	//		Urls:        model.CIOSUrl{StorageUrl: ts.URL},
+	//		Urls:        sdkmodel.CIOSUrl{StorageUrl: ts.URL},
 	//		AutoRefresh: true,
 	//	},
 	//)
@@ -127,7 +126,7 @@ func TestFileStorage_GetNodes(t *testing.T) {
 	//ts = httptest.NewServer(bucketHandler)
 	//
 	//result := "Failed"
-	//refFunc := func() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
+	//refFunc := func() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
 	//	result = "Accept"
 	//	return "", "", "", 0, nil
 	//}
@@ -155,7 +154,7 @@ func TestFileStorage_GetNodesAll(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 
 	buckets, _, _ := client.FileStorage.GetNodesAll("test", MakeGetNodesOpts().Limit(999), context.Background())
 	if len(buckets) != 999 || offsets[0] != 0 && limits[0] != 1000 {
@@ -199,7 +198,7 @@ func TestFileStorage_GetNodesUnlimited(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 
 	buckets, _, _ := client.FileStorage.GetNodesUnlimited("test", MakeGetNodesOpts().Limit(1), context.Background())
 	if len(buckets) != 3500 {
@@ -224,7 +223,7 @@ func TestFileStorage_GetNode(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 	responseBody, response, err := client.FileStorage.GetNode("test1", "test2", context.Background())
 	if responseBody.Id != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(responseBody)
@@ -246,7 +245,7 @@ func TestFileStorage_CreateNode(t *testing.T) {
 
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 	client.FileStorage.CreateNode("test", "name", convert.StringPtr("parent"), context.Background())
 }
 
@@ -261,7 +260,7 @@ func TestFileStorage_DeleteNode(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 	client.FileStorage.DeleteNode("bucketid", "delete", context.Background())
 }
 
@@ -279,7 +278,7 @@ func TestFileStorage_RenameNode(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 	client.FileStorage.RenameNode("bucketid", "node", "name", context.Background())
 }
 
@@ -297,7 +296,7 @@ func TestFileStorage_CopyNode(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 	client.FileStorage.CopyNode("bucketid", "node", convert.StringPtr("destBucket"), convert.StringPtr("destNode"), context.Background())
 }
 func TestFileStorage_MoveNode(t *testing.T) {
@@ -314,6 +313,6 @@ func TestFileStorage_MoveNode(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 	client.FileStorage.MoveNode("bucketid", "node", convert.StringPtr("destBucket"), convert.StringPtr("destNode"), context.Background())
 }

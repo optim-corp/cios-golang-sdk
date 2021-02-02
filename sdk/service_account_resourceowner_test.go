@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
 )
@@ -85,7 +85,7 @@ func TestResourceOwner_GetResourceOwners(t *testing.T) {
 	ts := httptest.NewServer(responseHandler)
 	client := NewCiosClient(
 		CiosClientConfig{
-			Urls: model.CIOSUrl{AccountsUrl: ts.URL},
+			Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL},
 		},
 	)
 	defer ts.Close()
@@ -111,7 +111,7 @@ func TestResourceOwner_GetResourceOwnersAll(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{AccountsUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 
 	responses, _, _ := client.Account.GetResourceOwnersAll(MakeGetResourceOwnersOpts().Limit(999), context.Background())
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
@@ -155,7 +155,7 @@ func TestResourceOwner_GetResourceOwnersUnlimited(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{AccountsUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 
 	responses, _, _ := client.Account.GetResourceOwnersUnlimited(MakeGetResourceOwnersOpts().Limit(1), context.Background())
 	if len(responses) != 3500 {
@@ -181,7 +181,7 @@ func TestPubSub_GetResourceOwner(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{AccountsUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 	responseB, response, err := client.Account.GetResourceOwner("test", context.Background())
 	if responseB.Id != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(responseB)

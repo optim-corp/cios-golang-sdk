@@ -14,8 +14,7 @@ import (
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
-
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
 func TestDeviceAssetManagement_GetModels(t *testing.T) {
@@ -100,7 +99,7 @@ func TestDeviceAssetManagement_GetModels(t *testing.T) {
 	ts := httptest.NewServer(responseHandler)
 	client := NewCiosClient(
 		CiosClientConfig{
-			Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL},
+			Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL},
 		},
 	)
 	defer ts.Close()
@@ -129,7 +128,7 @@ func TestDeviceAssetManagement_GetModelsAll(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
 
 	responses, _, _ := client.DeviceAssetManagement.GetModelsAll(MakeGetModelsOpts().Limit(999), context.Background())
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
@@ -173,7 +172,7 @@ func TestDeviceAssetManagement_GetModelsUnlimited(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
 
 	responses, _, _ := client.DeviceAssetManagement.GetModelsUnlimited(MakeGetModelsOpts().Limit(1), context.Background())
 	if len(responses) != 3500 {
@@ -193,7 +192,7 @@ func TestDeviceAssetManagement_GetModel(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
 	body, response, err := client.DeviceAssetManagement.GetModel("test", context.Background())
 	if body.Id != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(body)
@@ -218,7 +217,7 @@ func TestDeviceAssetManagement_CreateModel(t *testing.T) {
 
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
 	client.DeviceAssetManagement.CreateModel(cios.DeviceModelRequest{
 		Name:            "name",
 		ResourceOwnerId: "resource_owner_id",
@@ -236,7 +235,7 @@ func TestDeviceAssetManagement_DeleteModel(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
 	client.DeviceAssetManagement.DeleteModel("device_id", context.Background())
 }
 
@@ -322,7 +321,7 @@ func TestDeviceAssetManagement_GetEntities(t *testing.T) {
 	ts := httptest.NewServer(responseHandler)
 	client := NewCiosClient(
 		CiosClientConfig{
-			Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL},
+			Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL},
 		},
 	)
 	defer ts.Close()
@@ -351,7 +350,7 @@ func TestDeviceAssetManagement_GetEntitiesAll(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
 
 	responses, _, _ := client.DeviceAssetManagement.GetEntitiesAll(MakeGetEntitiesOpts().Limit(999), context.Background())
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
@@ -395,7 +394,7 @@ func TestDeviceAssetManagement_GetGetEntitiesUnlimited(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
 
 	responses, _, err := client.DeviceAssetManagement.GetEntitiesUnlimited(MakeGetEntitiesOpts().Limit(1), context.Background())
 	if err != nil {
@@ -418,7 +417,7 @@ func TestDeviceAssetManagement_GetEntity(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
 	body, response, err := client.DeviceAssetManagement.GetEntity("test", context.Background())
 	if body.Id != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(body)
@@ -442,7 +441,7 @@ func TestDeviceAssetManagement_CreateEntity(t *testing.T) {
 
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
 	client.DeviceAssetManagement.CreateEntity("name", cios.Inventory{
 		SerialNumber: convert.StringPtr("111"),
 	}, context.Background())
@@ -459,7 +458,7 @@ func TestDeviceAssetManagement_DeleteEntity(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
 	client.DeviceAssetManagement.DeleteEntity("device_id", context.Background())
 }
 
@@ -547,7 +546,7 @@ func TestDeviceAssetManagement_GetLifecycles(t *testing.T) {
 	ts := httptest.NewServer(responseHandler)
 	client := NewCiosClient(
 		CiosClientConfig{
-			Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL},
+			Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL},
 		},
 	)
 	defer ts.Close()
@@ -579,7 +578,7 @@ func TestDeviceAssetManagement_GetLifecyclesAll(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
 
 	responses, _, _ := client.DeviceAssetManagement.GetLifecyclesAll("key", MakeGetLifecyclesOpts().Limit(999), context.Background())
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
@@ -626,7 +625,7 @@ func TestDeviceAssetManagement_GetLifecyclesUnlimited(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
 
 	responses, _, _ := client.DeviceAssetManagement.GetLifecyclesUnlimited("key", MakeGetLifecyclesOpts().Limit(1), context.Background())
 	if len(responses) != 3500 {
@@ -651,7 +650,7 @@ func TestDeviceAssetManagement_CreateLifecycle(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
 	client.DeviceAssetManagement.CreateLifecycle("device_id", cios.LifeCycleRequest{
 		EventKind: "a",
 		EventMode: "b",
@@ -671,6 +670,6 @@ func TestDeviceAssetManagement_DeleteLifecycle(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
 	client.DeviceAssetManagement.DeleteLifecycle("device_id", "test_id", context.Background())
 }

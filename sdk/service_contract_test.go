@@ -9,7 +9,7 @@ import (
 	"testing"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
 )
@@ -75,7 +75,7 @@ func TestContract_GetContracts(t *testing.T) {
 	ts := httptest.NewServer(responseHandler)
 	client := NewCiosClient(
 		CiosClientConfig{
-			Urls: model.CIOSUrl{ContractUrl: ts.URL},
+			Urls: sdkmodel.CIOSUrl{ContractUrl: ts.URL},
 		},
 	)
 	defer ts.Close()
@@ -102,7 +102,7 @@ func TestContract_GetContractsAll(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{ContractUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{ContractUrl: ts.URL}})
 
 	responses, _, _ := client.Contract.GetContractsAll(MakeGetContractsOpts().Limit(999), context.Background())
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
@@ -146,7 +146,7 @@ func TestContract_GetContractsUnlimited(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{ContractUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{ContractUrl: ts.URL}})
 
 	responses, _, _ := client.Contract.GetContractsUnlimited(MakeGetContractsOpts().Limit(1), context.Background())
 	if len(responses) != 3500 {

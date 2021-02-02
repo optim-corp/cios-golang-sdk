@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
 func TestPubSub_GetLicenses(t *testing.T) {
@@ -20,6 +20,6 @@ func TestPubSub_GetLicenses(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{LicenseUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{LicenseUrl: ts.URL}})
 	client.License.GetLicenses(MakeGetLicensesOpts(), context.Background())
 }

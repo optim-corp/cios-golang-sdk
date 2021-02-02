@@ -11,7 +11,7 @@ import (
 
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
 func TestDeviceManagement_GetMonitoringLatestList(t *testing.T) {
@@ -31,7 +31,7 @@ func TestDeviceManagement_GetMonitoringLatestList(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 
 	client.DeviceManagement.GetMonitoringLatestList([]string{"1", "2", "3"}, context.Background())
 }
@@ -47,7 +47,7 @@ func TestDeviceManagement_GetMonitoring(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 
 	client.DeviceManagement.GetMonitoring("id", context.Background())
 }

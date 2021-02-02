@@ -11,7 +11,6 @@ import (
 	"github.com/dgrijalva/jwt-go"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
-	"github.com/optim-corp/cios-golang-sdk/model"
 )
 
 var (
@@ -37,21 +36,21 @@ type (
 		Auth                  *Auth
 		License               *License
 		Contract              *Contract
-		authType              model.AuthType
+		authType              sdksdkmodel.AuthType
 		tokenExp              int64
 	}
 	CiosClientConfig struct {
 		AutoRefresh bool
 		Debug       bool
-		Urls        model.CIOSUrl
+		Urls        sdksdkmodel.CIOSUrl
 		AuthConfig  *AuthConfig
 	}
 	AuthConfig struct {
-		model.ClientID
-		model.ClientSecret
-		model.RefreshToken
-		model.Assertion
-		model.Scope
+		sdksdkmodel.ClientID
+		sdksdkmodel.ClientSecret
+		sdksdkmodel.RefreshToken
+		sdksdkmodel.Assertion
+		sdksdkmodel.Scope
 		_type string
 	}
 )
@@ -61,7 +60,7 @@ func ClientAuthConf(clientId, clientSecret, scope string) *AuthConfig {
 		ClientID:     clientId,
 		ClientSecret: clientSecret,
 		Scope:        scope,
-		_type:        model.CLIENT_TYPE,
+		_type:        sdksdkmodel.CLIENT_TYPE,
 	}
 }
 func RefreshTokenAuth(clientId, clientSecret, refreshToken, scope string) *AuthConfig {
@@ -70,7 +69,7 @@ func RefreshTokenAuth(clientId, clientSecret, refreshToken, scope string) *AuthC
 		ClientSecret: clientSecret,
 		RefreshToken: refreshToken,
 		Scope:        scope,
-		_type:        model.REFRESH_TYPE,
+		_type:        sdksdkmodel.REFRESH_TYPE,
 	}
 }
 func DeviceAuthConf(clientId, clientSecret, assertion, scope string) *AuthConfig {
@@ -79,12 +78,12 @@ func DeviceAuthConf(clientId, clientSecret, assertion, scope string) *AuthConfig
 		ClientSecret: clientSecret,
 		Assertion:    assertion,
 		Scope:        scope,
-		_type:        model.DEVICE_TYPE,
+		_type:        sdksdkmodel.DEVICE_TYPE,
 	}
 }
 func NewCiosClient(config CiosClientConfig) *CiosClient {
 	instance := new(CiosClient)
-	instance.authType = model.NONE_TYPE
+	instance.authType = sdksdkmodel.NONE_TYPE
 
 	// Instance
 	instance.Contract = &Contract{ApiClient: createClient(config.Urls.ContractUrl), Url: config.Urls.ContractUrl}
@@ -111,19 +110,19 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 		if config.AutoRefresh {
 			if instance.tokenExp == 0 || instance.tokenExp-60 <= time.Now().Unix() {
 				switch instance.authType {
-				case model.CLIENT_TYPE:
+				case sdksdkmodel.CLIENT_TYPE:
 					token, _, _, _, err := instance.Auth.GetAccessTokenOnClient()
 					if err != nil {
 						return err
 					}
 					instance._accessToken(token)
-				case model.REFRESH_TYPE:
+				case sdksdkmodel.REFRESH_TYPE:
 					token, _, _, _, err := instance.Auth.GetAccessTokenByRefreshToken()
 					if err != nil {
 						return err
 					}
 					instance._accessToken(token)
-				case model.DEVICE_TYPE:
+				case sdksdkmodel.DEVICE_TYPE:
 					token, _, _, _, err := instance.Auth.GetAccessTokenOnDevice()
 					if err != nil {
 						return err
@@ -183,7 +182,7 @@ func (self *CiosClient) RequestScope(scope string) *CiosClient {
 	return self
 }
 
-func MakeRequestCtx(token string) model.RequestCtx {
+func MakeRequestCtx(token string) sdksdkmodel.RequestCtx {
 	if token == "" {
 		return context.Background()
 	}

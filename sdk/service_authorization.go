@@ -10,10 +10,10 @@ import (
 
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
-func (self Auth) GetAccessTokenByRefreshToken() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
+func (self Auth) GetAccessTokenByRefreshToken() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
 	if self.debug {
 		log.Printf("%s", "Refresh AccessToken.")
 	}
@@ -32,7 +32,7 @@ func (self Auth) GetAccessTokenByRefreshToken() (model.AccessToken, model.Scope,
 
 }
 
-func (self Auth) GetAccessTokenOnClient() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
+func (self Auth) GetAccessTokenOnClient() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
 	responseData := struct {
 		AccessToken string `json:"access_token"`
 		TokenType   string `json:"token_type"`
@@ -63,7 +63,7 @@ func (self Auth) GetAccessTokenOnClient() (model.AccessToken, model.Scope, model
 	return responseData.AccessToken, responseData.Scope, responseData.TokenType, responseData.ExpiresIn, nil
 }
 
-func (self Auth) GetAccessTokenOnDevice() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
+func (self Auth) GetAccessTokenOnDevice() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
 	responseBody := struct {
 		AccessToken string `json:"access_token"`
 		TokenType   string `json:"token_type"`

@@ -6,7 +6,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
 func TestFileStorage_DownloadFile(t *testing.T) {
@@ -20,7 +20,7 @@ func TestFileStorage_DownloadFile(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 	client.FileStorage.DownloadFile("bucketid", "node", context.Background())
 }
 
@@ -35,7 +35,7 @@ func TestFileStorage_DownloadFileByKey(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 	client.FileStorage.DownloadFileByKey("bucketid", "node", context.Background())
 }
 func TestFileStorage_UploadFile(t *testing.T) {
@@ -55,7 +55,7 @@ func TestFileStorage_UploadFile(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{StorageUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 	client.FileStorage.UploadFile("bucketid", []byte("node"),
 		MakeUploadFileOpts().Key("").NodeId(""), context.Background())
 	if nodeId != "" || key != "" {

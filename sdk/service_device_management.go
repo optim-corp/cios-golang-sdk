@@ -9,14 +9,14 @@ import (
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
 func MakeGetDevicesOpts() cios.ApiGetDevicesRequest {
 	return cios.ApiGetDevicesRequest{}
 }
 
-func (self DeviceManagement) GetDevices(params cios.ApiGetDevicesRequest, ctx model.RequestCtx) (response cios.MultipleDevice, httpResponse *_nethttp.Response, err error) {
+func (self DeviceManagement) GetDevices(params cios.ApiGetDevicesRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleDevice, httpResponse *_nethttp.Response, err error) {
 	if err := self.refresh(); err != nil {
 		return cios.MultipleDevice{}, nil, err
 	}
@@ -33,7 +33,7 @@ func (self DeviceManagement) GetDevices(params cios.ApiGetDevicesRequest, ctx mo
 	params.P_lang = util.ToNil(params.P_lang)
 	return params.Execute()
 }
-func (self DeviceManagement) GetDevicesAll(params cios.ApiGetDevicesRequest, ctx model.RequestCtx) ([]cios.Device, *_nethttp.Response, error) {
+func (self DeviceManagement) GetDevicesAll(params cios.ApiGetDevicesRequest, ctx sdkmodel.RequestCtx) ([]cios.Device, *_nethttp.Response, error) {
 	var (
 		result       []cios.Device
 		httpResponse *_nethttp.Response
@@ -74,11 +74,11 @@ func (self DeviceManagement) GetDevicesAll(params cios.ApiGetDevicesRequest, ctx
 	}
 	return result, httpResponse, err
 }
-func (self DeviceManagement) GetDevicesUnlimited(params cios.ApiGetDevicesRequest, ctx model.RequestCtx) ([]cios.Device, *_nethttp.Response, error) {
+func (self DeviceManagement) GetDevicesUnlimited(params cios.ApiGetDevicesRequest, ctx sdkmodel.RequestCtx) ([]cios.Device, *_nethttp.Response, error) {
 	params.P_limit = nil
 	return self.GetDevicesAll(params, ctx)
 }
-func (self DeviceManagement) GetDevice(deviceID string, lang *string, isDev *bool, ctx model.RequestCtx) (cios.Device, *_nethttp.Response, error) {
+func (self DeviceManagement) GetDevice(deviceID string, lang *string, isDev *bool, ctx sdkmodel.RequestCtx) (cios.Device, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Device{}, nil, err
 	}
@@ -95,19 +95,19 @@ func (self DeviceManagement) GetDevice(deviceID string, lang *string, isDev *boo
 	}
 	return response.Device, httpResponse, err
 }
-func (self DeviceManagement) GetDeviceInventory(deviceID string, ctx model.RequestCtx) (map[string]interface{}, *_nethttp.Response, error) {
+func (self DeviceManagement) GetDeviceInventory(deviceID string, ctx sdkmodel.RequestCtx) (map[string]interface{}, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, nil, err
 	}
 	return self.ApiClient.DeviceApi.GetDeviceInventoryLatest(ctx, deviceID).Execute()
 }
-func (self DeviceManagement) DeleteDevice(id string, ctx model.RequestCtx) (*_nethttp.Response, error) {
+func (self DeviceManagement) DeleteDevice(id string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
 	return self.ApiClient.DeviceApi.DeleteDevice(ctx, id).Execute()
 }
-func (self DeviceManagement) CreateDevice(body cios.DeviceInfo, ctx model.RequestCtx) (cios.Device, *_nethttp.Response, error) {
+func (self DeviceManagement) CreateDevice(body cios.DeviceInfo, ctx sdkmodel.RequestCtx) (cios.Device, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Device{}, nil, err
 	}
@@ -117,7 +117,7 @@ func (self DeviceManagement) CreateDevice(body cios.DeviceInfo, ctx model.Reques
 	}
 	return response.Device, httpResponse, err
 }
-func (self DeviceManagement) UpdateDevice(deviceId string, body cios.DeviceUpdateRequest, ctx model.RequestCtx) (cios.Device, *_nethttp.Response, error) {
+func (self DeviceManagement) UpdateDevice(deviceId string, body cios.DeviceUpdateRequest, ctx sdkmodel.RequestCtx) (cios.Device, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Device{}, nil, err
 	}

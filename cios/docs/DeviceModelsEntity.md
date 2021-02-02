@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Id** | **string** |  | 
 **Key** | **string** |  | 
 **DeviceId** | **string** |  | 
-**Model** | [**DeviceModelsEntityModel**](DeviceModelsEntity_model.md) |  | 
+**Model** | [**DeviceModelsEntityModel**](DeviceModelsEntity_sdkmodel.md) |  | 
 **SerialNumber** | Pointer to **string** |  | [optional] 
 **StartAt** | Pointer to **NullableString** | ナノ秒 | [optional] 
 **CustomInventory** | Pointer to **[]map[string]interface{}** |  | [optional] 

@@ -8,8 +8,7 @@ import (
 	"testing"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
-
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
 func TestAccount_GetMe(t *testing.T) {
@@ -26,7 +25,7 @@ func TestAccount_GetMe(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{AccountsUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 	responseB, response, err := client.Account.GetMe(context.Background())
 	if responseB.Id != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(responseB)

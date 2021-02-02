@@ -14,8 +14,7 @@ import (
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
-
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
 func TestDeviceManagement_GetDevices(t *testing.T) {
@@ -100,7 +99,7 @@ func TestDeviceManagement_GetDevices(t *testing.T) {
 	ts := httptest.NewServer(responseHandler)
 	client := NewCiosClient(
 		CiosClientConfig{
-			Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL},
+			Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL},
 		},
 	)
 	defer ts.Close()
@@ -114,7 +113,7 @@ func TestDeviceManagement_GetDevices(t *testing.T) {
 	//// Auto Refresh Test
 	//client = NewCiosClient(
 	//	CiosClientConfig{
-	//		Urls:        model.CIOSUrl{DeviceManagementUrl: ts.URL},
+	//		Urls:        sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL},
 	//		AutoRefresh: true,
 	//	},
 	//)
@@ -125,7 +124,7 @@ func TestDeviceManagement_GetDevices(t *testing.T) {
 	//ts = httptest.NewServer(responseHandler)
 	//
 	//result := "Failed"
-	//refFunc := func() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
+	//refFunc := func() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
 	//	result = "Accept"
 	//	return "", "", "", 0, nil
 	//}
@@ -153,7 +152,7 @@ func TestDeviceManagement_GetDevicesAll(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 
 	responses, _, _ := client.DeviceManagement.GetDevicesAll(MakeGetDevicesOpts().Limit(999), context.Background())
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
@@ -197,7 +196,7 @@ func TestDeviceManagement_GetDevicesUnlimited(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 
 	responses, _, _ := client.DeviceManagement.GetDevicesUnlimited(MakeGetDevicesOpts().Limit(1), context.Background())
 	if len(responses) != 3500 {
@@ -218,7 +217,7 @@ func TestDeviceManagement_GetDevice(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 	body, response, err := client.DeviceManagement.GetDevice("test", nil, nil, context.Background())
 	if body.Id != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(body)
@@ -243,7 +242,7 @@ func TestDeviceManagement_CreateDevice(t *testing.T) {
 
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 	client.DeviceManagement.CreateDevice(cios.DeviceInfo{
 		Name:            convert.StringPtr("name"),
 		ResourceOwnerId: "resource_owner_id",
@@ -261,7 +260,7 @@ func TestDeviceManagement_DeleteDevice(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 	client.DeviceManagement.DeleteDevice("device_id", context.Background())
 }
 func TestDeviceManagement_UpdateDevice(t *testing.T) {
@@ -283,7 +282,7 @@ func TestDeviceManagement_UpdateDevice(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 	client.DeviceManagement.UpdateDevice("responseid", cios.DeviceUpdateRequest{
 		Name:         convert.StringPtr("name"),
 		IdNumber:     convert.StringPtr("1234"),

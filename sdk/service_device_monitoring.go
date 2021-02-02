@@ -4,10 +4,10 @@ import (
 	_nethttp "net/http"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
-func (self DeviceManagement) GetMonitoringLatestList(deviceIDs []string, ctx model.RequestCtx) ([]cios.DeviceMonitoring, *_nethttp.Response, error) {
+func (self DeviceManagement) GetMonitoringLatestList(deviceIDs []string, ctx sdkmodel.RequestCtx) ([]cios.DeviceMonitoring, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return []cios.DeviceMonitoring{}, nil, err
 	}
@@ -17,7 +17,7 @@ func (self DeviceManagement) GetMonitoringLatestList(deviceIDs []string, ctx mod
 	}
 	return response.Monitorings, httpResponse, err
 }
-func (self DeviceManagement) GetMonitoring(deviceID string, ctx model.RequestCtx) (cios.DeviceMonitoring, *_nethttp.Response, error) {
+func (self DeviceManagement) GetMonitoring(deviceID string, ctx sdkmodel.RequestCtx) (cios.DeviceMonitoring, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.DeviceMonitoring{}, nil, err
 	}

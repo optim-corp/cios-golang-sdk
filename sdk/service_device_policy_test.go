@@ -15,7 +15,7 @@ import (
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
 func TestDeviceManagement_GetPolicies(t *testing.T) {
@@ -99,7 +99,7 @@ func TestDeviceManagement_GetPolicies(t *testing.T) {
 	ts := httptest.NewServer(responseHandler)
 	client := NewCiosClient(
 		CiosClientConfig{
-			Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL},
+			Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL},
 		},
 	)
 	defer ts.Close()
@@ -113,7 +113,7 @@ func TestDeviceManagement_GetPolicies(t *testing.T) {
 	//// Auto Refresh Test
 	//client = NewCiosClient(
 	//	CiosClientConfig{
-	//		Urls:        model.CIOSUrl{DeviceManagementUrl: ts.URL},
+	//		Urls:        sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL},
 	//		AutoRefresh: true,
 	//	},
 	//)
@@ -124,7 +124,7 @@ func TestDeviceManagement_GetPolicies(t *testing.T) {
 	//ts = httptest.NewServer(responseHandler)
 	//
 	//result := "Failed"
-	//refFunc := func() (model.AccessToken, model.Scope, model.TokenType, model.ExpiresIn, error) {
+	//refFunc := func() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
 	//	result = "Accept"
 	//	return "", "", "", 0, nil
 	//}
@@ -152,7 +152,7 @@ func TestDeviceManagement_GetPoliciesAll(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 
 	responses, _, _ := client.DeviceManagement.GetPoliciesAll(MakeGetPoliciesOpts().Limit(999), context.Background())
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
@@ -196,7 +196,7 @@ func TestDeviceManagement_GetPoliciesUnlimited(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 
 	responses, _, _ := client.DeviceManagement.GetPoliciesUnlimited(MakeGetPoliciesOpts().Limit(1), context.Background())
 	if len(responses) != 3500 {
@@ -215,7 +215,7 @@ func TestDeviceManagement_DeletePolicy(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 	client.DeviceManagement.DeletePolicy("id", context.Background())
 }
 
@@ -236,6 +236,6 @@ func TestDeviceManagement_CreatePolicy(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{DeviceManagementUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 	client.DeviceManagement.CreatePolicy("resource_owner_id", context.Background())
 }

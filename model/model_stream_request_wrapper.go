@@ -1,4 +1,4 @@
-package model
+package sdkmodel
 
 import (
 	"github.com/optim-corp/cios-golang-sdk/util"
@@ -17,8 +17,8 @@ type ApiGetStreamRequest struct {
 	TimestampParam              *string
 	TimestampRangeParam         *string
 	LabelParam                  *string
-	OffsetParam                    *int64
-	LimitParam                     *int64
+	OffsetParam                 *int64
+	LimitParam                  *int64
 	TimeoutParam                *int
 	SessionIdParam              *string
 	ChannelProtocolIdParam      *string

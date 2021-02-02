@@ -16,7 +16,7 @@ import (
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 
-	"github.com/optim-corp/cios-golang-sdk/model"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
 //　https://auth0.com/docs/tokens/access-tokens/use-access-tokens
@@ -41,7 +41,7 @@ func Test_RefreshGroup(t *testing.T) {
 	ts := httptest.NewServer(handler)
 	client := NewCiosClient(CiosClientConfig{
 		AutoRefresh: true,
-		Urls:        model.CIOSUrl{AccountsUrl: ts.URL, AuthUrl: ts.URL},
+		Urls:        sdkmodel.CIOSUrl{AccountsUrl: ts.URL, AuthUrl: ts.URL},
 		AuthConfig: RefreshTokenAuth(
 			"clientID",
 			"clientSecret",
@@ -83,7 +83,7 @@ func Test_RefreshGroup(t *testing.T) {
 	_token = ""
 	client = NewCiosClient(CiosClientConfig{
 		AutoRefresh: true,
-		Urls:        model.CIOSUrl{AccountsUrl: ts.URL, AuthUrl: ts.URL},
+		Urls:        sdkmodel.CIOSUrl{AccountsUrl: ts.URL, AuthUrl: ts.URL},
 		AuthConfig: RefreshTokenAuth(
 			"clientID",
 			"clientSecret",
@@ -180,7 +180,7 @@ func TestAccount_Groups(t *testing.T) {
 	})
 	ts := httptest.NewServer(responseHandler)
 
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{AccountsUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 
 	defer ts.Close()
 	for _, test := range tests {
@@ -207,7 +207,7 @@ func TestAccount_GetGroupsAll(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{AccountsUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 
 	responses, _, _ := client.Account.GetGroupsAll(MakeGetGroupsOpts().Limit(999), context.Background())
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
@@ -251,7 +251,7 @@ func TestAccount_GetGroupsUnlimited(t *testing.T) {
 		json.NewEncoder(w).Encode(response)
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{AccountsUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 
 	response, _, _ := client.Account.GetGroupsUnlimited(MakeGetGroupsOpts().Limit(1), context.Background())
 	if len(response) != 3500 {
@@ -274,7 +274,7 @@ func TestAccount_GetGroup(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{AccountsUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 	responseB, response, err := client.Account.GetGroup("test", nil, context.Background())
 	if responseB.Id != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(responseB)
@@ -301,7 +301,7 @@ func TestAccount_CreateGroup(t *testing.T) {
 
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{AccountsUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 	client.Account.CreateGroup(cios.GroupCreateRequest{
 		ParentGroupId: convert.StringPtr("parent"),
 		Name:          "name",
@@ -320,7 +320,7 @@ func TestAccount_DeleteGroup(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{AccountsUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 	client.Account.DeleteGroup("id", context.Background())
 }
 func TestAccount_UpdateGroup(t *testing.T) {
@@ -334,7 +334,7 @@ func TestAccount_UpdateGroup(t *testing.T) {
 		}
 	}))
 	defer ts.Close()
-	client := NewCiosClient(CiosClientConfig{Urls: model.CIOSUrl{AccountsUrl: ts.URL}})
+	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 	client.Account.UpdateGroup("id", cios.GroupUpdateRequest{
 		Name: convert.StringPtr("name"),
 	}, context.Background())

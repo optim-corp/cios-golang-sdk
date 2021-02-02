@@ -10,6 +10,7 @@ import (
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-kazuhiro-seida/go-advance-type/check"
 
 	_nethttp "net/http"
@@ -17,7 +18,6 @@ import (
 	"strings"
 
 	"github.com/gorilla/websocket"
-	"github.com/optim-corp/cios-golang-sdk/model"
 )
 
 type (
@@ -26,11 +26,11 @@ type (
 		SubscribeFunc *func(body []byte) (bool, error)
 		PublishStr    *chan *string
 		Setting       *func(*websocket.Conn)
-		Context       model.RequestCtx
+		Context       sdkmodel.RequestCtx
 	}
 )
 
-func (self PubSub) PublishMessage(id string, body interface{}, packerFormat *string, ctx model.RequestCtx) (*_nethttp.Response, error) {
+func (self PubSub) PublishMessage(id string, body interface{}, packerFormat *string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
@@ -38,10 +38,10 @@ func (self PubSub) PublishMessage(id string, body interface{}, packerFormat *str
 	request.P_packerFormat = packerFormat
 	return request.Execute()
 }
-func (self PubSub) PublishMessagePackerOnly(id string, body interface{}, ctx model.RequestCtx) (*_nethttp.Response, error) {
+func (self PubSub) PublishMessagePackerOnly(id string, body interface{}, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	return self.PublishMessage(id, &body, nil, ctx)
 }
-func (self PubSub) PublishMessageJSON(id string, body cios.PackerFormatJson, ctx model.RequestCtx) (*_nethttp.Response, error) {
+func (self PubSub) PublishMessageJSON(id string, body cios.PackerFormatJson, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	return self.PublishMessage(id, &body, convert.StringPtr("json"), ctx)
 }
 
