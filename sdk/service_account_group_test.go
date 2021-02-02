@@ -102,9 +102,12 @@ func Test_RefreshGroup(t *testing.T) {
 			"scope",
 		),
 	})
+
+	// リクエストごとのトークンを識別しているかテスト
 	wg := sync.WaitGroup{}
-	wg.Add(50)
-	for i := 0; i < 50; i++ {
+	asyncTestNumber := 100 //　非同期にリクエストする回数
+	wg.Add(asyncTestNumber)
+	for i := 0; i < asyncTestNumber; i++ {
 		go func(i int) {
 			time.Sleep(time.Microsecond * time.Duration(rand.Int63n(100)))
 			response, _, _ := client.Account.GetGroups(MakeGetGroupsOpts().Name("async "+convert.MustStr(i)), MakeRequestCtx(convert.MustStr(i)))
