@@ -25,7 +25,7 @@ go get -u github.com/optim-corp/cios-golang-sdk
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     Debug:             true,
     AutoRefresh:       true,
-    Urls:              sdksdkmodel.ProdUrls(),
+    Urls:              sdkmodel.ProdUrls(),
 })
 ```
 
@@ -35,7 +35,7 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     Debug:             true,
     AutoRefresh:       true,
-    Urls:              sdksdkmodel.PreUrls(),
+    Urls:              sdkmodel.PreUrls(),
 })
 ```
 
