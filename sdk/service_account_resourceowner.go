@@ -3,6 +3,8 @@ package ciossdk
 import (
 	_nethttp "net/http"
 
+	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-corp/cios-golang-sdk/util"
 
@@ -34,17 +36,14 @@ func (self *Account) GetResourceOwnersAll(params cios.ApiGetResourceOwnersReques
 		err         error
 		_limit      = int64(1000)
 		offset      = int64(0)
-		getFunction = func(offset *int64) (cios.MultipleResourceOwner, *_nethttp.Response, error) {
-			limit := xmath.MinInt64(_limit, 1000)
-			params.P_limit = &limit
-			params.P_offset = offset
-			return self.GetResourceOwners(params, ctx)
+		getFunction = func(offset int64) (cios.MultipleResourceOwner, *_nethttp.Response, error) {
+			return self.GetResourceOwners(params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+convert.MustInt64(params.P_offset)), ctx)
 		}
 	)
 	if params.P_limit != nil {
 		_limit = *params.P_limit
 		for {
-			response, httpResponse, err := getFunction(&offset)
+			response, httpResponse, err := getFunction(offset)
 			if err != nil {
 				return []cios.ResourceOwner{}, httpResponse, err
 			}
@@ -56,13 +55,13 @@ func (self *Account) GetResourceOwnersAll(params cios.ApiGetResourceOwnersReques
 			}
 		}
 	} else {
-		response, httpResponse, err := getFunction(&offset)
+		response, httpResponse, err := getFunction(offset)
 		if err != nil {
 			return []cios.ResourceOwner{}, httpResponse, err
 		}
 		result = append(result, response.ResourceOwners...)
-		for offset = int64(1000); offset < response.Total; offset += 1000 {
-			response, httpResponse, err := getFunction(&offset)
+		for offset = int64(1000); offset+convert.MustInt64(params.P_offset) < response.Total; offset += 1000 {
+			response, httpResponse, err := getFunction(offset)
 			if err != nil {
 				return []cios.ResourceOwner{}, httpResponse, err
 			}

@@ -169,7 +169,7 @@ func (self *CiosClient) _accessToken(accessToken string) *CiosClient {
 		}
 	}
 	bearerToken := ParseAccessToken(accessToken)
-	self.PubSub.token = accessToken
+	self.PubSub.token = &accessToken
 	self.Auth.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
 	self.PubSub.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
 	self.DeviceManagement.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)

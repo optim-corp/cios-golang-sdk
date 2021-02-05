@@ -77,19 +77,14 @@ func (self *PubSub) GetObjectsAll(channelID string, params cios.ApiGetDataStoreO
 		err         error
 		offset      = int64(0)
 		_limit      = int64(1000)
-		getFunction = func(offset *int64) (cios.MultipleDataStoreObject, *_nethttp.Response, error) {
-			if offset != nil {
-				params.P_offset = offset
-			}
-			tlimit := xmath.MinInt64(_limit, 1000)
-			params.P_limit = &tlimit
-			return self.GetObjects(channelID, params, ctx)
+		getFunction = func(offset int64) (cios.MultipleDataStoreObject, *_nethttp.Response, error) {
+			return self.GetObjects(channelID, params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+convert.MustInt64(params.P_offset)), ctx)
 		}
 	)
 	if params.P_limit != nil {
 		_limit = *params.P_limit
 		for {
-			res, httpRes, err := getFunction(&offset)
+			res, httpRes, err := getFunction(offset)
 			if err != nil {
 				return nil, httpRes, err
 			}
@@ -101,13 +96,13 @@ func (self *PubSub) GetObjectsAll(channelID string, params cios.ApiGetDataStoreO
 			}
 		}
 	} else {
-		res, httpRes, err := getFunction(&offset)
+		res, httpRes, err := getFunction(offset)
 		if err != nil {
 			return nil, httpRes, err
 		}
 		result = append(result, res.Objects...)
-		for offset = int64(1000); offset < res.Total; offset += 1000 {
-			res, httpRes, err = getFunction(&offset)
+		for offset = int64(1000); offset+convert.MustInt64(params.P_offset) < res.Total; offset += 1000 {
+			res, httpRes, err = getFunction(offset)
 			if err != nil {
 				return nil, httpRes, err
 			}
@@ -182,14 +177,17 @@ func (self *PubSub) MapMultiObjectLatestPayloadByChannels(channels []cios.Channe
 }
 func (self *PubSub) subscribeCiosWebSocket(_url string, beforeFunc *func(*websocket.Conn), logic func(body []byte) (bool, error), ctx sdkmodel.RequestCtx) error {
 	if ctx != nil {
-		self.token, _ = ctx.Value(cios.ContextAccessToken).(string)
+		_token, ok := ctx.Value(cios.ContextAccessToken).(string)
+		if ok {
+			self.token = &_token
+		}
 	}
-	if self.token == "" {
+	if str(self.token) == "" {
 		if err := self.refresh(); err != nil {
 			return err
 		}
 	}
-	connection, err := self.CreateCIOSWebsocketConnection(_url, ParseAccessToken(self.token))
+	connection, err := self.CreateCIOSWebsocketConnection(_url, ParseAccessToken(str(self.token)))
 	if err != nil {
 		return err
 	}
@@ -207,7 +205,7 @@ func (self *PubSub) subscribeCiosWebSocket(_url string, beforeFunc *func(*websoc
 				return _err
 			}
 			connection.Close()
-			if connection, err = self.CreateCIOSWebsocketConnection(_url, ParseAccessToken(self.token)); err != nil {
+			if connection, err = self.CreateCIOSWebsocketConnection(_url, ParseAccessToken(str(self.token))); err != nil {
 				return err
 			}
 		case messageType == websocket.CloseMessage:
@@ -284,13 +282,8 @@ func (self *PubSub) GetStreamAll(channelID string, params sdkmodel.ApiGetStreamR
 		err         error
 		offset      = int64(0)
 		_limit      = int64(1000)
-		getFunction = func(offset *int64) ([]string, error) {
-			if offset != nil {
-				params.OffsetParam = offset
-			}
-			tlimit := xmath.MinInt64(_limit, 1000)
-			params.LimitParam = &tlimit
-			return self.GetStream(channelID, params, ctx)
+		getFunction = func(offset int64) ([]string, error) {
+			return self.GetStream(channelID, params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+convert.MustInt64(params.OffsetParam)), ctx)
 		}
 	)
 	options := MakeGetObjectsOpts()
@@ -313,7 +306,7 @@ func (self *PubSub) GetStreamAll(channelID string, params sdkmodel.ApiGetStreamR
 	if params.LimitParam != nil {
 		_limit = *params.LimitParam
 		for {
-			res, err := getFunction(&offset)
+			res, err := getFunction(offset)
 			if err != nil {
 				return nil, err
 			}
@@ -325,13 +318,13 @@ func (self *PubSub) GetStreamAll(channelID string, params sdkmodel.ApiGetStreamR
 			}
 		}
 	} else {
-		res, err := getFunction(&offset)
+		res, err := getFunction(offset)
 		if err != nil {
 			return nil, err
 		}
 		result = append(result, res...)
-		for offset = int64(1000); offset < total; offset += 1000 {
-			res, err = getFunction(&offset)
+		for offset = int64(1000); offset+convert.MustInt64(params.OffsetParam) < total; offset += 1000 {
+			res, err = getFunction(offset)
 			if err != nil {
 				return nil, err
 			}

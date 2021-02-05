@@ -60,7 +60,7 @@ func (self *PubSub) ConnectWebSocket(channelID string, done chan bool, params Co
 	}
 	if _token == "" {
 		_ = self.refresh()
-		_token = self.token
+		_token = str(self.token)
 	}
 
 	var (
@@ -99,7 +99,7 @@ func (self *PubSub) ConnectWebSocket(channelID string, done chan bool, params Co
 		}
 		reconnection = func() error {
 			_ = self.refresh()
-			_connection, _err := self.CreateCIOSWebsocketConnection(wsUrl, ParseAccessToken(self.token))
+			_connection, _err := self.CreateCIOSWebsocketConnection(wsUrl, ParseAccessToken(str(self.token)))
 			closeConnection()
 			if _err != nil {
 				return _err

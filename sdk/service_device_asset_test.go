@@ -158,6 +158,13 @@ func TestDeviceAssetManagement_GetModelsAll(t *testing.T) {
 		offsets[3] != 3000 || limits[3] != 501 {
 		t.Fatal(len(responses), limits, offsets)
 	}
+	offsets = []int{}
+	limits = []int{}
+	responses, _, _ = client.DeviceAssetManagement.GetModelsAll(MakeGetModelsOpts().Limit(2001).Offset(20), context.Background())
+	if len(responses) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
+		t.Fatal(len(responses), limits, offsets)
+
+	}
 }
 
 func TestDeviceAssetManagement_GetModelsUnlimited(t *testing.T) {
@@ -379,6 +386,13 @@ func TestDeviceAssetManagement_GetEntitiesAll(t *testing.T) {
 		offsets[2] != 2000 || limits[2] != 1000 ||
 		offsets[3] != 3000 || limits[3] != 501 {
 		t.Fatal(len(responses), limits, offsets)
+	}
+	offsets = []int{}
+	limits = []int{}
+	responses, _, _ = client.DeviceAssetManagement.GetEntitiesAll(MakeGetEntitiesOpts().Limit(2001).Offset(20), context.Background())
+	if len(responses) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
+		t.Fatal(len(responses), limits, offsets)
+
 	}
 }
 
@@ -607,6 +621,13 @@ func TestDeviceAssetManagement_GetLifecyclesAll(t *testing.T) {
 		offsets[2] != 2000 || limits[2] != 1000 ||
 		offsets[3] != 3000 || limits[3] != 501 {
 		t.Fatal(len(responses), limits, offsets)
+	}
+	offsets = []int{}
+	limits = []int{}
+	responses, _, _ = client.DeviceAssetManagement.GetLifecyclesAll("key", MakeGetLifecyclesOpts().Limit(2001).Offset(20), context.Background())
+	if len(responses) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
+		t.Fatal(len(responses), limits, offsets)
+
 	}
 }
 
