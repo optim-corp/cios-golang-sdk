@@ -4,6 +4,8 @@ import (
 	"errors"
 	_nethttp "net/http"
 
+	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-corp/cios-golang-sdk/util"
 
@@ -45,19 +47,14 @@ func (self *Account) GetGroupsAll(params cios.ApiGetGroupsRequest, ctx sdkmodel.
 		err         error
 		offset      = int64(0)
 		_limit      = int64(1000)
-		getFunction = func(offset *int64) (cios.MultipleGroup, *_nethttp.Response, error) {
-			if offset != nil {
-				params.P_offset = offset
-			}
-			tlimit := xmath.MinInt64(_limit, 1000)
-			params.P_limit = &tlimit
-			return self.GetGroups(params, ctx)
+		getFunction = func(offset int64) (cios.MultipleGroup, *_nethttp.Response, error) {
+			return self.GetGroups(params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+convert.MustInt64(params.P_offset)), ctx)
 		}
 	)
 	if params.P_limit != nil {
 		_limit = *params.P_limit
 		for {
-			res, httpRes, err := getFunction(&offset)
+			res, httpRes, err := getFunction(offset)
 			if err != nil {
 				return nil, httpRes, err
 			}
@@ -69,13 +66,13 @@ func (self *Account) GetGroupsAll(params cios.ApiGetGroupsRequest, ctx sdkmodel.
 			}
 		}
 	} else {
-		res, httpRes, err := getFunction(&offset)
+		res, httpRes, err := getFunction(offset)
 		if err != nil {
 			return nil, httpRes, err
 		}
 		result = append(result, res.Groups...)
-		for offset = int64(1000); offset < res.Total; offset += 1000 {
-			res, httpRes, err = getFunction(&offset)
+		for offset = int64(1000); offset+convert.MustInt64(params.P_offset) < res.Total; offset += 1000 {
+			res, httpRes, err = getFunction(offset)
 			if err != nil {
 				return nil, httpRes, err
 			}

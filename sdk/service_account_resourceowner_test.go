@@ -141,6 +141,14 @@ func TestResourceOwner_GetResourceOwnersAll(t *testing.T) {
 		offsets[3] != 3000 || limits[3] != 501 {
 		t.Fatal(len(responses), limits, offsets)
 	}
+
+	offsets = []int{}
+	limits = []int{}
+	responses, _, _ = client.Account.GetResourceOwnersAll(MakeGetResourceOwnersOpts().Limit(2001).Offset(20), context.Background())
+	if len(responses) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
+		t.Fatal(len(responses), limits, offsets)
+
+	}
 }
 
 func TestResourceOwner_GetResourceOwnersUnlimited(t *testing.T) {

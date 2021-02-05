@@ -110,30 +110,6 @@ func TestDeviceManagement_GetPolicies(t *testing.T) {
 
 	ts.Close()
 
-	//// Auto Refresh Test
-	//client = NewCiosClient(
-	//	CiosClientConfig{
-	//		Urls:        sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL},
-	//		AutoRefresh: true,
-	//	},
-	//)
-	//responseHandler = func(w http.ResponseWriter, r *http.Request) {
-	//	w.Header().Set("Content-Type", "application/json")
-	//	w.WriteHeader(404)
-	//}
-	//ts = httptest.NewServer(responseHandler)
-	//
-	//result := "Failed"
-	//refFunc := func() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
-	//	result = "Accept"
-	//	return "", "", "", 0, nil
-	//}
-	//client.DeviceManagement.refresh = &refFunc
-	//if result == "Failed" {
-	//	t.Fatal("Cant Refresh", result)
-	//}
-	////　念のためクローズ
-	//ts.Close()
 }
 
 func TestDeviceManagement_GetPoliciesAll(t *testing.T) {
@@ -181,6 +157,13 @@ func TestDeviceManagement_GetPoliciesAll(t *testing.T) {
 		offsets[2] != 2000 || limits[2] != 1000 ||
 		offsets[3] != 3000 || limits[3] != 501 {
 		t.Fatal(len(responses), limits, offsets)
+	}
+	offsets = []int{}
+	limits = []int{}
+	responses, _, _ = client.DeviceManagement.GetPoliciesAll(MakeGetPoliciesOpts().Limit(2001).Offset(20), context.Background())
+	if len(responses) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
+		t.Fatal(len(responses), limits, offsets)
+
 	}
 }
 

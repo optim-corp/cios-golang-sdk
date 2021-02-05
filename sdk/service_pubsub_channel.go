@@ -4,6 +4,8 @@ import (
 	"fmt"
 	_nethttp "net/http"
 
+	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-corp/cios-golang-sdk/util"
 
@@ -43,7 +45,7 @@ func (self *PubSub) GetChannelsAll(params cios.ApiGetChannelsRequest, ctx sdkmod
 		offset      = int64(0)
 		_limit      = int64(1000)
 		getFunction = func(offset int64) (cios.MultipleChannel, *_nethttp.Response, error) {
-			return self.GetChannels(params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset), ctx)
+			return self.GetChannels(params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+convert.MustInt64(params.P_offset)), ctx)
 		}
 	)
 	if params.P_limit != nil {
@@ -66,7 +68,7 @@ func (self *PubSub) GetChannelsAll(params cios.ApiGetChannelsRequest, ctx sdkmod
 			return nil, httpRes, err
 		}
 		result = append(result, res.Channels...)
-		for offset = int64(1000); offset < res.Total; offset += 1000 {
+		for offset = int64(1000); offset+convert.MustInt64(params.P_offset) < res.Total; offset += 1000 {
 			res, httpRes, err = getFunction(offset)
 			if err != nil {
 				return nil, httpRes, err

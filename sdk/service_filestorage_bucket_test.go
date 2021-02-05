@@ -191,31 +191,6 @@ func TestFileStorage_GetBuckets(t *testing.T) {
 	}
 
 	ts.Close()
-
-	//// Auto Refresh Test
-	//client = NewCiosClient(
-	//	CiosClientConfig{
-	//		Urls:        sdkmodel.CIOSUrl{StorageUrl: ts.URL},
-	//		AutoRefresh: true,
-	//	},
-	//)
-	//bucketHandler = func(w http.ResponseWriter, r *http.Request) {
-	//	w.Header().Set("Content-Type", "application/json")
-	//	w.WriteHeader(404)
-	//}
-	//ts = httptest.NewServer(bucketHandler)
-	//
-	//result := "Failed"
-	//refFunc := func() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
-	//	result = "Accept"
-	//	return "", "", "", 0, nil
-	//}
-	//client.FileStorage.refresh = &refFunc
-	//if result == "Failed" {
-	//	t.Fatal("Cant Refresh", result)
-	//}
-	////　念のためクローズ
-	//ts.Close()
 }
 
 func TestFileStorage_GetBucketsAll(t *testing.T) {
@@ -263,6 +238,13 @@ func TestFileStorage_GetBucketsAll(t *testing.T) {
 		offsets[2] != 2000 || limits[2] != 1000 ||
 		offsets[3] != 3000 || limits[3] != 501 {
 		t.Fatal(len(buckets), limits, offsets)
+	}
+	offsets = []int{}
+	limits = []int{}
+	buckets, _, _ = client.FileStorage.GetBucketsAll(MakeGetBucketsOpts().Limit(2001).Offset(20), context.Background())
+	if len(buckets) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
+		t.Fatal(len(buckets), limits, offsets)
+
 	}
 }
 

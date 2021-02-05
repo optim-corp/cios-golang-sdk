@@ -2,6 +2,7 @@ package ciossdk
 
 import (
 	"github.com/optim-corp/cios-golang-sdk/cios"
+	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 )
 
 type (
@@ -15,7 +16,7 @@ type (
 		Url       string
 		refresh   func() error
 		debug     bool
-		token     string
+		token     *string
 	}
 	Auth struct {
 		ApiClient    *cios.APIClient
@@ -34,4 +35,8 @@ type (
 	Geography             _instance
 	License               _instance
 	Account               _instance
+)
+
+var (
+	str = convert.MustStr
 )

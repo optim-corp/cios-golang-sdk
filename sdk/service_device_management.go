@@ -3,6 +3,8 @@ package ciossdk
 import (
 	_nethttp "net/http"
 
+	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+
 	"github.com/optim-corp/cios-golang-sdk/util"
 
 	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
@@ -41,7 +43,7 @@ func (self DeviceManagement) GetDevicesAll(params cios.ApiGetDevicesRequest, ctx
 		_limit       = int64(1000)
 		offset       = int64(0)
 		getFunction  = func(offset int64) (cios.MultipleDevice, *_nethttp.Response, error) {
-			return self.GetDevices(params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset), ctx)
+			return self.GetDevices(params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+convert.MustInt64(params.P_offset)), ctx)
 		}
 	)
 	if params.P_limit != nil {
@@ -64,7 +66,7 @@ func (self DeviceManagement) GetDevicesAll(params cios.ApiGetDevicesRequest, ctx
 			return nil, httpRes, err
 		}
 		result = append(result, res.Devices...)
-		for offset = int64(1000); offset < res.Total; offset += 1000 {
+		for offset = int64(1000); offset+convert.MustInt64(params.P_offset) < res.Total; offset += 1000 {
 			res, httpRes, err = getFunction(offset)
 			if err != nil {
 				return nil, httpRes, err
