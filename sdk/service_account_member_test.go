@@ -30,5 +30,8 @@ func TestAccount_InviteGroup(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
-	client.Account.InviteGroup("id", "email@temp.com", context.Background())
+	_, _, err := client.Account.InviteGroup("id", "email@temp.com", context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
