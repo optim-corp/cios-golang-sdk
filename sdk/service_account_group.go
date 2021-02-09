@@ -22,7 +22,7 @@ func (self *Account) GetGroups(params cios.ApiGetGroupsRequest, ctx sdkmodel.Req
 	if err := self.refresh(); err != nil {
 		return cios.MultipleGroup{}, nil, err
 	}
-	params.Ctx = ctx
+	params.Ctx = self.withHost(ctx)
 	params.ApiService = self.ApiClient.GroupApi
 	params.P_name = util.ToNil(params.P_name)
 	params.P_label = util.ToNil(params.P_label)
@@ -90,7 +90,7 @@ func (self *Account) GetGroup(groupId string, includes *string, ctx sdkmodel.Req
 	if err := self.refresh(); err != nil {
 		return cios.Group{}, nil, err
 	}
-	req := self.ApiClient.GroupApi.GetGroup(ctx, groupId)
+	req := self.ApiClient.GroupApi.GetGroup(self.withHost(ctx), groupId)
 	if includes != nil {
 		req = req.Includes(*includes)
 	}
@@ -131,19 +131,19 @@ func (self *Account) DeleteGroup(groupID string, ctx sdkmodel.RequestCtx) (*_net
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
-	return self.ApiClient.GroupApi.DeleteGroup(ctx, groupID).Execute()
+	return self.ApiClient.GroupApi.DeleteGroup(self.withHost(ctx), groupID).Execute()
 }
 
 func (self *Account) CreateGroup(body cios.GroupCreateRequest, ctx sdkmodel.RequestCtx) (cios.Group, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Group{}, nil, err
 	}
-	return self.ApiClient.GroupApi.CreateGroup(ctx).GroupCreateRequest(body).Execute()
+	return self.ApiClient.GroupApi.CreateGroup(self.withHost(ctx)).GroupCreateRequest(body).Execute()
 }
 
 func (self *Account) UpdateGroup(groupID string, body cios.GroupUpdateRequest, ctx sdkmodel.RequestCtx) (cios.Group, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Group{}, nil, err
 	}
-	return self.ApiClient.GroupApi.UpdateGroup(ctx, groupID).GroupUpdateRequest(body).Execute()
+	return self.ApiClient.GroupApi.UpdateGroup(self.withHost(ctx), groupID).GroupUpdateRequest(body).Execute()
 }

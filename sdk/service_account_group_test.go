@@ -328,11 +328,14 @@ func TestAccount_CreateGroup(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
-	client.Account.CreateGroup(cios.GroupCreateRequest{
+	_, _, err := client.Account.CreateGroup(cios.GroupCreateRequest{
 		ParentGroupId: convert.StringPtr("parent"),
 		Name:          "name",
 		Tags:          &[]string{"key=value", "a=b"},
 	}, context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
 
 func TestAccount_DeleteGroup(t *testing.T) {
@@ -347,7 +350,10 @@ func TestAccount_DeleteGroup(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
-	client.Account.DeleteGroup("id", context.Background())
+	_, err := client.Account.DeleteGroup("id", context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
 func TestAccount_UpdateGroup(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -361,7 +367,10 @@ func TestAccount_UpdateGroup(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
-	client.Account.UpdateGroup("id", cios.GroupUpdateRequest{
+	_, _, err := client.Account.UpdateGroup("id", cios.GroupUpdateRequest{
 		Name: convert.StringPtr("name"),
 	}, context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
