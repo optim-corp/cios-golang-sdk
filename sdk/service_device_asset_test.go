@@ -225,10 +225,13 @@ func TestDeviceAssetManagement_CreateModel(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
-	client.DeviceAssetManagement.CreateModel(cios.DeviceModelRequest{
+	_, _, err := client.DeviceAssetManagement.CreateModel(cios.DeviceModelRequest{
 		Name:            "name",
 		ResourceOwnerId: "resource_owner_id",
 	}, context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
 
 func TestDeviceAssetManagement_DeleteModel(t *testing.T) {
@@ -243,7 +246,10 @@ func TestDeviceAssetManagement_DeleteModel(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
-	client.DeviceAssetManagement.DeleteModel("device_id", context.Background())
+	_, err := client.DeviceAssetManagement.DeleteModel("device_id", context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
 
 func TestDeviceAssetManagement_GetEntities(t *testing.T) {
@@ -456,9 +462,12 @@ func TestDeviceAssetManagement_CreateEntity(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
-	client.DeviceAssetManagement.CreateEntity("name", cios.Inventory{
+	_, _, err := client.DeviceAssetManagement.CreateEntity("name", cios.Inventory{
 		SerialNumber: convert.StringPtr("111"),
 	}, context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
 
 func TestDeviceAssetManagement_DeleteEntity(t *testing.T) {
@@ -473,7 +482,10 @@ func TestDeviceAssetManagement_DeleteEntity(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
-	client.DeviceAssetManagement.DeleteEntity("device_id", context.Background())
+	_, err := client.DeviceAssetManagement.DeleteEntity("device_id", context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
 
 func TestDeviceAssetManagement_GetLifecycles(t *testing.T) {
@@ -672,12 +684,15 @@ func TestDeviceAssetManagement_CreateLifecycle(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
-	client.DeviceAssetManagement.CreateLifecycle("device_id", cios.LifeCycleRequest{
+	_, _, err := client.DeviceAssetManagement.CreateLifecycle("device_id", cios.LifeCycleRequest{
 		EventKind: "a",
 		EventMode: "b",
 		EventType: "c",
 		EventAt:   "d",
 	}, context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
 
 func TestDeviceAssetManagement_DeleteLifecycle(t *testing.T) {
@@ -692,5 +707,8 @@ func TestDeviceAssetManagement_DeleteLifecycle(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
-	client.DeviceAssetManagement.DeleteLifecycle("device_id", "test_id", context.Background())
+	_, err := client.DeviceAssetManagement.DeleteLifecycle("device_id", "test_id", context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }

@@ -250,10 +250,13 @@ func TestDeviceManagement_CreateDevice(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
-	client.DeviceManagement.CreateDevice(cios.DeviceInfo{
+	_, _, err := client.DeviceManagement.CreateDevice(cios.DeviceInfo{
 		Name:            convert.StringPtr("name"),
 		ResourceOwnerId: "resource_owner_id",
 	}, context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
 
 func TestDeviceManagement_DeleteDevice(t *testing.T) {
@@ -268,7 +271,10 @@ func TestDeviceManagement_DeleteDevice(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
-	client.DeviceManagement.DeleteDevice("device_id", context.Background())
+	_, err := client.DeviceManagement.DeleteDevice("device_id", context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
 func TestDeviceManagement_UpdateDevice(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -290,10 +296,13 @@ func TestDeviceManagement_UpdateDevice(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
-	client.DeviceManagement.UpdateDevice("responseid", cios.DeviceUpdateRequest{
+	_, _, err := client.DeviceManagement.UpdateDevice("responseid", cios.DeviceUpdateRequest{
 		Name:         convert.StringPtr("name"),
 		IdNumber:     convert.StringPtr("1234"),
 		Description:  convert.StringPtr("desc"),
 		RsaPublickey: convert.StringPtr("rsa"),
 	}, context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
