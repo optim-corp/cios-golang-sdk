@@ -20,7 +20,7 @@ func (self *DeviceManagement) GetPolicies(params cios.ApiGetDevicePoliciesReques
 	if err := self.refresh(); err != nil {
 		return cios.MultipleDevicePolicy{}, nil, err
 	}
-	params.Ctx = ctx
+	params.Ctx = self.withHost(ctx)
 	params.ApiService = self.ApiClient.DeviceApi
 	params.P_order = util.ToNil(params.P_order)
 	params.P_orderBy = util.ToNil(params.P_orderBy)
@@ -77,11 +77,11 @@ func (self *DeviceManagement) DeletePolicy(id string, ctx sdkmodel.RequestCtx) (
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
-	return self.ApiClient.DeviceApi.DeletePolicy(ctx, id).Execute()
+	return self.ApiClient.DeviceApi.DeletePolicy(self.withHost(ctx), id).Execute()
 }
 func (self *DeviceManagement) CreatePolicy(resourceOwnerID string, ctx sdkmodel.RequestCtx) (cios.DevicePolicy, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.DevicePolicy{}, nil, err
 	}
-	return self.ApiClient.DeviceApi.CreateDevicePolicy(ctx).DevicePolicyRequest(cios.DevicePolicyRequest{ResourceOwnerId: resourceOwnerID}).Execute()
+	return self.ApiClient.DeviceApi.CreateDevicePolicy(self.withHost(ctx)).DevicePolicyRequest(cios.DevicePolicyRequest{ResourceOwnerId: resourceOwnerID}).Execute()
 }
