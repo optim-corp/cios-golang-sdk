@@ -11,7 +11,7 @@ func (self *DeviceManagement) GetMonitoringLatestList(deviceIDs []string, ctx sd
 	if err := self.refresh(); err != nil {
 		return []cios.DeviceMonitoring{}, nil, err
 	}
-	response, httpResponse, err := self.ApiClient.DeviceApi.GetDeviceMonitoringsLatest(ctx).DeviceMonitoringIDsRequest(cios.DeviceMonitoringIDsRequest{DeviceIds: deviceIDs}).Execute()
+	response, httpResponse, err := self.ApiClient.DeviceApi.GetDeviceMonitoringsLatest(self.withHost(ctx)).DeviceMonitoringIDsRequest(cios.DeviceMonitoringIDsRequest{DeviceIds: deviceIDs}).Execute()
 	if err != nil {
 		return []cios.DeviceMonitoring{}, httpResponse, err
 	}
@@ -21,7 +21,7 @@ func (self *DeviceManagement) GetMonitoring(deviceID string, ctx sdkmodel.Reques
 	if err := self.refresh(); err != nil {
 		return cios.DeviceMonitoring{}, nil, err
 	}
-	response, httpResponse, err := self.ApiClient.DeviceApi.GetDeviceMonitoringLatest(ctx, deviceID).Execute()
+	response, httpResponse, err := self.ApiClient.DeviceApi.GetDeviceMonitoringLatest(self.withHost(ctx), deviceID).Execute()
 	if err != nil {
 		return cios.DeviceMonitoring{}, httpResponse, err
 	}
