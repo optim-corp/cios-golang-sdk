@@ -7,6 +7,8 @@ import (
 	"strings"
 	"time"
 
+	"github.com/optim-kazuhiro-seida/go-advance-type/check"
+
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
@@ -59,6 +61,7 @@ type (
 		License               *License
 		Contract              *Contract
 		tokenExp              int64
+		cfg                   *cios.Configuration
 	}
 	CiosClientConfig struct {
 		AutoRefresh  bool
@@ -117,6 +120,7 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 		{URL: config.Urls.LocationUrl},
 	}, config.Debug)
 
+	instance.cfg = client.GetConfig()
 	// Instance
 	instance.Contract = &Contract{ApiClient: client, Url: config.Urls.ContractUrl, withHost: getWithHostFunc(CONTRACT_INDEX)}
 	instance.License = &License{ApiClient: client, Url: config.Urls.LicenseUrl, withHost: getWithHostFunc(LICENSE_INDEX)}
@@ -183,7 +187,9 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 }
 
 func (self *CiosClient) Debug(debug bool) *CiosClient {
-	self.PubSub.ApiClient.GetConfig().Debug = debug
+	if !check.IsNil(self.cfg) {
+		self.cfg.Debug = debug
+	}
 	self.PubSub.debug = debug
 	return self
 }
@@ -196,7 +202,9 @@ func (self *CiosClient) _accessToken(accessToken string) *CiosClient {
 		}
 	}
 	self.PubSub.token = &accessToken
-	self.Auth.ApiClient.GetConfig().AddDefaultHeader("Authorization", ParseAccessToken(accessToken))
+	if !check.IsNil(self.cfg) {
+		self.cfg.AddDefaultHeader("Authorization", ParseAccessToken(accessToken))
+	}
 	return self
 }
 func (self *CiosClient) RequestScope(scope string) *CiosClient {
