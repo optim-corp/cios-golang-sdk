@@ -2,6 +2,7 @@ package ciossdk
 
 import (
 	"context"
+	"net/http"
 	"regexp"
 	"strings"
 	"time"
@@ -16,15 +17,34 @@ import (
 )
 
 var (
-	createClient = func(basePath string) *cios.APIClient {
-		c := cios.NewAPIClient(cios.NewConfiguration())
-		sp := strings.Split(basePath, "://")
-		if len(sp) >= 2 {
-			c.GetConfig().Scheme = sp[0]
-			c.GetConfig().Host = sp[1]
-		}
-		return c
+	createClient = func(client *http.Client, servers cios.ServerConfigurations, debug bool) *cios.APIClient {
+		config := cios.NewConfiguration()
+		config.Debug = debug
+		config.UserAgent = "Cloud IoT OS Golang SDK"
+		config.HTTPClient = client
+		config.Servers = servers
+		return cios.NewAPIClient(config)
 	}
+	getWithHostFunc = func(index int) func(ctx context.Context) context.Context {
+		return func(ctx context.Context) context.Context {
+			if ctx == nil {
+				return context.WithValue(context.Background(), cios.ContextServerIndex, index)
+			}
+			return context.WithValue(ctx, cios.ContextServerIndex, index)
+		}
+	}
+)
+
+const (
+	AUTH_INDEX = iota
+	ACCOUNT_INDEX
+	FILE_STORAGE_INDEX
+	MESSAGING_INDEX
+	DEVICE_INDEX
+	DEVICE_ASSET_INDEX
+	CONTRACT_INDEX
+	LICENSE_INDEX
+	LOCATION_INDEX
 )
 
 type (
@@ -38,14 +58,14 @@ type (
 		Auth                  *Auth
 		License               *License
 		Contract              *Contract
-		authType              sdkmodel.AuthType
 		tokenExp              int64
 	}
 	CiosClientConfig struct {
-		AutoRefresh bool
-		Debug       bool
-		Urls        sdkmodel.CIOSUrl
-		AuthConfig  *AuthConfig
+		AutoRefresh  bool
+		Debug        bool
+		Urls         sdkmodel.CIOSUrl
+		AuthConfig   *AuthConfig
+		CustomClient *http.Client
 	}
 	AuthConfig struct {
 		sdkmodel.ClientID
@@ -85,22 +105,37 @@ func DeviceAuthConf(clientId, clientSecret, assertion, scope string) *AuthConfig
 }
 func NewCiosClient(config CiosClientConfig) *CiosClient {
 	instance := new(CiosClient)
-	instance.authType = sdkmodel.NONE_TYPE
+	client := createClient(config.CustomClient, cios.ServerConfigurations{
+		{URL: config.Urls.AuthUrl},
+		{URL: config.Urls.AccountsUrl},
+		{URL: config.Urls.StorageUrl},
+		{URL: config.Urls.MessagingUrl},
+		{URL: config.Urls.DeviceManagementUrl},
+		{URL: config.Urls.DeviceAssetManagementUrl},
+		{URL: config.Urls.ContractUrl},
+		{URL: config.Urls.LicenseUrl},
+		{URL: config.Urls.LocationUrl},
+	}, config.Debug)
 
 	// Instance
-	instance.Contract = &Contract{ApiClient: createClient(config.Urls.ContractUrl), Url: config.Urls.ContractUrl}
-	instance.License = &License{ApiClient: createClient(config.Urls.LicenseUrl), Url: config.Urls.LicenseUrl}
-	instance.Auth = &Auth{ApiClient: createClient(config.Urls.AuthUrl), Url: config.Urls.AuthUrl}
-	instance.PubSub = &PubSub{ApiClient: createClient(config.Urls.MessagingUrl), Url: config.Urls.MessagingUrl}
-	instance.Account = &Account{ApiClient: createClient(config.Urls.AccountsUrl), Url: config.Urls.AccountsUrl}
-	instance.DeviceManagement = &DeviceManagement{ApiClient: createClient(config.Urls.DeviceManagementUrl), Url: config.Urls.DeviceManagementUrl}
-	instance.DeviceAssetManagement = &DeviceAssetManagement{ApiClient: createClient(config.Urls.DeviceAssetManagementUrl), Url: config.Urls.DeviceAssetManagementUrl}
-	instance.FileStorage = &FileStorage{ApiClient: createClient(config.Urls.StorageUrl), Url: config.Urls.StorageUrl}
-	instance.Geography = &Geography{ApiClient: createClient(config.Urls.LocationUrl), Url: config.Urls.LocationUrl}
+	instance.Contract = &Contract{ApiClient: client, Url: config.Urls.ContractUrl, withHost: getWithHostFunc(CONTRACT_INDEX)}
+	instance.License = &License{ApiClient: client, Url: config.Urls.LicenseUrl, withHost: getWithHostFunc(LICENSE_INDEX)}
+	instance.Account = &Account{ApiClient: client, Url: config.Urls.AccountsUrl, withHost: getWithHostFunc(ACCOUNT_INDEX)}
+	instance.DeviceManagement = &DeviceManagement{ApiClient: client, Url: config.Urls.DeviceManagementUrl, withHost: getWithHostFunc(DEVICE_INDEX)}
+	instance.DeviceAssetManagement = &DeviceAssetManagement{ApiClient: client, Url: config.Urls.DeviceAssetManagementUrl, withHost: getWithHostFunc(DEVICE_ASSET_INDEX)}
+	instance.FileStorage = &FileStorage{ApiClient: client, Url: config.Urls.StorageUrl, withHost: getWithHostFunc(FILE_STORAGE_INDEX)}
+	instance.Geography = &Geography{ApiClient: client, Url: config.Urls.LocationUrl, withHost: getWithHostFunc(LOCATION_INDEX)}
+	instance.Auth = &Auth{}
+	instance.Auth.ApiClient = client
+	instance.Auth.Url = config.Urls.AuthUrl
+	instance.Auth.withHost = getWithHostFunc(AUTH_INDEX)
+	instance.PubSub = &PubSub{}
+	instance.PubSub.ApiClient = client
+	instance.PubSub.Url = config.Urls.MessagingUrl
+	instance.PubSub.withHost = getWithHostFunc(MESSAGING_INDEX)
 
 	// AuthConfig
 	if config.AuthConfig != nil {
-		instance.authType = config.AuthConfig._type
 		instance.Auth.clientId = config.AuthConfig.ClientID
 		instance.Auth.clientSecret = config.AuthConfig.ClientSecret
 		instance.Auth.assertion = config.AuthConfig.Assertion
@@ -109,9 +144,9 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 	}
 
 	refFunc := func() error {
-		if config.AutoRefresh {
+		if config.AutoRefresh && config.AuthConfig != nil {
 			if instance.tokenExp == 0 || instance.tokenExp-60 <= time.Now().Unix() {
-				switch instance.authType {
+				switch config.AuthConfig._type {
 				case sdkmodel.CLIENT_TYPE:
 					token, _, _, _, err := instance.Auth.GetAccessTokenOnClient()
 					if err != nil {
@@ -144,19 +179,11 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 	instance.FileStorage.refresh = refFunc
 	instance.DeviceManagement.refresh = refFunc
 	instance.DeviceAssetManagement.refresh = refFunc
-	instance.Debug(config.Debug)
-
 	return instance
 }
 
 func (self *CiosClient) Debug(debug bool) *CiosClient {
-	self.Auth.ApiClient.GetConfig().Debug = false
 	self.PubSub.ApiClient.GetConfig().Debug = debug
-	self.DeviceManagement.ApiClient.GetConfig().Debug = debug
-	self.Account.ApiClient.GetConfig().Debug = debug
-	self.Geography.ApiClient.GetConfig().Debug = debug
-	self.DeviceAssetManagement.ApiClient.GetConfig().Debug = debug
-	self.FileStorage.ApiClient.GetConfig().Debug = debug
 	self.PubSub.debug = debug
 	return self
 }
@@ -168,15 +195,8 @@ func (self *CiosClient) _accessToken(accessToken string) *CiosClient {
 			self.tokenExp = convert.MustInt64(claims["exp"])
 		}
 	}
-	bearerToken := ParseAccessToken(accessToken)
 	self.PubSub.token = &accessToken
-	self.Auth.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
-	self.PubSub.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
-	self.DeviceManagement.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
-	self.Account.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
-	self.Geography.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
-	self.DeviceAssetManagement.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
-	self.FileStorage.ApiClient.GetConfig().AddDefaultHeader("Authorization", bearerToken)
+	self.Auth.ApiClient.GetConfig().AddDefaultHeader("Authorization", ParseAccessToken(accessToken))
 	return self
 }
 func (self *CiosClient) RequestScope(scope string) *CiosClient {
