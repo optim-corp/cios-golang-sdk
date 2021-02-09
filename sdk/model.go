@@ -1,6 +1,8 @@
 package ciossdk
 
 import (
+	"context"
+
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 )
@@ -9,18 +11,17 @@ type (
 	_instance struct {
 		ApiClient *cios.APIClient
 		Url       string
+		Host      string
+		withHost  func(context.Context) context.Context
 		refresh   func() error
 	}
 	PubSub struct {
-		ApiClient *cios.APIClient
-		Url       string
-		refresh   func() error
-		debug     bool
-		token     *string
+		_instance
+		debug bool
+		token *string
 	}
 	Auth struct {
-		ApiClient    *cios.APIClient
-		Url          string
+		_instance
 		debug        bool
 		scope        string
 		assertion    string
