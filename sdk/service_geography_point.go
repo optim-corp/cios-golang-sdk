@@ -16,7 +16,7 @@ func (self Geography) GetPoints(params cios.ApiGetPointsRequest, ctx sdkmodel.Re
 		return
 	}
 	params.ApiService = self.ApiClient.GeographyApi
-	params.Ctx = ctx
+	params.Ctx = self.withHost(ctx)
 	return params.Execute()
 
 }
@@ -24,7 +24,7 @@ func (self Geography) CreatePoint(body cios.PointRequest, ctx sdkmodel.RequestCt
 	if err := self.refresh(); err != nil {
 		return cios.Point{}, nil, err
 	}
-	request := self.ApiClient.GeographyApi.CreatePoint(ctx).PointRequest(body)
+	request := self.ApiClient.GeographyApi.CreatePoint(self.withHost(ctx)).PointRequest(body)
 	response, httpResponse, err := request.Execute()
 	if err != nil {
 		return cios.Point{}, httpResponse, err
@@ -36,7 +36,7 @@ func (self Geography) DeletePoint(pointID string, ctx sdkmodel.RequestCtx) (cios
 	if err := self.refresh(); err != nil {
 		return cios.Point{}, nil, err
 	}
-	request := self.ApiClient.GeographyApi.DeletePoint(ctx, pointID)
+	request := self.ApiClient.GeographyApi.DeletePoint(self.withHost(ctx), pointID)
 	response, httpResponse, err := request.Execute()
 	if err != nil {
 		return cios.Point{}, httpResponse, err

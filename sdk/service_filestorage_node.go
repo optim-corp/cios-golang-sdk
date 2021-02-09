@@ -21,7 +21,7 @@ func (self *FileStorage) GetNodes(bucketID string, params cios.ApiGetNodesReques
 	if err := self.refresh(); err != nil {
 		return cios.MultipleNode{}, nil, err
 	}
-	params.Ctx = ctx
+	params.Ctx = self.withHost(ctx)
 	params.ApiService = self.ApiClient.FileStorageApi
 	params.P_bucketId = bucketID
 	params.P_order = util.ToNil(params.P_order)
@@ -81,7 +81,7 @@ func (self *FileStorage) GetNode(bucketID string, nodeID string, ctx sdkmodel.Re
 	if err := self.refresh(); err != nil {
 		return cios.Node{}, nil, err
 	}
-	request := self.ApiClient.FileStorageApi.GetNode(ctx, bucketID, nodeID)
+	request := self.ApiClient.FileStorageApi.GetNode(self.withHost(ctx), bucketID, nodeID)
 	response, httpResponse, err := request.Execute()
 	if err != nil {
 		return cios.Node{}, httpResponse, err
@@ -98,7 +98,7 @@ func (self *FileStorage) CreateNodeOnNodeID(bucketID string, body cios.NodeReque
 	if err := self.refresh(); err != nil {
 		return cios.Node{}, nil, err
 	}
-	request := self.ApiClient.FileStorageApi.CreateDirectory(ctx, bucketID).NodeRequest(body)
+	request := self.ApiClient.FileStorageApi.CreateDirectory(self.withHost(ctx), bucketID).NodeRequest(body)
 	response, httpResponse, err := request.Execute()
 	if err != nil {
 		return cios.Node{}, httpResponse, err
@@ -110,14 +110,14 @@ func (self *FileStorage) DeleteNode(bucketID string, nodeID string, ctx sdkmodel
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
-	return self.ApiClient.FileStorageApi.DeleteNode(ctx, bucketID, nodeID).Execute()
+	return self.ApiClient.FileStorageApi.DeleteNode(self.withHost(ctx), bucketID, nodeID).Execute()
 }
 
 func (self *FileStorage) CopyNode(bucketID string, nodeID string, destBucketID *string, destParentNodeID *string, ctx sdkmodel.RequestCtx) (cios.Node, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Node{}, nil, err
 	}
-	request := self.ApiClient.FileStorageApi.CopyNode(ctx, bucketID, nodeID).BucketEditBody(cios.BucketEditBody{
+	request := self.ApiClient.FileStorageApi.CopyNode(self.withHost(ctx), bucketID, nodeID).BucketEditBody(cios.BucketEditBody{
 		DestBucketId: destBucketID,
 		ParentNodeId: destParentNodeID,
 	})
@@ -132,7 +132,7 @@ func (self *FileStorage) MoveNode(bucketID string, nodeID string, destBucketID *
 	if err := self.refresh(); err != nil {
 		return cios.Node{}, nil, err
 	}
-	request := self.ApiClient.FileStorageApi.MoveNode(ctx, bucketID, nodeID).BucketEditBody(cios.BucketEditBody{
+	request := self.ApiClient.FileStorageApi.MoveNode(self.withHost(ctx), bucketID, nodeID).BucketEditBody(cios.BucketEditBody{
 		DestBucketId: destBucketID,
 		ParentNodeId: destParentNodeID,
 	})
@@ -147,7 +147,7 @@ func (self *FileStorage) RenameNode(bucketID string, nodeID string, name string,
 	if err := self.refresh(); err != nil {
 		return cios.Node{}, nil, err
 	}
-	request := self.ApiClient.FileStorageApi.RenameNode(ctx, bucketID, nodeID).NodeName(cios.NodeName{Name: name})
+	request := self.ApiClient.FileStorageApi.RenameNode(self.withHost(ctx), bucketID, nodeID).NodeName(cios.NodeName{Name: name})
 	response, httpResponse, err := request.Execute()
 	if err != nil {
 		return cios.Node{}, httpResponse, err

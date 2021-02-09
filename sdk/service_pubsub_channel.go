@@ -22,7 +22,7 @@ func (self *PubSub) GetChannels(params cios.ApiGetChannelsRequest, ctx sdkmodel.
 	if err = self.refresh(); err != nil {
 		return
 	}
-	params.Ctx = ctx
+	params.Ctx = self.withHost(ctx)
 	params.ApiService = self.ApiClient.PublishSubscribeApi
 	params.P_name = util.ToNil(params.P_name)
 	params.P_label = util.ToNil(params.P_label)
@@ -86,7 +86,7 @@ func (self *PubSub) GetChannel(channelID string, isDev *bool, lang *string, ctx 
 	if err := self.refresh(); err != nil {
 		return cios.Channel{}, nil, err
 	}
-	request := self.ApiClient.PublishSubscribeApi.GetChannel(ctx, channelID)
+	request := self.ApiClient.PublishSubscribeApi.GetChannel(self.withHost(ctx), channelID)
 	if isDev != nil {
 		request = request.IsDev(*isDev)
 	}
@@ -134,7 +134,7 @@ func (self *PubSub) DeleteChannel(channelID string, ctx sdkmodel.RequestCtx) (*_
 	}
 	request := self.ApiClient.PublishSubscribeApi.
 		DeleteChannel(
-			ctx,
+			self.withHost(ctx),
 			channelID,
 		)
 	httpResponse, err := request.Execute()
@@ -151,7 +151,7 @@ func (self *PubSub) CreateChannel(body cios.ChannelProposal, ctx sdkmodel.Reques
 	if err := self.refresh(); err != nil {
 		return cios.Channel{}, nil, err
 	}
-	request := self.ApiClient.PublishSubscribeApi.CreateChannel(ctx).ChannelProposal(body)
+	request := self.ApiClient.PublishSubscribeApi.CreateChannel(self.withHost(ctx)).ChannelProposal(body)
 	response, httpResponse, err := request.Execute()
 	if err != nil {
 		return cios.Channel{}, httpResponse, err
@@ -162,7 +162,7 @@ func (self *PubSub) UpdateChannel(channelID string, body cios.ChannelUpdatePropo
 	if err := self.refresh(); err != nil {
 		return cios.MultipleChannel{}, nil, err
 	}
-	return self.ApiClient.PublishSubscribeApi.UpdateChannel(ctx, channelID).ChannelUpdateProposal(body).Execute()
+	return self.ApiClient.PublishSubscribeApi.UpdateChannel(self.withHost(ctx), channelID).ChannelUpdateProposal(body).Execute()
 }
 func GetDefaultDisplayInfo(displayInfos []cios.DisplayInfo) *cios.DisplayInfo {
 	for _, v := range displayInfos {

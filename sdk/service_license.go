@@ -18,7 +18,7 @@ func (self *License) GetLicenses(params cios.ApiGetMyLicensesRequest, ctx sdkmod
 		return
 	}
 	params.ApiService = self.ApiClient.LicenseApi
-	params.Ctx = ctx
+	params.Ctx = self.withHost(ctx)
 	params.P_status = util.ToNil(params.P_status)
 	var temp cios.MultipleLicense
 	temp, httpResponse, err = params.Execute()

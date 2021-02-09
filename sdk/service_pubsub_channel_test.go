@@ -239,7 +239,7 @@ func TestPubSub_CreateChannel(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
-	client.PubSub.CreateChannel(cios.ChannelProposal{
+	_, _, err := client.PubSub.CreateChannel(cios.ChannelProposal{
 		ResourceOwnerId:  "resource_owner_id",
 		ChannelProtocols: nil,
 		DisplayInfo: cios.DisplayInfoStream{
@@ -269,6 +269,9 @@ func TestPubSub_CreateChannel(t *testing.T) {
 			MaxCount: convert.StringPtr("222"),
 		},
 	}, context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
 
 func TestPubSub_DeleteChannel(t *testing.T) {
@@ -283,7 +286,10 @@ func TestPubSub_DeleteChannel(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
-	client.PubSub.DeleteChannel("id", context.Background())
+	_, err := client.PubSub.DeleteChannel("id", context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
 func TestPubSub_UpdateChannel(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -297,11 +303,14 @@ func TestPubSub_UpdateChannel(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
-	client.PubSub.UpdateChannel("id", cios.ChannelUpdateProposal{
+	_, _, err := client.PubSub.UpdateChannel("id", cios.ChannelUpdateProposal{
 		ChannelProtocols: nil,
 		DisplayInfo:      nil,
 		Labels:           nil,
 		MessagingConfig:  nil,
 		DatastoreConfig:  nil,
 	}, context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }

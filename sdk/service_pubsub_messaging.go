@@ -34,7 +34,7 @@ func (self *PubSub) PublishMessage(id string, body interface{}, packerFormat *st
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
-	request := self.ApiClient.PublishSubscribeApi.PublishMessage(ctx).ChannelId(id).Body(body)
+	request := self.ApiClient.PublishSubscribeApi.PublishMessage(self.withHost(ctx)).ChannelId(id).Body(body)
 	request.P_packerFormat = packerFormat
 	return request.Execute()
 }
