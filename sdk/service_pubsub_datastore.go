@@ -175,7 +175,7 @@ func (self *PubSub) MapMultiObjectLatestPayloadByChannels(channels []cios.Channe
 	}
 	return self.MapMultiObjectLatestPayload(channelIDs, stc, ctx)
 }
-func (self *PubSub) subscribeCiosWebSocket(_url string, beforeFunc *func(*websocket.Conn), logic func(body []byte) (bool, error), ctx sdkmodel.RequestCtx) error {
+func (self *PubSub) subscribeCiosWebSocket(_url string, beforeFunc *func(*websocket.Conn), logic func(body []byte) (bool, error), wsR, wsW int64, ctx sdkmodel.RequestCtx) error {
 	if ctx != nil {
 		if _token, ok := ctx.Value(cios.ContextAccessToken).(string); ok {
 			self.token = &_token
@@ -195,6 +195,11 @@ func (self *PubSub) subscribeCiosWebSocket(_url string, beforeFunc *func(*websoc
 		(*beforeFunc)(connection)
 	}
 	for {
+		if wsR != 0 {
+			if err := connection.SetReadDeadline(time.Now().Add(time.Millisecond * time.Duration(wsR))); err != nil {
+				return err
+			}
+		}
 		messageType, body, err := connection.ReadMessage()
 		switch {
 		case websocket.IsCloseError(err, websocket.CloseNormalClosure):
@@ -262,13 +267,12 @@ func (self *PubSub) GetStream(channelID string, params sdkmodel.ApiGetStreamRequ
 				panic(err)
 			}
 		}
-
 	}
 	err := self.subscribeCiosWebSocket(_url.String(), &bf,
 		func(body []byte) (bool, error) {
 			result = append(result, string(body))
 			return false, nil
-		}, ctx,
+		}, self.wsReadTimeout, self.wsWriteTimeout, ctx,
 	)
 	if self.debug {
 		log.Println(result)

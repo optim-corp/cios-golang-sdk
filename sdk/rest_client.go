@@ -6,15 +6,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/optim-kazuhiro-seida/go-advance-type/check"
-
-	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
-
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
-
 	"github.com/dgrijalva/jwt-go"
-
 	"github.com/optim-corp/cios-golang-sdk/cios"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
+	"github.com/optim-kazuhiro-seida/go-advance-type/check"
+	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 )
 
 func NewCiosClient(config CiosClientConfig) *CiosClient {
@@ -57,7 +53,12 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 		instance.Auth.ref = config.AuthConfig.RefreshToken
 		instance.Auth.scope = config.AuthConfig.Scope
 	}
+	// WebSocketConfig
 
+	if !check.IsNil(config.WebSocketConfig) {
+		instance.PubSub.wsReadTimeout = config.WebSocketConfig.ReadTimeoutMilliSec
+		instance.PubSub.wsWriteTimeout = config.WebSocketConfig.WriteTimeoutMilliSec
+	}
 	refFunc := func() error {
 		if config.AutoRefresh && config.AuthConfig != nil {
 			if instance.tokenExp == 0 || instance.tokenExp-60 <= time.Now().Unix() {

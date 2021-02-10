@@ -4,11 +4,9 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
-
-	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
-
 	"github.com/optim-corp/cios-golang-sdk/cios"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
+	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 )
 
 var (
@@ -33,29 +31,29 @@ var (
 
 type (
 	CiosClient struct {
-		*PubSub
-		*Account
-		*DeviceAssetManagement
-		*DeviceManagement
-		*FileStorage
-		*Geography
-		*Auth
-		*License
-		*Contract
-		tokenExp int64
-		cfg      *cios.Configuration
+		PubSub                *PubSub
+		Account               *Account
+		DeviceAssetManagement *DeviceAssetManagement
+		DeviceManagement      *DeviceManagement
+		FileStorage           *FileStorage
+		Geography             *Geography
+		Auth                  *Auth
+		License               *License
+		Contract              *Contract
+		tokenExp              int64
+		cfg                   *cios.Configuration
 	}
 	CiosClientConfig struct {
-		AutoRefresh  bool
-		Debug        bool
-		Urls         sdkmodel.CIOSUrl
-		CustomClient *http.Client
-		*AuthConfig
-		WebSocketConfig
+		AutoRefresh     bool
+		Debug           bool
+		Urls            sdkmodel.CIOSUrl
+		CustomClient    *http.Client
+		AuthConfig      *AuthConfig
+		WebSocketConfig *WebSocketConfig
 	}
 	WebSocketConfig struct {
-		ReadTimeout  int64
-		WriteTimeout int64
+		ReadTimeoutMilliSec  int64
+		WriteTimeoutMilliSec int64
 	}
 	AuthConfig struct {
 		sdkmodel.ClientID
@@ -74,8 +72,10 @@ type (
 	}
 	PubSub struct {
 		_instance
-		debug bool
-		token *string
+		debug          bool
+		token          *string
+		wsReadTimeout  int64
+		wsWriteTimeout int64
 	}
 	Auth struct {
 		_instance
