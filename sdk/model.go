@@ -13,7 +13,7 @@ var (
 	createClient = func(client *http.Client, servers cios.ServerConfigurations, debug bool) *cios.APIClient {
 		config := cios.NewConfiguration()
 		config.Debug = debug
-		config.UserAgent = "Cloud IoT OS Golang SDK"
+		config.UserAgent = "OPTiM Cloud IoT OS Golang SDK"
 		config.HTTPClient = client
 		config.Servers = servers
 		return cios.NewAPIClient(config)
