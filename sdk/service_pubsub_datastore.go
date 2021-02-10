@@ -177,8 +177,7 @@ func (self *PubSub) MapMultiObjectLatestPayloadByChannels(channels []cios.Channe
 }
 func (self *PubSub) subscribeCiosWebSocket(_url string, beforeFunc *func(*websocket.Conn), logic func(body []byte) (bool, error), ctx sdkmodel.RequestCtx) error {
 	if ctx != nil {
-		_token, ok := ctx.Value(cios.ContextAccessToken).(string)
-		if ok {
+		if _token, ok := ctx.Value(cios.ContextAccessToken).(string); ok {
 			self.token = &_token
 		}
 	}
