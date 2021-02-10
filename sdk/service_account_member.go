@@ -12,7 +12,7 @@ func (self *Account) InviteGroup(groupID string, email string, ctx sdkmodel.Requ
 		return cios.Member{}, nil, err
 	}
 	request := self.ApiClient.GroupApi.InviteGroup(
-		ctx,
+		self.withHost(ctx),
 		groupID,
 	).GroupInviteRequest(cios.GroupInviteRequest{Email: &email})
 	return request.Execute()

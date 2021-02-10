@@ -23,7 +23,7 @@ func (self *FileStorage) GetBuckets(params cios.ApiGetBucketsRequest, ctx sdkmod
 		return
 	}
 	params.ApiService = self.ApiClient.FileStorageApi
-	params.Ctx = ctx
+	params.Ctx = self.withHost(ctx)
 	params.P_name = util.ToNil(params.P_name)
 	params.P_order = util.ToNil(params.P_order)
 	params.P_orderBy = util.ToNil(params.P_orderBy)
@@ -80,7 +80,7 @@ func (self *FileStorage) GetBucket(bucketID string, ctx sdkmodel.RequestCtx) (ci
 	if err := self.refresh(); err != nil {
 		return cios.Bucket{}, nil, err
 	}
-	response, httpResponse, err := self.ApiClient.FileStorageApi.GetBucket(ctx, bucketID).Execute()
+	response, httpResponse, err := self.ApiClient.FileStorageApi.GetBucket(self.withHost(ctx), bucketID).Execute()
 	if err != nil {
 		return cios.Bucket{}, httpResponse, err
 	}
@@ -107,7 +107,7 @@ func (self *FileStorage) CreateBucket(resourceOwnerID string, name string, ctx s
 	if err := self.refresh(); err != nil {
 		return cios.Bucket{}, nil, err
 	}
-	request := self.ApiClient.FileStorageApi.CreateBucket(ctx).BucketRequest(cios.BucketRequest{ResourceOwnerId: resourceOwnerID, Name: name})
+	request := self.ApiClient.FileStorageApi.CreateBucket(self.withHost(ctx)).BucketRequest(cios.BucketRequest{ResourceOwnerId: resourceOwnerID, Name: name})
 	response, httpResponse, err := request.Execute()
 	if err != nil {
 		return cios.Bucket{}, httpResponse, err
@@ -118,11 +118,11 @@ func (self *FileStorage) DeleteBucket(bucketID string, ctx sdkmodel.RequestCtx) 
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
-	return self.ApiClient.FileStorageApi.DeleteBucket(ctx, bucketID).Execute()
+	return self.ApiClient.FileStorageApi.DeleteBucket(self.withHost(ctx), bucketID).Execute()
 }
 func (self *FileStorage) UpdateBucket(bucketID string, name string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
-	return self.ApiClient.FileStorageApi.UpdateBucket(ctx, bucketID).BucketName(cios.BucketName{Name: name}).Execute()
+	return self.ApiClient.FileStorageApi.UpdateBucket(self.withHost(ctx), bucketID).BucketName(cios.BucketName{Name: name}).Execute()
 }

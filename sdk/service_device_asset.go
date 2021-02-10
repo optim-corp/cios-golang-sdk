@@ -26,7 +26,7 @@ func (self *DeviceAssetManagement) GetModels(params cios.ApiGetDeviceModelsReque
 		return cios.MultipleDeviceModel{}, nil, err
 	}
 	params.ApiService = self.ApiClient.DeviceAssetApi
-	params.Ctx = ctx
+	params.Ctx = self.withHost(ctx)
 	params.P_order = util.ToNil(params.P_order)
 	params.P_orderBy = util.ToNil(params.P_orderBy)
 	params.P_name = util.ToNil(params.P_name)
@@ -97,7 +97,7 @@ func (self *DeviceAssetManagement) GetModel(name string, ctx sdkmodel.RequestCtx
 	if err := self.refresh(); err != nil {
 		return cios.DeviceModel{}, nil, err
 	}
-	response, httpResponse, err := self.ApiClient.DeviceAssetApi.GetDeviceModel(ctx, name).Execute()
+	response, httpResponse, err := self.ApiClient.DeviceAssetApi.GetDeviceModel(self.withHost(ctx), name).Execute()
 	if err != nil {
 		return cios.DeviceModel{}, httpResponse, err
 	}
@@ -107,7 +107,7 @@ func (self *DeviceAssetManagement) CreateModel(body cios.DeviceModelRequest, ctx
 	if err := self.refresh(); err != nil {
 		return cios.DeviceModel{}, nil, err
 	}
-	response, httpResponse, err := self.ApiClient.DeviceAssetApi.CreateDeviceModel(ctx).DeviceModelRequest(body).Execute()
+	response, httpResponse, err := self.ApiClient.DeviceAssetApi.CreateDeviceModel(self.withHost(ctx)).DeviceModelRequest(body).Execute()
 	if err != nil {
 		return cios.DeviceModel{}, httpResponse, err
 	}
@@ -117,14 +117,14 @@ func (self *DeviceAssetManagement) DeleteModel(name string, ctx sdkmodel.Request
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
-	return self.ApiClient.DeviceAssetApi.DeleteDeviceModel(ctx, name).Execute()
+	return self.ApiClient.DeviceAssetApi.DeleteDeviceModel(self.withHost(ctx), name).Execute()
 }
 
 func (self *DeviceAssetManagement) GetEntities(params cios.ApiGetDeviceEntitiesRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleDeviceModelEntity, httpResponse *_nethttp.Response, err error) {
 	if err = self.refresh(); err != nil {
 		return
 	}
-	params.Ctx = ctx
+	params.Ctx = self.withHost(ctx)
 	params.ApiService = self.ApiClient.DeviceAssetApi
 	params.P_order = util.ToNil(params.P_order)
 	params.P_orderBy = util.ToNil(params.P_orderBy)
@@ -196,7 +196,7 @@ func (self *DeviceAssetManagement) GetEntity(key string, ctx sdkmodel.RequestCtx
 	if err := self.refresh(); err != nil {
 		return cios.DeviceModelsEntity{}, nil, err
 	}
-	response, httpResponse, err := self.ApiClient.DeviceAssetApi.GetDeviceEntity(ctx, key).Execute()
+	response, httpResponse, err := self.ApiClient.DeviceAssetApi.GetDeviceEntity(self.withHost(ctx), key).Execute()
 	if err != nil {
 		return cios.DeviceModelsEntity{}, httpResponse, err
 	}
@@ -206,13 +206,13 @@ func (self *DeviceAssetManagement) DeleteEntity(key string, ctx sdkmodel.Request
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
-	return self.ApiClient.DeviceAssetApi.DeleteDeviceEntity(ctx, key).Execute()
+	return self.ApiClient.DeviceAssetApi.DeleteDeviceEntity(self.withHost(ctx), key).Execute()
 }
 func (self *DeviceAssetManagement) CreateEntity(name string, body cios.Inventory, ctx sdkmodel.RequestCtx) (cios.DeviceModelsEntity, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.DeviceModelsEntity{}, nil, err
 	}
-	response, httpResponse, err := self.ApiClient.DeviceAssetApi.CreateInventory(ctx, name).Inventory(body).Execute()
+	response, httpResponse, err := self.ApiClient.DeviceAssetApi.CreateInventory(self.withHost(ctx), name).Inventory(body).Execute()
 	if err != nil {
 		return cios.DeviceModelsEntity{}, httpResponse, err
 	}
@@ -225,7 +225,7 @@ func (self *DeviceAssetManagement) GetLifecycles(key string, params cios.ApiGetD
 	}
 	params.ApiService = self.ApiClient.DeviceAssetApi
 	params.P_key = key
-	params.Ctx = ctx
+	params.Ctx = self.withHost(ctx)
 	params.P_order = util.ToNil(params.P_order)
 	params.P_orderBy = util.ToNil(params.P_orderBy)
 	params.P_afterId = util.ToNil(params.P_afterId)
@@ -298,7 +298,7 @@ func (self *DeviceAssetManagement) GetLifecycle(key, id string, ctx sdkmodel.Req
 	if err := self.refresh(); err != nil {
 		return cios.LifeCycle{}, nil, err
 	}
-	response, httpResponse, err := self.ApiClient.DeviceAssetApi.GetDeviceEntitiesLifecycle(ctx, key, id).Execute()
+	response, httpResponse, err := self.ApiClient.DeviceAssetApi.GetDeviceEntitiesLifecycle(self.withHost(ctx), key, id).Execute()
 	if err != nil {
 		return cios.LifeCycle{}, nil, err
 	}
@@ -308,7 +308,7 @@ func (self *DeviceAssetManagement) CreateLifecycle(key string, body cios.LifeCyc
 	if err := self.refresh(); err != nil {
 		return cios.LifeCycle{}, nil, err
 	}
-	response, httpResponse, err := self.ApiClient.DeviceAssetApi.CreateDeviceEntitiesLifecycle(ctx, key).LifeCycleRequest(body).Execute()
+	response, httpResponse, err := self.ApiClient.DeviceAssetApi.CreateDeviceEntitiesLifecycle(self.withHost(ctx), key).LifeCycleRequest(body).Execute()
 	if err != nil {
 		return cios.LifeCycle{}, nil, err
 	}
@@ -318,7 +318,7 @@ func (self *DeviceAssetManagement) DeleteLifecycle(key string, id string, ctx sd
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
-	return self.ApiClient.DeviceAssetApi.DeleteDeviceEntitiesLifecycle(ctx, key, id).Execute()
+	return self.ApiClient.DeviceAssetApi.DeleteDeviceEntitiesLifecycle(self.withHost(ctx), key, id).Execute()
 }
 
 type DeviceEntitiesComponentRange struct {

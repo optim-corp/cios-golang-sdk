@@ -199,7 +199,10 @@ func TestDeviceManagement_DeletePolicy(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
-	client.DeviceManagement.DeletePolicy("id", context.Background())
+	_, err := client.DeviceManagement.DeletePolicy("id", context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
 
 func TestDeviceManagement_CreatePolicy(t *testing.T) {

@@ -35,7 +35,7 @@ func (self *PubSub) GetDataStoreChannels(params cios.ApiGetDataStoreChannelsRequ
 	if err = self.refresh(); err != nil {
 		return
 	}
-	params.Ctx = ctx
+	params.Ctx = self.withHost(ctx)
 	params.ApiService = self.ApiClient.PublishSubscribeApi
 	params.P_order = util.ToNil(params.P_order)
 	params.P_orderBy = util.ToNil(params.P_orderBy)
@@ -46,7 +46,7 @@ func (self *PubSub) GetDataStoreChannel(channelID string, ctx sdkmodel.RequestCt
 	if err := self.refresh(); err != nil {
 		return cios.DataStoreChannel{}, nil, err
 	}
-	request := self.ApiClient.PublishSubscribeApi.GetDataStoreChannel(ctx, channelID)
+	request := self.ApiClient.PublishSubscribeApi.GetDataStoreChannel(self.withHost(ctx), channelID)
 	response, httpResponse, err := request.Execute()
 	if err != nil {
 		return cios.DataStoreChannel{}, httpResponse, err
@@ -59,7 +59,7 @@ func (self *PubSub) GetObjects(channelID string, params cios.ApiGetDataStoreObje
 		return
 	}
 	params.ApiService = self.ApiClient.PublishSubscribeApi
-	params.Ctx = ctx
+	params.Ctx = self.withHost(ctx)
 	params.P_channelId = channelID
 	params.P_label = util.ToNil(params.P_label)
 	params.P_location = util.ToNil(params.P_location)
@@ -119,7 +119,7 @@ func (self *PubSub) GetObject(channelID string, objectID string, packerFormat *s
 	if err := self.refresh(); err != nil {
 		return map[string]interface{}{}, nil, err
 	}
-	request := self.ApiClient.PublishSubscribeApi.GetDataStoreObjectData(ctx, channelID, objectID)
+	request := self.ApiClient.PublishSubscribeApi.GetDataStoreObjectData(self.withHost(ctx), channelID, objectID)
 	if packerFormat != nil {
 		request = request.PackerFormat(*packerFormat)
 	}
@@ -129,7 +129,7 @@ func (self *PubSub) GetObjectLatest(channelID string, packerFormat *string, ctx 
 	if err := self.refresh(); err != nil {
 		return map[string]interface{}{}, nil, err
 	}
-	request := self.ApiClient.PublishSubscribeApi.GetDataStoreObjectDataLatest(ctx, channelID)
+	request := self.ApiClient.PublishSubscribeApi.GetDataStoreObjectDataLatest(self.withHost(ctx), channelID)
 	if packerFormat != nil {
 		request = request.PackerFormat(*packerFormat)
 	}
@@ -150,7 +150,7 @@ func (self *PubSub) GetMultiObjectLatest(channelIDs []string, ctx sdkmodel.Reque
 	if err := self.refresh(); err != nil {
 		return cios.MultipleDataStoreDataLatest{}, nil, err
 	}
-	request := self.ApiClient.PublishSubscribeApi.GetDataStoreMultiObjectDataLatest(ctx).Ids(cios.Ids{Ids: &channelIDs})
+	request := self.ApiClient.PublishSubscribeApi.GetDataStoreMultiObjectDataLatest(self.withHost(ctx)).Ids(cios.Ids{Ids: &channelIDs})
 	return request.Execute()
 }
 func (self *PubSub) GetMultiObjectLatestByChannels(channels []cios.Channel, ctx sdkmodel.RequestCtx) (cios.MultipleDataStoreDataLatest, *_nethttp.Response, error) {
@@ -175,10 +175,9 @@ func (self *PubSub) MapMultiObjectLatestPayloadByChannels(channels []cios.Channe
 	}
 	return self.MapMultiObjectLatestPayload(channelIDs, stc, ctx)
 }
-func (self *PubSub) subscribeCiosWebSocket(_url string, beforeFunc *func(*websocket.Conn), logic func(body []byte) (bool, error), ctx sdkmodel.RequestCtx) error {
+func (self *PubSub) subscribeCiosWebSocket(_url string, beforeFunc *func(*websocket.Conn), logic func(body []byte) (bool, error), wsR, wsW int64, ctx sdkmodel.RequestCtx) error {
 	if ctx != nil {
-		_token, ok := ctx.Value(cios.ContextAccessToken).(string)
-		if ok {
+		if _token, ok := ctx.Value(cios.ContextAccessToken).(string); ok {
 			self.token = &_token
 		}
 	}
@@ -196,6 +195,11 @@ func (self *PubSub) subscribeCiosWebSocket(_url string, beforeFunc *func(*websoc
 		(*beforeFunc)(connection)
 	}
 	for {
+		if wsR != 0 {
+			if err := connection.SetReadDeadline(time.Now().Add(time.Millisecond * time.Duration(wsR))); err != nil {
+				return err
+			}
+		}
 		messageType, body, err := connection.ReadMessage()
 		switch {
 		case websocket.IsCloseError(err, websocket.CloseNormalClosure):
@@ -263,13 +267,12 @@ func (self *PubSub) GetStream(channelID string, params sdkmodel.ApiGetStreamRequ
 				panic(err)
 			}
 		}
-
 	}
 	err := self.subscribeCiosWebSocket(_url.String(), &bf,
 		func(body []byte) (bool, error) {
 			result = append(result, string(body))
 			return false, nil
-		}, ctx,
+		}, self.wsReadTimeout, self.wsWriteTimeout, ctx,
 	)
 	if self.debug {
 		log.Println(result)
@@ -387,7 +390,7 @@ func (self *PubSub) DeleteDataByChannel(channelID string, ctx sdkmodel.RequestCt
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
-	request := self.ApiClient.PublishSubscribeApi.DeleteDataStoreChannel(ctx, channelID)
+	request := self.ApiClient.PublishSubscribeApi.DeleteDataStoreChannel(self.withHost(ctx), channelID)
 	httpResponse, err := request.Execute()
 	if err != nil && !check.IsNil(self.refresh) {
 		httpResponse, err = request.Execute()
@@ -398,7 +401,7 @@ func (self *PubSub) DeleteObject(channelID string, objectID string, ctx sdkmodel
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
-	request := self.ApiClient.PublishSubscribeApi.DeleteDataStoreObjectData(ctx, channelID, objectID)
+	request := self.ApiClient.PublishSubscribeApi.DeleteDataStoreObjectData(self.withHost(ctx), channelID, objectID)
 	_, hErr, err := request.Execute()
 	if err != nil && !check.IsNil(self.refresh) {
 		_, hErr, err = request.Execute()

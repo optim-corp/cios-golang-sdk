@@ -34,7 +34,7 @@ func (self *PubSub) PublishMessage(id string, body interface{}, packerFormat *st
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
-	request := self.ApiClient.PublishSubscribeApi.PublishMessage(ctx).ChannelId(id).Body(body)
+	request := self.ApiClient.PublishSubscribeApi.PublishMessage(self.withHost(ctx)).ChannelId(id).Body(body)
 	request.P_packerFormat = packerFormat
 	return request.Execute()
 }
@@ -247,17 +247,12 @@ func (self *PubSub) CreateMessagingURL(channelID string, mode string, packerForm
 	return _url.String()
 }
 
-func (self *PubSub) CreateCIOSWebsocketConnection(url string, authorization string) (*websocket.Conn, error) {
+func (self *PubSub) CreateCIOSWebsocketConnection(url string, authorization string) (connection *websocket.Conn, err error) {
 	if self.debug {
 		log.Printf("Websocket URL: %s\nAuthorization: %s", url, authorization)
 	}
-	dialer := websocket.Dialer{}
-	headers := http.Header{"Authorization": []string{authorization}}
-	connection, _, err := (&dialer).Dial(url, headers)
-	if err != nil {
-		return nil, err
-	}
-	return connection, nil
+	connection, _, err = (&websocket.Dialer{}).Dial(url, http.Header{"Authorization": []string{authorization}})
+	return
 }
 
 func safeCloseChan(ch chan bool) {

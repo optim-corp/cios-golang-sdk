@@ -20,7 +20,7 @@ func (self *Contract) GetContracts(params cios.ApiGetContractsRequest, ctx sdkmo
 	if err := self.refresh(); err != nil {
 		return cios.MultipleContract{}, nil, err
 	}
-	params.Ctx = ctx
+	params.Ctx = self.withHost(ctx)
 	params.ApiService = self.ApiClient.ContractApi
 	params.P_page = util.ToNil(params.P_page)
 	return params.Execute()

@@ -309,7 +309,10 @@ func TestFileStorage_CreateBucket(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	client.FileStorage.CreateBucket("resource_owner_id", "name", context.Background())
+	_, _, err := client.FileStorage.CreateBucket("resource_owner_id", "name", context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
 
 func TestFileStorage_DeleteBucket(t *testing.T) {
@@ -324,7 +327,10 @@ func TestFileStorage_DeleteBucket(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	client.FileStorage.DeleteBucket("bucketid", context.Background())
+	_, err := client.FileStorage.DeleteBucket("bucketid", context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }
 func TestFileStorage_UpdateBucket(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -344,5 +350,8 @@ func TestFileStorage_UpdateBucket(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	client.FileStorage.UpdateBucket("bucketid", "test", context.Background())
+	_, err := client.FileStorage.UpdateBucket("bucketid", "test", context.Background())
+	if err != nil {
+		t.Fatal(err.Error())
+	}
 }

@@ -21,7 +21,7 @@ func (self *Account) GetResourceOwners(params cios.ApiGetResourceOwnersRequest, 
 		return cios.MultipleResourceOwner{}, nil, err
 	}
 	params.ApiService = self.ApiClient.ResourceOwnerApi
-	params.Ctx = ctx
+	params.Ctx = self.withHost(ctx)
 	params.P_order = util.ToNil(params.P_order)
 	params.P_orderBy = util.ToNil(params.P_orderBy)
 	params.P_page = util.ToNil(params.P_page)
@@ -79,7 +79,7 @@ func (self *Account) GetResourceOwner(id string, ctx sdkmodel.RequestCtx) (cios.
 	if err := self.refresh(); err != nil {
 		return cios.ResourceOwner{}, nil, err
 	}
-	return self.ApiClient.ResourceOwnerApi.GetResourceOwner(ctx, id).Execute()
+	return self.ApiClient.ResourceOwnerApi.GetResourceOwner(self.withHost(ctx), id).Execute()
 
 }
 func (self *Account) GetResourceOwnerByGroupId(groupID string, ctx sdkmodel.RequestCtx) (cios.ResourceOwner, *_nethttp.Response, error) {
@@ -125,7 +125,6 @@ func ChannelsMapByResourceOwnerID(channels []cios.Channel) map[string][]cios.Cha
 	}
 	return result
 }
-
 func GroupMapByResourceOwnerID(groups []cios.Group, resourceOwners []cios.ResourceOwner) map[string]cios.Group {
 	result := map[string]cios.Group{}
 	for _, ro := range resourceOwners {
@@ -159,7 +158,6 @@ func ResourceOwnerIDMapByChannelID(channels []cios.Channel) map[string]string {
 	}
 	return result
 }
-
 func BucketsMapByResourceOwnerID(buckets []cios.Bucket) map[string][]cios.Bucket {
 	result := map[string][]cios.Bucket{}
 	for _, bucket := range buckets {

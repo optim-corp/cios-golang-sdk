@@ -21,7 +21,7 @@ func (self *FileStorage) DownloadFile(bucketID string, nodeID string, ctx sdkmod
 	if err := self.refresh(); err != nil {
 		return nil, nil, err
 	}
-	request := self.ApiClient.FileStorageApi.DownloadFile(ctx, bucketID).NodeId(nodeID)
+	request := self.ApiClient.FileStorageApi.DownloadFile(self.withHost(ctx), bucketID).NodeId(nodeID)
 	f, httpResponse, err := request.Execute()
 	return []byte(f), httpResponse, err
 }
@@ -29,16 +29,15 @@ func (self *FileStorage) DownloadFileByKey(bucketID string, key string, ctx sdkm
 	if err := self.refresh(); err != nil {
 		return nil, nil, err
 	}
-	request := self.ApiClient.FileStorageApi.DownloadFile(ctx, bucketID).Key(key)
+	request := self.ApiClient.FileStorageApi.DownloadFile(self.withHost(ctx), bucketID).Key(key)
 	f, httpResponse, err := request.Execute()
 	return []byte(f), httpResponse, err
 }
-
 func (self *FileStorage) UploadFile(bucketID string, body []byte, params cios.ApiUploadFileRequest, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
-	params.Ctx = ctx
+	params.Ctx = self.withHost(ctx)
 	params.ApiService = self.ApiClient.FileStorageApi
 	params.P_bucketId = bucketID
 	params.P_name = util.ToNil(params.P_name)

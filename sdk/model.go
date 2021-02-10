@@ -1,26 +1,84 @@
 package ciossdk
 
 import (
+	"context"
+	"net/http"
+
 	"github.com/optim-corp/cios-golang-sdk/cios"
+	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 )
 
+var (
+	createClient = func(client *http.Client, servers cios.ServerConfigurations, debug bool) *cios.APIClient {
+		config := cios.NewConfiguration()
+		config.Debug = debug
+		config.UserAgent = "OPTiM Cloud IoT OS Golang SDK"
+		config.HTTPClient = client
+		config.Servers = servers
+		return cios.NewAPIClient(config)
+	}
+	getWithHostFunc = func(index int) func(ctx context.Context) context.Context {
+		return func(ctx context.Context) context.Context {
+			if ctx == nil {
+				return context.WithValue(context.Background(), cios.ContextServerIndex, index)
+			}
+			return context.WithValue(ctx, cios.ContextServerIndex, index)
+		}
+	}
+	str = convert.MustStr
+)
+
 type (
+	CiosClient struct {
+		PubSub                *PubSub
+		Account               *Account
+		DeviceAssetManagement *DeviceAssetManagement
+		DeviceManagement      *DeviceManagement
+		FileStorage           *FileStorage
+		Geography             *Geography
+		Auth                  *Auth
+		License               *License
+		Contract              *Contract
+		tokenExp              int64
+		cfg                   *cios.Configuration
+	}
+	CiosClientConfig struct {
+		AutoRefresh     bool
+		Debug           bool
+		Urls            sdkmodel.CIOSUrl
+		CustomClient    *http.Client
+		AuthConfig      *AuthConfig
+		WebSocketConfig *WebSocketConfig
+	}
+	WebSocketConfig struct {
+		ReadTimeoutMilliSec  int64
+		WriteTimeoutMilliSec int64
+	}
+	AuthConfig struct {
+		sdkmodel.ClientID
+		sdkmodel.ClientSecret
+		sdkmodel.RefreshToken
+		sdkmodel.Assertion
+		sdkmodel.Scope
+		_type string
+	}
 	_instance struct {
 		ApiClient *cios.APIClient
 		Url       string
+		Host      string
+		withHost  func(context.Context) context.Context
 		refresh   func() error
 	}
 	PubSub struct {
-		ApiClient *cios.APIClient
-		Url       string
-		refresh   func() error
-		debug     bool
-		token     *string
+		_instance
+		debug          bool
+		token          *string
+		wsReadTimeout  int64
+		wsWriteTimeout int64
 	}
 	Auth struct {
-		ApiClient    *cios.APIClient
-		Url          string
+		_instance
 		debug        bool
 		scope        string
 		assertion    string
@@ -37,6 +95,29 @@ type (
 	Account               _instance
 )
 
-var (
-	str = convert.MustStr
-)
+func ClientAuthConf(clientId, clientSecret, scope string) *AuthConfig {
+	return &AuthConfig{
+		ClientID:     clientId,
+		ClientSecret: clientSecret,
+		Scope:        scope,
+		_type:        sdkmodel.CLIENT_TYPE,
+	}
+}
+func RefreshTokenAuth(clientId, clientSecret, refreshToken, scope string) *AuthConfig {
+	return &AuthConfig{
+		ClientID:     clientId,
+		ClientSecret: clientSecret,
+		RefreshToken: refreshToken,
+		Scope:        scope,
+		_type:        sdkmodel.REFRESH_TYPE,
+	}
+}
+func DeviceAuthConf(clientId, clientSecret, assertion, scope string) *AuthConfig {
+	return &AuthConfig{
+		ClientID:     clientId,
+		ClientSecret: clientSecret,
+		Assertion:    assertion,
+		Scope:        scope,
+		_type:        sdkmodel.DEVICE_TYPE,
+	}
+}

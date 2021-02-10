@@ -11,5 +11,5 @@ func (self *Account) GetMe(ctx sdkmodel.RequestCtx) (cios.Me, *_nethttp.Response
 	if err := self.refresh(); err != nil {
 		return cios.Me{}, nil, err
 	}
-	return self.ApiClient.AccountApi.GetMe(ctx).Execute()
+	return self.ApiClient.AccountApi.GetMe(self.withHost(ctx)).Execute()
 }

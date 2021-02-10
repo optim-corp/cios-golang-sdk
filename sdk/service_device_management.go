@@ -23,7 +23,7 @@ func (self DeviceManagement) GetDevices(params cios.ApiGetDevicesRequest, ctx sd
 		return cios.MultipleDevice{}, nil, err
 	}
 	params.ApiService = self.ApiClient.DeviceApi
-	params.Ctx = ctx
+	params.Ctx = self.withHost(ctx)
 	params.P_order = util.ToNil(params.P_order)
 	params.P_orderBy = util.ToNil(params.P_orderBy)
 	params.P_name = util.ToNil(params.P_name)
@@ -84,7 +84,7 @@ func (self DeviceManagement) GetDevice(deviceID string, lang *string, isDev *boo
 	if err := self.refresh(); err != nil {
 		return cios.Device{}, nil, err
 	}
-	request := self.ApiClient.DeviceApi.GetDevice(ctx, deviceID)
+	request := self.ApiClient.DeviceApi.GetDevice(self.withHost(ctx), deviceID)
 	if lang != nil {
 		request = request.Lang(*lang)
 	}
@@ -107,13 +107,13 @@ func (self DeviceManagement) DeleteDevice(id string, ctx sdkmodel.RequestCtx) (*
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
-	return self.ApiClient.DeviceApi.DeleteDevice(ctx, id).Execute()
+	return self.ApiClient.DeviceApi.DeleteDevice(self.withHost(ctx), id).Execute()
 }
 func (self DeviceManagement) CreateDevice(body cios.DeviceInfo, ctx sdkmodel.RequestCtx) (cios.Device, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Device{}, nil, err
 	}
-	response, httpResponse, err := self.ApiClient.DeviceApi.CreateDevice(ctx).DeviceInfo(body).Execute()
+	response, httpResponse, err := self.ApiClient.DeviceApi.CreateDevice(self.withHost(ctx)).DeviceInfo(body).Execute()
 	if err != nil {
 		return cios.Device{}, httpResponse, err
 	}
@@ -123,7 +123,7 @@ func (self DeviceManagement) UpdateDevice(deviceId string, body cios.DeviceUpdat
 	if err := self.refresh(); err != nil {
 		return cios.Device{}, nil, err
 	}
-	response, httpResponse, err := self.ApiClient.DeviceApi.UpdateDevice(ctx, deviceId).DeviceUpdateRequest(body).Execute()
+	response, httpResponse, err := self.ApiClient.DeviceApi.UpdateDevice(self.withHost(ctx), deviceId).DeviceUpdateRequest(body).Execute()
 	if err != nil {
 		return cios.Device{}, httpResponse, err
 	}

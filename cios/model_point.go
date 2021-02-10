@@ -19,7 +19,7 @@ type Point struct {
 	Id string `json:"id"`
 	Name string `json:"name"`
 	Location Location `json:"location"`
-	Altitude *float32 `json:"altitude,omitempty"`
+	Altitude float32 `json:"altitude"`
 	Labels *[]Label `json:"labels,omitempty"`
 	Description *string `json:"description,omitempty"`
 	DisplayInfo *[]DisplayInfo `json:"display_info,omitempty"`
@@ -30,11 +30,12 @@ type Point struct {
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewPoint(id string, name string, location Location, resourceOwnerId string, ) *Point {
+func NewPoint(id string, name string, location Location, altitude float32, resourceOwnerId string, ) *Point {
 	this := Point{}
 	this.Id = id
 	this.Name = name
 	this.Location = location
+	this.Altitude = altitude
 	this.ResourceOwnerId = resourceOwnerId
 	return &this
 }
@@ -119,36 +120,28 @@ func (o *Point) SetLocation(v Location) {
 	o.Location = v
 }
 
-// GetAltitude returns the Altitude field value if set, zero value otherwise.
+// GetAltitude returns the Altitude field value
 func (o *Point) GetAltitude() float32 {
-	if o == nil || o.Altitude == nil {
+	if o == nil  {
 		var ret float32
 		return ret
 	}
-	return *o.Altitude
+
+	return o.Altitude
 }
 
-// GetAltitudeOk returns a tuple with the Altitude field value if set, nil otherwise
+// GetAltitudeOk returns a tuple with the Altitude field value
 // and a boolean to check if the value has been set.
 func (o *Point) GetAltitudeOk() (*float32, bool) {
-	if o == nil || o.Altitude == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.Altitude, true
+	return &o.Altitude, true
 }
 
-// HasAltitude returns a boolean if a field has been set.
-func (o *Point) HasAltitude() bool {
-	if o != nil && o.Altitude != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetAltitude gets a reference to the given float32 and assigns it to the Altitude field.
+// SetAltitude sets field value
 func (o *Point) SetAltitude(v float32) {
-	o.Altitude = &v
+	o.Altitude = v
 }
 
 // GetLabels returns the Labels field value if set, zero value otherwise.
@@ -282,7 +275,7 @@ func (o Point) MarshalJSON() ([]byte, error) {
 	if true {
 		toSerialize["location"] = o.Location
 	}
-	if o.Altitude != nil {
+	if true {
 		toSerialize["altitude"] = o.Altitude
 	}
 	if o.Labels != nil {
