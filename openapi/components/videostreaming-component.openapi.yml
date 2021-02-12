@@ -8,6 +8,8 @@ paths: {}
 components:
   schemas:
     SingleRoom:
+      required:
+        - room
       properties:
         room:
           $ref: '#/components/schemas/Room'

@@ -93,6 +93,10 @@ type (
 	Geography             _instance
 	License               _instance
 	Account               _instance
+	VideoStreaming        struct {
+		_instance
+		token *string
+	}
 )
 
 func ClientAuthConf(clientId, clientSecret, scope string) *AuthConfig {

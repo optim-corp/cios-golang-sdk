@@ -4,13 +4,13 @@
 
 Name | Type | Description | Notes
 ------------ | ------------- | ------------- | -------------
-**Room** | Pointer to [**Room**](Room.md) |  | [optional] 
+**Room** | [**Room**](Room.md) |  | 
 
 ## Methods
 
 ### NewSingleRoom
 
-`func NewSingleRoom() *SingleRoom`
+`func NewSingleRoom(room Room, ) *SingleRoom`
 
 NewSingleRoom instantiates a new SingleRoom object
 This constructor will assign default values to properties that have it defined,
@@ -44,11 +44,6 @@ and a boolean to check if the value has been set.
 
 SetRoom sets Room field to given value.
 
-### HasRoom
-
-`func (o *SingleRoom) HasRoom() bool`
-
-HasRoom returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

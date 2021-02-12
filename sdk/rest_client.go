@@ -130,6 +130,14 @@ func MakeRequestCtx(token string) sdkmodel.RequestCtx {
 	}
 	return context.WithValue(context.Background(), cios.ContextAccessToken, regexp.MustCompile(`^bearer|Bearer| `).ReplaceAllString(token, ""))
 }
+
+func GetTokenFromCtx(ctx sdkmodel.RequestCtx) *string {
+	_token, ok := ctx.Value(cios.ContextAccessToken).(string)
+	if ok {
+		return &_token
+	}
+	return nil
+}
 func ParseAccessToken(accessToken string) string {
 	if !strings.Contains(accessToken, "Bearer ") {
 		return "Bearer " + accessToken
