@@ -40,6 +40,7 @@ type (
 		Auth                  *Auth
 		License               *License
 		Contract              *Contract
+		Video                 *VideoStreaming
 		tokenExp              int64
 		cfg                   *cios.Configuration
 	}

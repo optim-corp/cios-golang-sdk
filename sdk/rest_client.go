@@ -25,6 +25,7 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 		{URL: config.Urls.ContractUrl},
 		{URL: config.Urls.LicenseUrl},
 		{URL: config.Urls.LocationUrl},
+		{URL: config.Urls.VideoStreamingUrl},
 	}, config.Debug)
 
 	instance.cfg = client.GetConfig()
@@ -44,6 +45,10 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 	instance.PubSub.ApiClient = client
 	instance.PubSub.Url = config.Urls.MessagingUrl
 	instance.PubSub.withHost = getWithHostFunc(sdkmodel.MESSAGING_INDEX)
+	instance.Video = &VideoStreaming{}
+	instance.Video.ApiClient = client
+	instance.Video.Url = config.Urls.VideoStreamingUrl
+	instance.Video.withHost = getWithHostFunc(sdkmodel.VIDEO_STREAMING_INDEX)
 
 	// AuthConfig
 	if config.AuthConfig != nil {

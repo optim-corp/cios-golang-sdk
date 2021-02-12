@@ -31,7 +31,7 @@ func (self *VideoStreaming) GetVideoInfo(videoID string, ctx sdkmodel.RequestCtx
 	if err := self.refresh(); err != nil {
 		return cios.Video{}, nil, err
 	}
-	response, httpResponse, err := self.ApiClient.VideostreamingOperationsApi.GetVideoStreams(ctx, videoID).Execute()
+	response, httpResponse, err := self.ApiClient.VideostreamingOperationsApi.GetVideoStreams(self.withHost(ctx), videoID).Execute()
 	if err != nil {
 		return cios.Video{}, httpResponse, err
 	}
@@ -43,7 +43,7 @@ func (self *VideoStreaming) UpdateVideoInfo(videoID string, name, description st
 		return cios.Video{}, nil, err
 	}
 	response, httpResponse, err := self.ApiClient.VideostreamingOperationsApi.
-		UpdateStreams(ctx, videoID).
+		UpdateStreams(self.withHost(ctx), videoID).
 		VideoUpdateRequest(cios.VideoUpdateRequest{
 			VideoName:        util.ToNilStr(name),
 			VideoDescription: util.ToNilStr(description),
@@ -80,7 +80,7 @@ func (self *VideoStreaming) Play(videoID string, ctx sdkmodel.RequestCtx) (cios.
 	if err := self.refresh(); err != nil {
 		return cios.Room{}, nil, err
 	}
-	room, httpResponse, err := self.ApiClient.VideostreamingOperationsApi.CreateVideoStreamsPlay(ctx, videoID).Execute()
+	room, httpResponse, err := self.ApiClient.VideostreamingOperationsApi.CreateVideoStreamsPlay(self.withHost(ctx), videoID).Execute()
 	if err != nil {
 		return cios.Room{}, httpResponse, err
 	}
@@ -90,5 +90,5 @@ func (self *VideoStreaming) Stop(videoID string, ctx sdkmodel.RequestCtx) (*_htt
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
-	return self.ApiClient.VideostreamingOperationsApi.CreateVideoStreamsStop(ctx, videoID).Execute()
+	return self.ApiClient.VideostreamingOperationsApi.CreateVideoStreamsStop(self.withHost(ctx), videoID).Execute()
 }
