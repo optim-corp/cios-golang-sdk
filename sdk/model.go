@@ -7,6 +7,7 @@ import (
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+	_util "github.com/optim-kazuhiro-seida/go-advance-type/util"
 )
 
 var (
@@ -27,6 +28,7 @@ var (
 		}
 	}
 	str = convert.MustStr
+	is  = _util.Is
 )
 
 type (

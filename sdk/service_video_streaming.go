@@ -2,10 +2,11 @@ package ciossdk
 
 import (
 	"fmt"
+	"log"
 	_http "net/http"
+	"net/http/httputil"
 
 	"github.com/optim-kazuhiro-seida/go-advance-type/check"
-
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
@@ -59,19 +60,36 @@ func (self *VideoStreaming) GetThumbnail(videoID string, ctx sdkmodel.RequestCtx
 		return nil, nil, err
 	}
 
+	req, err := _http.NewRequest(_http.MethodGet, fmt.Sprintf("%s/v2/video_streams/%s/thumbnail", self.Url, videoID), nil)
+	if err != nil {
+		return
+	}
+
 	token := GetTokenFromCtx(ctx)
 	if check.IsNil(token) {
 		token = self.token
 	}
 
-	req, err := _http.NewRequest(_http.MethodGet, fmt.Sprintf("%s/v2/video_streams/%s/thumbnail", self.Url, videoID), nil)
-	if err != nil {
-		return
-	}
 	req.Header.Add("Authentication", convert.MustStr(token))
+
+	if self.ApiClient.GetConfig().Debug {
+		dump, err := httputil.DumpRequestOut(req, true)
+		if err != nil {
+			return nil, nil, err
+		}
+		log.Printf("\n%s\n", string(dump))
+	}
 
 	if httpResponse, err = self.ApiClient.GetConfig().HTTPClient.Do(req); err == nil {
 		err = convert.UnMarshalJson(&img, httpResponse.Body)
+	}
+
+	if self.ApiClient.GetConfig().Debug {
+		dump, err := httputil.DumpResponse(httpResponse, true)
+		if err != nil {
+			return nil, httpResponse, err
+		}
+		log.Printf("\n%s\n", string(dump))
 	}
 	return
 }
