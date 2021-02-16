@@ -45,10 +45,14 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 	instance.PubSub.ApiClient = client
 	instance.PubSub.Url = config.Urls.MessagingUrl
 	instance.PubSub.withHost = getWithHostFunc(sdkmodel.MESSAGING_INDEX)
-	instance.Video = &VideoStreaming{}
-	instance.Video.ApiClient = client
-	instance.Video.Url = config.Urls.VideoStreamingUrl
-	instance.Video.withHost = getWithHostFunc(sdkmodel.VIDEO_STREAMING_INDEX)
+	instance.Video = &VideoStreaming{
+		_instance: _instance{
+			ApiClient: client,
+			Url:       config.Urls.VideoStreamingUrl,
+			Host:      "",
+			withHost:  getWithHostFunc(sdkmodel.VIDEO_STREAMING_INDEX),
+		},
+	}
 
 	// AuthConfig
 	if config.AuthConfig != nil {
@@ -93,6 +97,7 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 		return nil
 	}
 	instance.PubSub.refresh = refFunc
+	instance.Video.refresh = refFunc
 	instance.Account.refresh = refFunc
 	instance.License.refresh = refFunc
 	instance.Contract.refresh = refFunc
@@ -119,6 +124,7 @@ func (self *CiosClient) _accessToken(accessToken string) *CiosClient {
 		}
 	}
 	self.PubSub.token = &accessToken
+	self.Video.token = &accessToken
 	if !check.IsNil(self.cfg) {
 		self.cfg.AddDefaultHeader("Authorization", ParseAccessToken(accessToken))
 	}
@@ -136,12 +142,13 @@ func MakeRequestCtx(token string) sdkmodel.RequestCtx {
 	return context.WithValue(context.Background(), cios.ContextAccessToken, regexp.MustCompile(`^bearer|Bearer| `).ReplaceAllString(token, ""))
 }
 
-func GetTokenFromCtx(ctx sdkmodel.RequestCtx) *string {
-	_token, ok := ctx.Value(cios.ContextAccessToken).(string)
-	if ok {
-		return &_token
+func GetTokenFromCtx(ctx sdkmodel.RequestCtx) (token *string) {
+	if !check.IsNil(ctx) {
+		if _token, ok := ctx.Value(cios.ContextAccessToken).(string); ok {
+			token = &_token
+		}
 	}
-	return nil
+	return
 }
 func ParseAccessToken(accessToken string) string {
 	if !strings.Contains(accessToken, "Bearer ") {

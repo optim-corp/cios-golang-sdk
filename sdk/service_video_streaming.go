@@ -2,6 +2,7 @@ package ciossdk
 
 import (
 	"fmt"
+	"io/ioutil"
 	"log"
 	_http "net/http"
 	"net/http/httputil"
@@ -13,6 +14,10 @@ import (
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-corp/cios-golang-sdk/util"
 )
+
+func MakeGetVideosOpts() cios.ApiGetVideoStreamsListRequest {
+	return cios.ApiGetVideoStreamsListRequest{}
+}
 
 func (self *VideoStreaming) GetVideoInfos(params cios.ApiGetVideoStreamsListRequest, ctx sdkmodel.RequestCtx) ([]cios.Video, *_http.Response, error) {
 	if err := self.refresh(); err != nil {
@@ -55,6 +60,7 @@ func (self *VideoStreaming) UpdateVideoInfo(videoID string, name, description st
 	return response.Video, httpResponse, err
 }
 
+// MEMO: No OpenAPI
 func (self *VideoStreaming) GetThumbnail(videoID string, ctx sdkmodel.RequestCtx) (img []byte, httpResponse *_http.Response, err error) {
 	if err := self.refresh(); err != nil {
 		return nil, nil, err
@@ -81,7 +87,12 @@ func (self *VideoStreaming) GetThumbnail(videoID string, ctx sdkmodel.RequestCtx
 	}
 
 	if httpResponse, err = self.ApiClient.GetConfig().HTTPClient.Do(req); err == nil {
-		err = convert.UnMarshalJson(&img, httpResponse.Body)
+		defer httpResponse.Body.Close()
+		img, err = ioutil.ReadAll(httpResponse.Body)
+	}
+
+	if err != nil {
+		return
 	}
 
 	if self.ApiClient.GetConfig().Debug {

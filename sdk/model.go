@@ -4,6 +4,8 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/optim-kazuhiro-seida/go-advance-type/check"
+
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
@@ -21,7 +23,7 @@ var (
 	}
 	getWithHostFunc = func(index int) func(ctx context.Context) context.Context {
 		return func(ctx context.Context) context.Context {
-			if ctx == nil {
+			if check.IsNil(ctx) {
 				return context.WithValue(context.Background(), cios.ContextServerIndex, index)
 			}
 			return context.WithValue(ctx, cios.ContextServerIndex, index)
