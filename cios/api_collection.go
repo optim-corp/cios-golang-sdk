@@ -16,7 +16,6 @@ import (
 	_nethttp "net/http"
 	_neturl "net/url"
 	"strings"
-	"os"
 )
 
 // Linger please
@@ -154,12 +153,12 @@ type ApiCreateSeriesImageRequest struct {
 	P_collectionId string
 	P_seriesId string
 	P_timestamp int64
-	P_body **os.File
+	P_body *string
 	P_resourceOwnerId *string
 	P_isLatest *bool
 }
 
-func (r ApiCreateSeriesImageRequest) Body(body *os.File) ApiCreateSeriesImageRequest {
+func (r ApiCreateSeriesImageRequest) Body(body string) ApiCreateSeriesImageRequest {
 	r.P_body = &body
 	return r
 }
@@ -1015,7 +1014,7 @@ func (r ApiGetSeriesImageRequest) ResourceOwnerId(resourceOwnerId string) ApiGet
 	return r
 }
 
-func (r ApiGetSeriesImageRequest) Execute() (*os.File, *_nethttp.Response, error) {
+func (r ApiGetSeriesImageRequest) Execute() (string, *_nethttp.Response, error) {
 	return r.ApiService.GetSeriesImageExecute(r)
 }
 
@@ -1042,16 +1041,16 @@ func (a *CollectionApiService) GetSeriesImage(Ctx _context.Context, collectionId
 
 /*
  * Execute executes the request
- * @return *os.File
+ * @return string
  */
-func (a *CollectionApiService) GetSeriesImageExecute(r ApiGetSeriesImageRequest) (*os.File, *_nethttp.Response, error) {
+func (a *CollectionApiService) GetSeriesImageExecute(r ApiGetSeriesImageRequest) (string, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *os.File
+		localVarReturnValue  string
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.Ctx, "CollectionApiService.GetSeriesImage")
@@ -1477,7 +1476,7 @@ func (r ApiGetSeriesThumnbnailRequest) ResourceOwnerId(resourceOwnerId string) A
 	return r
 }
 
-func (r ApiGetSeriesThumnbnailRequest) Execute() (*os.File, *_nethttp.Response, error) {
+func (r ApiGetSeriesThumnbnailRequest) Execute() (string, *_nethttp.Response, error) {
 	return r.ApiService.GetSeriesThumnbnailExecute(r)
 }
 
@@ -1504,16 +1503,16 @@ func (a *CollectionApiService) GetSeriesThumnbnail(Ctx _context.Context, collect
 
 /*
  * Execute executes the request
- * @return *os.File
+ * @return string
  */
-func (a *CollectionApiService) GetSeriesThumnbnailExecute(r ApiGetSeriesThumnbnailRequest) (*os.File, *_nethttp.Response, error) {
+func (a *CollectionApiService) GetSeriesThumnbnailExecute(r ApiGetSeriesThumnbnailRequest) (string, *_nethttp.Response, error) {
 	var (
 		localVarHTTPMethod   = _nethttp.MethodGet
 		localVarPostBody     interface{}
 		localVarFormFileName string
 		localVarFileName     string
 		localVarFileBytes    []byte
-		localVarReturnValue  *os.File
+		localVarReturnValue  string
 	)
 
 	localBasePath, err := a.client.cfg.ServerURLWithContext(r.Ctx, "CollectionApiService.GetSeriesThumnbnail")

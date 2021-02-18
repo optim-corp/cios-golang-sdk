@@ -124,7 +124,7 @@ func main() {
     collectionId := "location" // string | コレクション名
     seriesId := "seriesId_example" // string | シリーズID
     timestamp := int64(1518165596566320) // int64 | UNIXタイム(ミリ秒)
-    body := os.NewFile(1234, "some_file") // *os.File | 
+    body := string(BYTE_ARRAY_DATA_HERE) // string | 
     resourceOwnerId := TODO // string |  (optional)
     isLatest := false // bool | 最新画像としてアップロードする場合はtrue。保存に失敗した画像を再度アップロードする場合など、最新画像でない場合はfalseを指定する。 (optional) (default to true)
 
@@ -158,7 +158,7 @@ Name | Type | Description  | Notes
 
 
 
- **body** | ***os.File** |  | 
+ **body** | **string** |  | 
  **resourceOwnerId** | [**string**](string.md) |  | 
  **isLatest** | **bool** | 最新画像としてアップロードする場合はtrue。保存に失敗した画像を再度アップロードする場合など、最新画像でない場合はfalseを指定する。 | [default to true]
 
@@ -576,7 +576,7 @@ Name | Type | Description  | Notes
 
 ## GetSeriesImage
 
-> *os.File GetSeriesImage(ctx, collectionId, seriesId, timestamp).SeriesDataBulkRequest(seriesDataBulkRequest).ResourceOwnerId(resourceOwnerId).Execute()
+> string GetSeriesImage(ctx, collectionId, seriesId, timestamp).SeriesDataBulkRequest(seriesDataBulkRequest).ResourceOwnerId(resourceOwnerId).Execute()
 
 
 
@@ -608,7 +608,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error when calling `CollectionApi.GetSeriesImage``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `GetSeriesImage`: *os.File
+    // response from `GetSeriesImage`: string
     fmt.Fprintf(os.Stdout, "Response from `CollectionApi.GetSeriesImage`: %v\n", resp)
 }
 ```
@@ -638,7 +638,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[***os.File**](*os.File.md)
+**string**
 
 ### Authorization
 
@@ -826,7 +826,7 @@ Name | Type | Description  | Notes
 
 ## GetSeriesThumnbnail
 
-> *os.File GetSeriesThumnbnail(ctx, collectionId, seriesId, timestamp).SeriesDataBulkRequest(seriesDataBulkRequest).ResourceOwnerId(resourceOwnerId).Execute()
+> string GetSeriesThumnbnail(ctx, collectionId, seriesId, timestamp).SeriesDataBulkRequest(seriesDataBulkRequest).ResourceOwnerId(resourceOwnerId).Execute()
 
 
 
@@ -858,7 +858,7 @@ func main() {
         fmt.Fprintf(os.Stderr, "Error when calling `CollectionApi.GetSeriesThumnbnail``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
     }
-    // response from `GetSeriesThumnbnail`: *os.File
+    // response from `GetSeriesThumnbnail`: string
     fmt.Fprintf(os.Stdout, "Response from `CollectionApi.GetSeriesThumnbnail`: %v\n", resp)
 }
 ```
@@ -888,7 +888,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[***os.File**](*os.File.md)
+**string**
 
 ### Authorization
 

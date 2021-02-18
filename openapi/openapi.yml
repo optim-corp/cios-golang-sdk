@@ -695,12 +695,12 @@ paths:
             image/jpeg:
               schema:
                 description: JPEG形式の画像。
-                format: binary
+                format: byte
                 type: string
             image/png:
               schema:
                 description: PNG形式の画像。
-                format: binary
+                format: byte
                 type: string
           description: 取得成功
         '400':
@@ -745,12 +745,12 @@ paths:
           image/jpeg:
             schema:
               description: JPEG形式の画像。サイズが1MBを超える場合はリクエスト不正とする。
-              format: binary
+              format: byte
               type: string
           image/png:
             schema:
               description: PNG形式の画像。サイズが1MBを超える場合はリクエスト不正とする。
-              format: binary
+              format: byte
               type: string
         required: true
       responses:
@@ -796,12 +796,12 @@ paths:
             image/jpeg:
               schema:
                 description: JPEG形式の画像。
-                format: binary
+                format: byte
                 type: string
             image/png:
               schema:
                 description: PNG形式の画像。
-                format: binary
+                format: byte
                 type: string
           description: 取得成功
         '400':
