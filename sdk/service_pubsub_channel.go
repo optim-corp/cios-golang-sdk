@@ -101,7 +101,10 @@ func (self *PubSub) GetChannel(channelID string, isDev *bool, lang *string, ctx 
 }
 func (self *PubSub) GetChannelFirst(params cios.ApiGetChannelsRequest, ctx sdkmodel.RequestCtx) (cios.Channel, *_nethttp.Response, error) {
 	response, httpResponse, err := self.GetChannels(params.Limit(1), ctx)
-	if err != nil || len(response.Channels) == 0 {
+	if err != nil {
+		return cios.Channel{}, httpResponse, err
+	}
+	if len(response.Channels) == 0 {
 		return cios.Channel{}, httpResponse, fmt.Errorf("not found")
 	}
 	return response.Channels[0], httpResponse, err
