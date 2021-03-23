@@ -3328,6 +3328,7 @@ paths:
       parameters:
       - $ref: ./components/parameters.yml#/components/parameters/resource_owner_id_query_required
       - $ref: ./components/parameters.yml#/components/parameters/device_id_query
+      - $ref: ./components/parameters.yml#/components/parameters/is_enable
       responses:
         '200':
           content:
@@ -3364,6 +3365,7 @@ paths:
           application/json:
             schema:
               $ref: ./components/videostreaming-component.openapi.yml#/components/schemas/VideoUpdateRequest
+        required: true
       responses:
         '200':
           content:

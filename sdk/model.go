@@ -4,9 +4,12 @@ import (
 	"context"
 	"net/http"
 
+	"github.com/optim-kazuhiro-seida/go-advance-type/check"
+
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+	_util "github.com/optim-kazuhiro-seida/go-advance-type/util"
 )
 
 var (
@@ -20,13 +23,14 @@ var (
 	}
 	getWithHostFunc = func(index int) func(ctx context.Context) context.Context {
 		return func(ctx context.Context) context.Context {
-			if ctx == nil {
+			if check.IsNil(ctx) {
 				return context.WithValue(context.Background(), cios.ContextServerIndex, index)
 			}
 			return context.WithValue(ctx, cios.ContextServerIndex, index)
 		}
 	}
 	str = convert.MustStr
+	is  = _util.Is
 )
 
 type (
@@ -40,6 +44,7 @@ type (
 		Auth                  *Auth
 		License               *License
 		Contract              *Contract
+		Video                 *VideoStreaming
 		tokenExp              int64
 		cfg                   *cios.Configuration
 	}
@@ -93,6 +98,10 @@ type (
 	Geography             _instance
 	License               _instance
 	Account               _instance
+	VideoStreaming        struct {
+		_instance
+		token *string
+	}
 )
 
 func ClientAuthConf(clientId, clientSecret, scope string) *AuthConfig {

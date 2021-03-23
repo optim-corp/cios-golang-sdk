@@ -7,7 +7,7 @@ Name | Type | Description | Notes
 **Id** | **string** |  | 
 **Name** | **string** |  | 
 **Location** | [**Location**](Location.md) |  | 
-**Altitude** | Pointer to **float32** |  | [optional] 
+**Altitude** | **float32** |  | 
 **Labels** | Pointer to [**[]Label**](Label.md) |  | [optional] 
 **Description** | Pointer to **string** |  | [optional] 
 **DisplayInfo** | Pointer to [**[]DisplayInfo**](DisplayInfo.md) |  | [optional] 
@@ -17,7 +17,7 @@ Name | Type | Description | Notes
 
 ### NewPoint
 
-`func NewPoint(id string, name string, location Location, resourceOwnerId string, ) *Point`
+`func NewPoint(id string, name string, location Location, altitude float32, resourceOwnerId string, ) *Point`
 
 NewPoint instantiates a new Point object
 This constructor will assign default values to properties that have it defined,
@@ -111,11 +111,6 @@ and a boolean to check if the value has been set.
 
 SetAltitude sets Altitude field to given value.
 
-### HasAltitude
-
-`func (o *Point) HasAltitude() bool`
-
-HasAltitude returns a boolean if a field has been set.
 
 ### GetLabels
 

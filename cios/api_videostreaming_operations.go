@@ -342,6 +342,7 @@ type ApiGetVideoStreamsListRequest struct {
 	ApiService *VideostreamingOperationsApiService
 	P_resourceOwnerId *string
 	P_deviceId *string
+	P_isEnable *string
 }
 
 func (r ApiGetVideoStreamsListRequest) ResourceOwnerId(resourceOwnerId string) ApiGetVideoStreamsListRequest {
@@ -350,6 +351,10 @@ func (r ApiGetVideoStreamsListRequest) ResourceOwnerId(resourceOwnerId string) A
 }
 func (r ApiGetVideoStreamsListRequest) DeviceId(deviceId string) ApiGetVideoStreamsListRequest {
 	r.P_deviceId = &deviceId
+	return r
+}
+func (r ApiGetVideoStreamsListRequest) IsEnable(isEnable string) ApiGetVideoStreamsListRequest {
+	r.P_isEnable = &isEnable
 	return r
 }
 
@@ -403,6 +408,9 @@ func (a *VideostreamingOperationsApiService) GetVideoStreamsListExecute(r ApiGet
 	localVarQueryParams.Add("resource_owner_id", parameterToString(*r.P_resourceOwnerId, ""))
 	if r.P_deviceId != nil {
 		localVarQueryParams.Add("device_id", parameterToString(*r.P_deviceId, ""))
+	}
+	if r.P_isEnable != nil {
+		localVarQueryParams.Add("is_enable", parameterToString(*r.P_isEnable, ""))
 	}
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{}
@@ -622,6 +630,9 @@ func (a *VideostreamingOperationsApiService) UpdateStreamsExecute(r ApiUpdateStr
 	localVarHeaderParams := make(map[string]string)
 	localVarQueryParams := _neturl.Values{}
 	localVarFormParams := _neturl.Values{}
+	if r.P_videoUpdateRequest == nil {
+		return localVarReturnValue, nil, reportError("videoUpdateRequest is required and must be specified")
+	}
 
 	// to determine the Content-Type header
 	localVarHTTPContentTypes := []string{"application/json"}

@@ -217,7 +217,7 @@ Name | Type | Description  | Notes
 
 ## GetVideoStreamsList
 
-> MultipleVideo GetVideoStreamsList(ctx).ResourceOwnerId(resourceOwnerId).DeviceId(deviceId).Execute()
+> MultipleVideo GetVideoStreamsList(ctx).ResourceOwnerId(resourceOwnerId).DeviceId(deviceId).IsEnable(isEnable).Execute()
 
 
 
@@ -236,10 +236,11 @@ import (
 func main() {
     resourceOwnerId := "resourceOwnerId_example" // string | 
     deviceId := "deviceId_example" // string |  (optional)
+    isEnable := "isEnable_example" // string |  (optional)
 
     configuration := openapiclient.NewConfiguration()
     api_client := openapiclient.NewAPIClient(configuration)
-    resp, r, err := api_client.VideostreamingOperationsApi.GetVideoStreamsList(context.Background()).ResourceOwnerId(resourceOwnerId).DeviceId(deviceId).Execute()
+    resp, r, err := api_client.VideostreamingOperationsApi.GetVideoStreamsList(context.Background()).ResourceOwnerId(resourceOwnerId).DeviceId(deviceId).IsEnable(isEnable).Execute()
     if err.Error() != "" {
         fmt.Fprintf(os.Stderr, "Error when calling `VideostreamingOperationsApi.GetVideoStreamsList``: %v\n", err)
         fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -262,6 +263,7 @@ Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **resourceOwnerId** | **string** |  | 
  **deviceId** | **string** |  | 
+ **isEnable** | **string** |  | 
 
 ### Return type
 
@@ -369,7 +371,7 @@ import (
 
 func main() {
     videoId := "videoId_example" // string | 
-    videoUpdateRequest := *openapiclient.NewVideoUpdateRequest() // VideoUpdateRequest |  (optional)
+    videoUpdateRequest := *openapiclient.NewVideoUpdateRequest() // VideoUpdateRequest | 
 
     configuration := openapiclient.NewConfiguration()
     api_client := openapiclient.NewAPIClient(configuration)

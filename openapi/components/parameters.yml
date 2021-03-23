@@ -256,6 +256,12 @@ components:
       required: false
       schema:
         type: string
+    is_enable:
+      name: is_enable
+      in: query
+      required: false
+      schema:
+        type: string
     page:
       name: page
       in: query

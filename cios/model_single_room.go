@@ -16,15 +16,16 @@ import (
 
 // SingleRoom struct for SingleRoom
 type SingleRoom struct {
-	Room *Room `json:"room,omitempty"`
+	Room Room `json:"room"`
 }
 
 // NewSingleRoom instantiates a new SingleRoom object
 // This constructor will assign default values to properties that have it defined,
 // and makes sure properties required by API are set, but the set of arguments
 // will change when the set of required properties is changed
-func NewSingleRoom() *SingleRoom {
+func NewSingleRoom(room Room, ) *SingleRoom {
 	this := SingleRoom{}
+	this.Room = room
 	return &this
 }
 
@@ -36,41 +37,33 @@ func NewSingleRoomWithDefaults() *SingleRoom {
 	return &this
 }
 
-// GetRoom returns the Room field value if set, zero value otherwise.
+// GetRoom returns the Room field value
 func (o *SingleRoom) GetRoom() Room {
-	if o == nil || o.Room == nil {
+	if o == nil  {
 		var ret Room
 		return ret
 	}
-	return *o.Room
+
+	return o.Room
 }
 
-// GetRoomOk returns a tuple with the Room field value if set, nil otherwise
+// GetRoomOk returns a tuple with the Room field value
 // and a boolean to check if the value has been set.
 func (o *SingleRoom) GetRoomOk() (*Room, bool) {
-	if o == nil || o.Room == nil {
+	if o == nil  {
 		return nil, false
 	}
-	return o.Room, true
+	return &o.Room, true
 }
 
-// HasRoom returns a boolean if a field has been set.
-func (o *SingleRoom) HasRoom() bool {
-	if o != nil && o.Room != nil {
-		return true
-	}
-
-	return false
-}
-
-// SetRoom gets a reference to the given Room and assigns it to the Room field.
+// SetRoom sets field value
 func (o *SingleRoom) SetRoom(v Room) {
-	o.Room = &v
+	o.Room = v
 }
 
 func (o SingleRoom) MarshalJSON() ([]byte, error) {
 	toSerialize := map[string]interface{}{}
-	if o.Room != nil {
+	if true {
 		toSerialize["room"] = o.Room
 	}
 	return json.Marshal(toSerialize)

@@ -12,6 +12,7 @@ paths:
       parameters:
         - $ref: '../components/parameters.yml#/components/parameters/resource_owner_id_query_required'
         - $ref: '../components/parameters.yml#/components/parameters/device_id_query'
+        - $ref: '../components/parameters.yml#/components/parameters/is_enable'
       responses:
         "200":
           description: 成功
@@ -44,6 +45,7 @@ paths:
       parameters:
         - $ref: '../components/parameters.yml#/components/parameters/video_id'
       requestBody:
+        required: true
         content:
           application/json:
             schema:
