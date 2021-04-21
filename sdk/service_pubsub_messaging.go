@@ -121,14 +121,16 @@ func (self *CiosMessaging) OnReceive(arg func([]byte) (bool, error)) error {
 func (self *CiosMessaging) OnClose(arg func()) {
 	self.CloseFunc = arg
 }
-
 func (self *CiosMessaging) Send(message []byte) error {
 	if check.IsNil(self.Connection) {
 		return fmt.Errorf("no connection used Start()")
 	}
-	defer self.debug("send: " + string(message))
+	defer self.debug("Send: " + string(message))
 	if self.writeDeadTime != 0 {
-		self.Connection.SetWriteDeadline(time.Now().Add(self.writeDeadTime))
+		if err := self.Connection.SetWriteDeadline(time.Now().Add(self.writeDeadTime)); err != nil {
+			self.debug("Set Write Timeout", err)
+			return err
+		}
 	}
 	return self.Connection.WriteMessage(websocket.TextMessage, message)
 }
@@ -152,36 +154,40 @@ func (self *CiosMessaging) Publish(message interface{}) error {
 func (self *CiosMessaging) receive() (body []byte, err error) {
 	var messageType int
 	if check.IsNil(self.Connection) {
-		err = fmt.Errorf("no connection used Start()")
+		err = fmt.Errorf("no connection use Start()")
 		return
 	}
 	if self.readDeadTime != 0 {
-		_err := self.Connection.SetReadDeadline(time.Now().Add(self.readDeadTime))
-		if _err != nil {
-			self.debug(_err)
+		if err = self.Connection.SetReadDeadline(time.Now().Add(self.readDeadTime)); err != nil {
+			self.debug("Set Read Timeout", err)
+			return
 		}
 	}
 	messageType, body, err = self.Connection.ReadMessage()
-	self.debug(fmt.Sprintf("%d, %s", messageType, convert.MustStr(err)))
 	switch {
-	case websocket.IsCloseError(err, websocket.CloseNormalClosure):
+	case websocket.IsCloseError(err, websocket.CloseNormalClosure, websocket.CloseNoStatusReceived):
 		err = nil
+		self.debug("Receive close err: ", fmt.Sprintf("%d, %s", messageType, convert.MustStr(err)))
 	case websocket.IsUnexpectedCloseError(err):
+		self.debug("Receive unexpected close err: ", fmt.Sprintf("%d, %s", messageType, convert.MustStr(err)))
 	case messageType == websocket.CloseMessage:
 		err = nil
+		self.debug("Receive CloseMessage: ", fmt.Sprintf("%d, %s", messageType, convert.MustStr(err)))
 	case messageType == websocket.TextMessage:
+		self.debug(string(body))
 	}
-	self.debug(string(body))
 	return
 }
 func (self *CiosMessaging) Receive() (body []byte, err error) {
+AGAIN:
 	body, err = self.receive()
 	if err != nil && !check.IsNil(self.refresh) {
 		self.token = (*self.refresh)()
+		self.debug("Receive Refresh")
 		if _connection, _err := CreateCiosWsConn(self.isDebug, self.wsUrl, ParseAccessToken(self.token)); _err == nil {
-			self.debug(self.Connection.Close())
+			self.debug("Close err: ", self.Connection.Close())
 			self.Connection = _connection
-			body, err = self.receive()
+			goto AGAIN
 		}
 	}
 	return
@@ -218,6 +224,7 @@ func (self *CiosMessaging) Start(ctx sdkmodel.RequestCtx) (err error) {
 					break
 				}
 				self.token = (*self.refresh)()
+				self.debug("Auto Refresh")
 				if _connection, _err := CreateCiosWsConn(self.isDebug, self.wsUrl, ParseAccessToken(self.token)); _err == nil {
 					self.debug("Connection Close: ", self.Connection.Close())
 					self.Connection = _connection
@@ -238,8 +245,8 @@ func (self *CiosMessaging) Start(ctx sdkmodel.RequestCtx) (err error) {
 				if !check.IsNil(self.Connection) {
 					self.debug("Ping")
 					if err := self.Connection.WriteMessage(websocket.PingMessage, nil); err != nil {
-						self.debug(err.Error())
-						break
+						self.debug("Ping Err: ", err)
+						continue
 					}
 				}
 			case _, _ = <-self.closed:
@@ -253,7 +260,7 @@ func (self *CiosMessaging) Start(ctx sdkmodel.RequestCtx) (err error) {
 	return
 }
 func (self *CiosMessaging) Close() (err error) {
-	self.debug("close")
+	self.debug("Close")
 	defer self.CloseFunc()
 	self.closed <- true
 	self.closed <- true
@@ -261,7 +268,6 @@ func (self *CiosMessaging) Close() (err error) {
 	if !check.IsNil(self.Connection) {
 		return self.Connection.Close()
 	}
-	self.debug(convert.MustCompactJson(self.Connection))
 	return nil
 }
 
