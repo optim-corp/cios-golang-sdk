@@ -165,7 +165,7 @@ func (self *CiosMessaging) receive() (body []byte, err error) {
 	}
 	messageType, body, err = self.Connection.ReadMessage()
 	switch {
-	case websocket.IsCloseError(err, websocket.CloseNormalClosure, websocket.CloseNoStatusReceived):
+	case websocket.IsCloseError(err, websocket.CloseNormalClosure):
 		err = nil
 		self.debug("Receive close err: ", fmt.Sprintf("%d, %s", messageType, convert.MustStr(err)))
 	case websocket.IsUnexpectedCloseError(err):
