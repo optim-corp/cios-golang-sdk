@@ -90,11 +90,11 @@ func (self *PubSub) NewMessaging(channelId, mode, packerFormat string) *CiosMess
 	return &instance
 }
 
-func (self *CiosMessaging) SetWriteDeadline(t time.Duration) *CiosMessaging {
+func (self *CiosMessaging) SetWriteTimeout(t time.Duration) *CiosMessaging {
 	self.writeDeadTime = t
 	return self
 }
-func (self *CiosMessaging) SetReadDeadline(t time.Duration) *CiosMessaging {
+func (self *CiosMessaging) SetReadTimeout(t time.Duration) *CiosMessaging {
 	self.readDeadTime = t
 	return self
 }
