@@ -126,7 +126,7 @@ func (self *CiosMessaging) Send(message []byte) error {
 	if check.IsNil(self.Connection) {
 		return fmt.Errorf("no connection used Start()")
 	}
-	self.debug("send: " + string(message))
+	defer self.debug("send: " + string(message))
 	if self.writeDeadTime != 0 {
 		self.Connection.SetWriteDeadline(time.Now().Add(self.writeDeadTime))
 	}
@@ -199,10 +199,11 @@ func (self *CiosMessaging) MapReceived(stct interface{}) error {
 }
 
 func (self *CiosMessaging) Start(ctx sdkmodel.RequestCtx) (err error) {
-	var ok bool
 	self.closed = make(chan bool)
-	if self.token, ok = ctx.Value(cios.ContextAccessToken).(string); !ok && !check.IsNil(self.refresh) {
+	if _token, ok := ctx.Value(cios.ContextAccessToken).(string); !ok && !check.IsNil(self.refresh) {
 		self.token = (*self.refresh)()
+	} else {
+		self.token = _token
 	}
 	if self.Connection, err = CreateCiosWsConn(self.isDebug, self.wsUrl, ParseAccessToken(self.token)); err != nil {
 		return
@@ -210,6 +211,7 @@ func (self *CiosMessaging) Start(ctx sdkmodel.RequestCtx) (err error) {
 	autoRefresh := func() {
 	Refresh:
 		for {
+			self.debug("Registration Refresh Loop")
 			select {
 			case <-time.After(time.Minute * 55):
 				if check.IsNil(self.refresh) {
@@ -230,6 +232,7 @@ func (self *CiosMessaging) Start(ctx sdkmodel.RequestCtx) (err error) {
 	autoPing := func() {
 	Ping:
 		for {
+			self.debug("Registration Ping Loop")
 			select {
 			case <-time.After(time.Minute):
 				if !check.IsNil(self.Connection) {
@@ -252,6 +255,8 @@ func (self *CiosMessaging) Start(ctx sdkmodel.RequestCtx) (err error) {
 func (self *CiosMessaging) Close() (err error) {
 	self.debug("close")
 	defer self.CloseFunc()
+	self.closed <- true
+	self.closed <- true
 	safeCloseChan(self.closed)
 	if !check.IsNil(self.Connection) {
 		return self.Connection.Close()
