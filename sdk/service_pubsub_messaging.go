@@ -98,9 +98,13 @@ func (self *CiosMessaging) SetReadDeadline(t time.Duration) *CiosMessaging {
 	self.readDeadTime = t
 	return self
 }
-func (self *CiosMessaging) debug(text interface{}) {
+func (self *CiosMessaging) debug(text ...interface{}) {
 	if self.isDebug {
-		log.Println(convert.MustStr(text))
+		result := ""
+		for _, t := range text {
+			result += convert.MustStr(t) + " "
+		}
+		log.Println(result)
 	}
 }
 func (self *CiosMessaging) OnReceive(arg func([]byte) (bool, error)) error {
@@ -120,9 +124,9 @@ func (self *CiosMessaging) OnClose(arg func()) {
 
 func (self *CiosMessaging) Send(message []byte) error {
 	if check.IsNil(self.Connection) {
-		return fmt.Errorf("no connection cios websocket")
+		return fmt.Errorf("no connection used Start()")
 	}
-	self.debug(string(message))
+	self.debug("send: " + string(message))
 	if self.writeDeadTime != 0 {
 		self.Connection.SetWriteDeadline(time.Now().Add(self.writeDeadTime))
 	}
@@ -147,6 +151,10 @@ func (self *CiosMessaging) Publish(message interface{}) error {
 
 func (self *CiosMessaging) receive() (body []byte, err error) {
 	var messageType int
+	if check.IsNil(self.Connection) {
+		err = fmt.Errorf("no connection used Start()")
+		return
+	}
 	if self.readDeadTime != 0 {
 		_err := self.Connection.SetReadDeadline(time.Now().Add(self.readDeadTime))
 		if _err != nil {
@@ -154,14 +162,12 @@ func (self *CiosMessaging) receive() (body []byte, err error) {
 		}
 	}
 	messageType, body, err = self.Connection.ReadMessage()
+	self.debug(fmt.Sprintf("%d, %s", messageType, convert.MustStr(err)))
 	switch {
 	case websocket.IsCloseError(err, websocket.CloseNormalClosure):
-		self.debug(err)
 		err = nil
 	case websocket.IsUnexpectedCloseError(err):
-		self.debug(err)
 	case messageType == websocket.CloseMessage:
-		self.debug(err)
 		err = nil
 	case messageType == websocket.TextMessage:
 	}
@@ -202,26 +208,27 @@ func (self *CiosMessaging) Start(ctx sdkmodel.RequestCtx) (err error) {
 		return
 	}
 	autoRefresh := func() {
+	Refresh:
 		for {
 			select {
-			case <-time.After(time.Second * 5):
+			case <-time.After(time.Minute * 55):
 				if check.IsNil(self.refresh) {
 					break
 				}
 				self.token = (*self.refresh)()
 				if _connection, _err := CreateCiosWsConn(self.isDebug, self.wsUrl, ParseAccessToken(self.token)); _err == nil {
-					self.debug(self.Connection.Close())
+					self.debug("Connection Close: ", self.Connection.Close())
 					self.Connection = _connection
 					self.debug("Reconnect Websocket")
 				}
 			case _, _ = <-self.closed:
-				self.debug(fmt.Sprintf("Close Websocket(%s)", self.wsUrl))
-				safeCloseChan(self.closed)
-				break
+				self.debug("End Auto Refresh")
+				break Refresh
 			}
 		}
 	}
 	autoPing := func() {
+	Ping:
 		for {
 			select {
 			case <-time.After(time.Minute):
@@ -233,9 +240,8 @@ func (self *CiosMessaging) Start(ctx sdkmodel.RequestCtx) (err error) {
 					}
 				}
 			case _, _ = <-self.closed:
-				self.debug(fmt.Sprintf("Close Websocket(%s)", self.wsUrl))
-				safeCloseChan(self.closed)
-				break
+				self.debug("End Auto Ping")
+				break Ping
 			}
 		}
 	}
@@ -246,12 +252,11 @@ func (self *CiosMessaging) Start(ctx sdkmodel.RequestCtx) (err error) {
 func (self *CiosMessaging) Close() (err error) {
 	self.debug("close")
 	defer self.CloseFunc()
-	self.closed <- true
-	self.closed <- true
 	safeCloseChan(self.closed)
 	if !check.IsNil(self.Connection) {
 		return self.Connection.Close()
 	}
+	self.debug(convert.MustCompactJson(self.Connection))
 	return nil
 }
 
