@@ -121,18 +121,27 @@ func (self *CiosMessaging) OnReceive(arg func([]byte) (bool, error)) error {
 func (self *CiosMessaging) OnClose(arg func()) {
 	self.CloseFunc = arg
 }
-func (self *CiosMessaging) Send(message []byte) error {
+func (self *CiosMessaging) Send(message []byte) (err error) {
 	if check.IsNil(self.Connection) {
 		return fmt.Errorf("no connection used Start()")
 	}
 	defer self.debug("Send: " + string(message))
 	if self.writeDeadTime != 0 {
-		if err := self.Connection.SetWriteDeadline(time.Now().Add(self.writeDeadTime)); err != nil {
+		if err = self.Connection.SetWriteDeadline(time.Now().Add(self.writeDeadTime)); err != nil {
 			self.debug("Set Write Timeout", err)
-			return err
+			return
 		}
 	}
-	return self.Connection.WriteMessage(websocket.TextMessage, message)
+	if err = self.Connection.WriteMessage(websocket.TextMessage, message); err != nil && !check.IsNil(self.refresh) {
+		self.token = (*self.refresh)()
+		self.debug("Send Refresh")
+		if _connection, err := CreateCiosWsConn(self.isDebug, self.wsUrl, ParseAccessToken(self.token)); err == nil {
+			self.debug("Close err: ", self.Connection.Close())
+			self.Connection = _connection
+			return self.Send(message)
+		}
+	}
+	return
 }
 func (self *CiosMessaging) SendStr(message string) error {
 	return self.Send([]byte(message))
@@ -183,7 +192,7 @@ func (self *CiosMessaging) Receive() (body []byte, err error) {
 	if err != nil && !check.IsNil(self.refresh) {
 		self.token = (*self.refresh)()
 		self.debug("Receive Refresh")
-		if _connection, _err := CreateCiosWsConn(self.isDebug, self.wsUrl, ParseAccessToken(self.token)); _err == nil {
+		if _connection, err := CreateCiosWsConn(self.isDebug, self.wsUrl, ParseAccessToken(self.token)); err == nil {
 			self.debug("Close err: ", self.Connection.Close())
 			self.Connection = _connection
 			return self.Receive()
