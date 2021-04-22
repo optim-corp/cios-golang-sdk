@@ -179,7 +179,6 @@ func (self *CiosMessaging) receive() (body []byte, err error) {
 	return
 }
 func (self *CiosMessaging) Receive() (body []byte, err error) {
-AGAIN:
 	body, err = self.receive()
 	if err != nil && !check.IsNil(self.refresh) {
 		self.token = (*self.refresh)()
@@ -187,7 +186,7 @@ AGAIN:
 		if _connection, _err := CreateCiosWsConn(self.isDebug, self.wsUrl, ParseAccessToken(self.token)); _err == nil {
 			self.debug("Close err: ", self.Connection.Close())
 			self.Connection = _connection
-			goto AGAIN
+			return self.Receive()
 		}
 	}
 	return
