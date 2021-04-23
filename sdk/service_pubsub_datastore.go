@@ -289,23 +289,6 @@ func (self *PubSub) GetStreamAll(channelID string, params sdkmodel.ApiGetStreamR
 			return self.GetStream(channelID, params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+convert.MustInt64(params.OffsetParam)), ctx)
 		}
 	)
-	options := MakeGetObjectsOpts()
-	options.P_limit = convert.Int64Ptr(1)
-	options.P_label = params.LabelParam
-	options.P_offset = params.OffsetParam
-	options.P_location = params.LocationRangeParam
-	options.P_timestamp = params.TimestampParam
-	options.P_sessionId = params.SessionIdParam
-	options.P_locationRange = params.LocationRangeParam
-	options.P_timestampRange = params.TimestampRangeParam
-	options.P_channelProtocolId = params.ChannelProtocolIdParam
-	options.P_channelProtocolVersion = params.ChannelProtocolVersionParam
-	response, _, err := self.GetObjects(channelID, options, ctx)
-	if err != nil {
-		return nil, err
-	}
-	total := response.Total
-
 	if params.LimitParam != nil {
 		_limit = *params.LimitParam
 		for {
@@ -321,17 +304,17 @@ func (self *PubSub) GetStreamAll(channelID string, params sdkmodel.ApiGetStreamR
 			}
 		}
 	} else {
-		res, err := getFunction(offset)
-		if err != nil {
-			return nil, err
-		}
-		result = append(result, res...)
-		for offset = int64(1000); offset+convert.MustInt64(params.OffsetParam) < total; offset += 1000 {
-			res, err = getFunction(offset)
+		for {
+			res, err := getFunction(offset)
 			if err != nil {
-				return nil, err
+				break
 			}
+
 			result = append(result, res...)
+			if len(res) < 1000 {
+				break
+			}
+			offset += 1000
 		}
 	}
 	return result, err
