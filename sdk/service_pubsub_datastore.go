@@ -311,7 +311,7 @@ func (self *PubSub) GetStreamAll(channelID string, params sdkmodel.ApiGetStreamR
 			}
 
 			result = append(result, res...)
-			if len(res) == 0 || len(res) < 1000 {
+			if len(res) < 1000 {
 				break
 			}
 			offset += 1000
