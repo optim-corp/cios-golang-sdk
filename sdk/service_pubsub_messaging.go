@@ -1,7 +1,9 @@
 package ciossdk
 
 import (
+	"encoding/json"
 	"errors"
+	"fmt"
 	"log"
 	"net/http"
 	"sync"
@@ -21,6 +23,21 @@ import (
 )
 
 type (
+	CiosMessaging struct {
+		SubscribeFunc func([]byte) (bool, error)
+		CloseFunc     func()
+		Connection    *websocket.Conn
+		isUpdating    bool
+		wsUrl         string
+		isDebug       bool
+		token         string
+		closed        chan bool
+		readDeadTime  time.Duration
+		writeDeadTime time.Duration
+		refresh       *func() sdkmodel.AccessToken
+	}
+
+	// Deprecated: should not be used
 	ConnectWebSocketOptions struct {
 		PackerFormat  *string
 		SubscribeFunc *func(body []byte) (bool, error)
@@ -29,6 +46,238 @@ type (
 		Context       sdkmodel.RequestCtx
 	}
 )
+
+var (
+	CreateCiosWsConn = func(isDebug bool, url, authorization string) (connection *websocket.Conn, err error) {
+		if isDebug {
+			log.Printf("Websocket URL: %s\nAuthorization: %s", url, authorization)
+		}
+		connection, _, err = (&websocket.Dialer{}).Dial(url, http.Header{"Authorization": []string{authorization}})
+		return
+	}
+	CreateCiosWsMessagingURL = func(httpUrl, channelID, mode string, packerFormat *string) string {
+		_url, err := url.Parse(strings.Replace(httpUrl, "https", "wss", 1) + "/v2/messaging")
+		if err != nil {
+			return ""
+		}
+		q := _url.Query()
+		q.Set("channel_id", channelID)
+		q.Set("mode", mode)
+		if packerFormat != nil {
+			q.Set("packer_format", *packerFormat)
+		}
+		_url.RawQuery = q.Encode()
+		return _url.String()
+	}
+)
+
+func (self *PubSub) NewMessaging(channelId, mode, packerFormat string) *CiosMessaging {
+	ref := func() (token string) {
+		self.refresh()
+		if !check.IsNil(self.token) {
+			token = *self.token
+		}
+		return
+	}
+	if packerFormat == "" {
+		packerFormat = "payload_only"
+	}
+	instance := CiosMessaging{}
+	instance.wsUrl = CreateCiosWsMessagingURL(self.Url, channelId, mode, &packerFormat)
+	instance.isDebug = self.debug
+	instance.refresh = &ref
+	instance.CloseFunc = func() {}
+	return &instance
+}
+
+func (self *CiosMessaging) SetWriteTimeout(t time.Duration) *CiosMessaging {
+	self.writeDeadTime = t
+	return self
+}
+func (self *CiosMessaging) SetReadTimeout(t time.Duration) *CiosMessaging {
+	self.readDeadTime = t
+	return self
+}
+func (self *CiosMessaging) debug(text ...interface{}) {
+	if self.isDebug {
+		result := ""
+		for _, t := range text {
+			result += convert.MustStr(t) + " "
+		}
+		log.Println(result)
+	}
+}
+func (self *CiosMessaging) OnReceive(arg func([]byte) (bool, error)) error {
+	for {
+		body, err := self.Receive()
+		if err != nil {
+			return err
+		}
+		if ok, err := arg(body); !ok || err != nil {
+			return err
+		}
+	}
+}
+func (self *CiosMessaging) OnClose(arg func()) {
+	self.CloseFunc = arg
+}
+func (self *CiosMessaging) Send(message []byte) (err error) {
+	if check.IsNil(self.Connection) {
+		return fmt.Errorf("no connection used Start()")
+	}
+	defer self.debug("Send: " + string(message))
+	if self.writeDeadTime != 0 {
+		if err = self.Connection.SetWriteDeadline(time.Now().Add(self.writeDeadTime)); err != nil {
+			self.debug("Set Write Timeout", err)
+			return
+		}
+	}
+	if err = self.Connection.WriteMessage(websocket.TextMessage, message); err != nil && !check.IsNil(self.refresh) {
+		self.token = (*self.refresh)()
+		self.debug("Send Refresh")
+		if _connection, err := CreateCiosWsConn(self.isDebug, self.wsUrl, ParseAccessToken(self.token)); err == nil {
+			self.debug("Close err: ", self.Connection.Close())
+			self.Connection = _connection
+			return self.Send(message)
+		}
+	}
+	return
+}
+func (self *CiosMessaging) SendStr(message string) error {
+	return self.Send([]byte(message))
+}
+func (self *CiosMessaging) SendAny(message interface{}) error {
+	return self.SendStr(convert.MustStr(message))
+}
+func (self *CiosMessaging) SendJson(message interface{}) error {
+	msg, err := json.Marshal(message)
+	if err != nil {
+		return err
+	}
+	return self.Send(msg)
+}
+func (self *CiosMessaging) Publish(message interface{}) error {
+	return self.SendAny(message)
+}
+
+func (self *CiosMessaging) receive() (body []byte, err error) {
+	var messageType int
+	if check.IsNil(self.Connection) {
+		err = fmt.Errorf("no connection use Start()")
+		return
+	}
+	if self.readDeadTime != 0 {
+		if err = self.Connection.SetReadDeadline(time.Now().Add(self.readDeadTime)); err != nil {
+			self.debug("Set Read Timeout", err)
+			return
+		}
+	}
+	messageType, body, err = self.Connection.ReadMessage()
+	switch {
+	case websocket.IsCloseError(err, websocket.CloseNormalClosure):
+		err = nil
+		self.debug("Receive close err: ", fmt.Sprintf("%d, %s", messageType, convert.MustStr(err)))
+	case websocket.IsUnexpectedCloseError(err):
+		self.debug("Receive unexpected close err: ", fmt.Sprintf("%d, %s", messageType, convert.MustStr(err)))
+	case messageType == websocket.CloseMessage:
+		err = nil
+		self.debug("Receive CloseMessage: ", fmt.Sprintf("%d, %s", messageType, convert.MustStr(err)))
+	case messageType == websocket.TextMessage:
+		self.debug(string(body))
+	}
+	return
+}
+func (self *CiosMessaging) Receive() (body []byte, err error) {
+	body, err = self.receive()
+	if err != nil && !check.IsNil(self.refresh) {
+		self.token = (*self.refresh)()
+		self.debug("Receive Refresh")
+		if _connection, err := CreateCiosWsConn(self.isDebug, self.wsUrl, ParseAccessToken(self.token)); err == nil {
+			self.debug("Close err: ", self.Connection.Close())
+			self.Connection = _connection
+			return self.Receive()
+		}
+	}
+	return
+}
+func (self *CiosMessaging) ReceiveStr() (string, error) {
+	res, err := self.Receive()
+	return string(res), err
+}
+func (self *CiosMessaging) MapReceived(stct interface{}) error {
+	res, err := self.Receive()
+	if err != nil {
+		return err
+	}
+	return convert.UnMarshalJson(res, stct)
+}
+
+func (self *CiosMessaging) Start(ctx sdkmodel.RequestCtx) (err error) {
+	self.closed = make(chan bool)
+	if _token, ok := ctx.Value(cios.ContextAccessToken).(string); !ok && !check.IsNil(self.refresh) {
+		self.token = (*self.refresh)()
+	} else {
+		self.token = _token
+	}
+	if self.Connection, err = CreateCiosWsConn(self.isDebug, self.wsUrl, ParseAccessToken(self.token)); err != nil {
+		return
+	}
+	autoRefresh := func() {
+	Refresh:
+		for {
+			self.debug("Registration Refresh Loop")
+			select {
+			case <-time.After(time.Minute * 55):
+				if check.IsNil(self.refresh) {
+					break
+				}
+				self.token = (*self.refresh)()
+				self.debug("Auto Refresh")
+				if _connection, _err := CreateCiosWsConn(self.isDebug, self.wsUrl, ParseAccessToken(self.token)); _err == nil {
+					self.debug("Connection Close: ", self.Connection.Close())
+					self.Connection = _connection
+					self.debug("Reconnect Websocket")
+				}
+			case _, _ = <-self.closed:
+				self.debug("End Auto Refresh")
+				break Refresh
+			}
+		}
+	}
+	autoPing := func() {
+	Ping:
+		for {
+			self.debug("Registration Ping Loop")
+			select {
+			case <-time.After(time.Minute):
+				if !check.IsNil(self.Connection) {
+					self.debug("Ping")
+					if err := self.Connection.WriteMessage(websocket.PingMessage, nil); err != nil {
+						self.debug("Ping Err: ", err)
+						continue
+					}
+				}
+			case _, _ = <-self.closed:
+				self.debug("End Auto Ping")
+				break Ping
+			}
+		}
+	}
+	go autoRefresh()
+	go autoPing()
+	return
+}
+func (self *CiosMessaging) Close() (err error) {
+	self.debug("Close")
+	defer self.CloseFunc()
+	self.closed <- true
+	self.closed <- true
+	safeCloseChan(self.closed)
+	if !check.IsNil(self.Connection) {
+		return self.Connection.Close()
+	}
+	return nil
+}
 
 func (self *PubSub) PublishMessage(id string, body interface{}, packerFormat *string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
@@ -45,6 +294,7 @@ func (self *PubSub) PublishMessageJSON(id string, body cios.PackerFormatJson, ct
 	return self.PublishMessage(id, &body, convert.StringPtr("json"), ctx)
 }
 
+// Deprecated: should not be used
 func (self *PubSub) ConnectWebSocket(channelID string, done chan bool, params ConnectWebSocketOptions) (err error) {
 	if params.SubscribeFunc == nil && params.PublishStr == nil {
 		return errors.New("no publish str and subscribe func")
@@ -232,6 +482,7 @@ func (self *PubSub) ConnectWebSocket(channelID string, done chan bool, params Co
 	return err
 }
 
+// Deprecated: should not be used
 func (self *PubSub) CreateMessagingURL(channelID string, mode string, packerFormat *string) string {
 	_url, err := url.Parse(strings.Replace(self.Url, "https", "wss", 1) + "/v2/messaging")
 	if err != nil {
@@ -247,6 +498,7 @@ func (self *PubSub) CreateMessagingURL(channelID string, mode string, packerForm
 	return _url.String()
 }
 
+// Deprecated: should not be used
 func (self *PubSub) CreateCIOSWebsocketConnection(url string, authorization string) (connection *websocket.Conn, err error) {
 	if self.debug {
 		log.Printf("Websocket URL: %s\nAuthorization: %s", url, authorization)
