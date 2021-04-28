@@ -7,7 +7,8 @@ require (
 	github.com/golang/protobuf v1.4.3 // indirect
 	github.com/google/go-cmp v0.5.4 // indirect
 	github.com/gorilla/websocket v1.4.2
-	github.com/optim-kazuhiro-seida/go-advance-type v1.2.4
+	github.com/iancoleman/strcase v0.1.3
+	github.com/json-iterator/go v1.1.11
 	github.com/stretchr/testify v1.5.1 // indirect
 	golang.org/x/net v0.0.0-20210119194325-5f4716e94777 // indirect
 	golang.org/x/oauth2 v0.0.0-20210126194326-f9ce19ea3013

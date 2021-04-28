@@ -4,12 +4,12 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/optim-kazuhiro-seida/go-advance-type/check"
+	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/check"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
-	_util "github.com/optim-kazuhiro-seida/go-advance-type/util"
+	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/convert"
+	_util "github.com/optim-corp/cios-golang-sdk/util/go_advance_type/util"
 )
 
 var (

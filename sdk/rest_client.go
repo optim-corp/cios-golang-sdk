@@ -9,8 +9,8 @@ import (
 	"github.com/dgrijalva/jwt-go"
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
-	"github.com/optim-kazuhiro-seida/go-advance-type/check"
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/check"
+	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/convert"
 )
 
 func NewCiosClient(config CiosClientConfig) *CiosClient {

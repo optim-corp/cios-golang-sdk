@@ -3,9 +3,9 @@ package ciossdk
 import (
 	_nethttp "net/http"
 
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/convert"
 
-	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
+	xmath "github.com/optim-corp/cios-golang-sdk/util/go_advance_type/math"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"

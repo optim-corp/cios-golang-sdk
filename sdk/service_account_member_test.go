@@ -9,7 +9,7 @@ import (
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/convert"
 )
 
 func TestAccount_InviteGroup(t *testing.T) {
