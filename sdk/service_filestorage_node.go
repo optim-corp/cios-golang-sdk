@@ -3,11 +3,11 @@ package ciossdk
 import (
 	_nethttp "net/http"
 
-	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/convert"
+	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/util"
 
-	xmath "github.com/optim-corp/cios-golang-sdk/util/go_advance_type/math"
+	xmath "github.com/fcfcqloow/go-advance/math"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 
@@ -39,7 +39,7 @@ func (self *FileStorage) GetNodesAll(bucketID string, params cios.ApiGetNodesReq
 		offset      = int64(0)
 		_limit      = int64(1000)
 		getFunction = func(offset int64) (cios.MultipleNode, *_nethttp.Response, error) {
-			return self.GetNodes(bucketID, params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+convert.MustInt64(params.P_offset)), ctx)
+			return self.GetNodes(bucketID, params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+cnv.MustInt64(params.P_offset)), ctx)
 		}
 	)
 	if params.P_limit != nil {
@@ -62,7 +62,7 @@ func (self *FileStorage) GetNodesAll(bucketID string, params cios.ApiGetNodesReq
 			return nil, httpRes, err
 		}
 		result = append(result, res.Nodes...)
-		for offset = int64(1000); offset+convert.MustInt64(params.P_offset) < res.Total; offset += 1000 {
+		for offset = int64(1000); offset+cnv.MustInt64(params.P_offset) < res.Total; offset += 1000 {
 			res, httpRes, err = getFunction(offset)
 			if err != nil {
 				return nil, httpRes, err

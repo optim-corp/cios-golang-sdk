@@ -3,9 +3,9 @@ package ciossdk
 import (
 	_nethttp "net/http"
 
-	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/convert"
+	cnv "github.com/fcfcqloow/go-advance/convert"
 
-	xmath "github.com/optim-corp/cios-golang-sdk/util/go_advance_type/math"
+	xmath "github.com/fcfcqloow/go-advance/math"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
@@ -36,7 +36,7 @@ func (self *DeviceManagement) GetPoliciesAll(params cios.ApiGetDevicePoliciesReq
 		_limit       = int64(1000)
 		offset       = int64(0)
 		getFunction  = func(offset int64) (cios.MultipleDevicePolicy, *_nethttp.Response, error) {
-			return self.GetPolicies(params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+convert.MustInt64(params.P_offset)), ctx)
+			return self.GetPolicies(params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+cnv.MustInt64(params.P_offset)), ctx)
 		}
 	)
 	if params.P_limit != nil {
@@ -59,7 +59,7 @@ func (self *DeviceManagement) GetPoliciesAll(params cios.ApiGetDevicePoliciesReq
 			return nil, httpRes, err
 		}
 		result = append(result, res.Policies...)
-		for offset = int64(1000); offset+convert.MustInt64(params.P_offset) < res.Total; offset += 1000 {
+		for offset = int64(1000); offset+cnv.MustInt64(params.P_offset) < res.Total; offset += 1000 {
 			res, httpRes, err = getFunction(offset)
 			if err != nil {
 				return nil, httpRes, err

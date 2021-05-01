@@ -9,9 +9,9 @@ import (
 	"net/url"
 	"testing"
 
-	xmath "github.com/optim-corp/cios-golang-sdk/util/go_advance_type/math"
+	xmath "github.com/fcfcqloow/go-advance/math"
 
-	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/convert"
+	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
@@ -142,12 +142,12 @@ func TestDeviceManagement_GetDevicesAll(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleDevice{Total: 3500, Devices: []cios.Device{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		offsets = append(offsets, offset)
 		limits = append(limits, limit)
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Devices = append(response.Devices, cios.Device{Id: convert.MustStr(i)})
+			response.Devices = append(response.Devices, cios.Device{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -195,10 +195,10 @@ func TestDeviceManagement_GetDevicesUnlimited(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleDevice{Total: 3500, Devices: []cios.Device{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Devices = append(response.Devices, cios.Device{Id: convert.MustStr(i)})
+			response.Devices = append(response.Devices, cios.Device{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -218,7 +218,7 @@ func TestDeviceManagement_GetDevice(t *testing.T) {
 			response := cios.SingleDevice{Device: cios.Device{
 				Id:              "test",
 				ResourceOwnerId: "test_resource_owner",
-				Name:            convert.StringPtr(""),
+				Name:            cnv.StrPtr(""),
 			}}
 			json.NewEncoder(w).Encode(response)
 		}
@@ -242,7 +242,7 @@ func TestDeviceManagement_CreateDevice(t *testing.T) {
 			t.Fatal(r.Method)
 		}
 		byts, _ := ioutil.ReadAll(r.Body)
-		convert.UnMarshalJson(byts, &body)
+		cnv.UnMarshalJson(byts, &body)
 		if *body.Name != "name" || body.ResourceOwnerId != "resource_owner_id" {
 			t.Fatal(body)
 		}
@@ -251,7 +251,7 @@ func TestDeviceManagement_CreateDevice(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 	_, _, err := client.DeviceManagement.CreateDevice(cios.DeviceInfo{
-		Name:            convert.StringPtr("name"),
+		Name:            cnv.StrPtr("name"),
 		ResourceOwnerId: "resource_owner_id",
 	}, context.Background())
 	if err != nil {
@@ -281,7 +281,7 @@ func TestDeviceManagement_UpdateDevice(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		body := cios.DeviceUpdateRequest{}
 		byts, _ := ioutil.ReadAll(r.Body)
-		convert.UnMarshalJson(byts, &body)
+		cnv.UnMarshalJson(byts, &body)
 		if *body.Name != "name" || *body.Description != "desc" ||
 			*body.IdNumber != "1234" ||
 			*body.RsaPublickey != "rsa" {
@@ -297,10 +297,10 @@ func TestDeviceManagement_UpdateDevice(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 	_, _, err := client.DeviceManagement.UpdateDevice("responseid", cios.DeviceUpdateRequest{
-		Name:         convert.StringPtr("name"),
-		IdNumber:     convert.StringPtr("1234"),
-		Description:  convert.StringPtr("desc"),
-		RsaPublickey: convert.StringPtr("rsa"),
+		Name:         cnv.StrPtr("name"),
+		IdNumber:     cnv.StrPtr("1234"),
+		Description:  cnv.StrPtr("desc"),
+		RsaPublickey: cnv.StrPtr("rsa"),
 	}, context.Background())
 	if err != nil {
 		t.Fatal(err.Error())

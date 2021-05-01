@@ -9,7 +9,7 @@ import (
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 
-	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/convert"
+	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
@@ -19,7 +19,7 @@ func TestDeviceManagement_GetMonitoringLatestList(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		var body cios.DeviceMonitoringIDsRequest
 		byts, _ := ioutil.ReadAll(r.Body)
-		convert.UnMarshalJson(byts, &body)
+		cnv.UnMarshalJson(byts, &body)
 		if body.DeviceIds[0] != "1" || body.DeviceIds[1] != "2" || body.DeviceIds[2] != "3" {
 			t.Fatal(body)
 		}

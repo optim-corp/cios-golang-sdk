@@ -9,11 +9,10 @@ import (
 	"sync"
 	"time"
 
-	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/convert"
-
+	"github.com/fcfcqloow/go-advance/check"
+	cnv "github.com/fcfcqloow/go-advance/convert"
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
-	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/check"
 
 	_nethttp "net/http"
 	"net/url"
@@ -102,7 +101,7 @@ func (self *CiosMessaging) debug(text ...interface{}) {
 	if self.isDebug {
 		result := ""
 		for _, t := range text {
-			result += convert.MustStr(t) + " "
+			result += cnv.MustStr(t) + " "
 		}
 		log.Println(result)
 	}
@@ -147,7 +146,7 @@ func (self *CiosMessaging) SendStr(message string) error {
 	return self.Send([]byte(message))
 }
 func (self *CiosMessaging) SendAny(message interface{}) error {
-	return self.SendStr(convert.MustStr(message))
+	return self.SendStr(cnv.MustStr(message))
 }
 func (self *CiosMessaging) SendJson(message interface{}) error {
 	msg, err := json.Marshal(message)
@@ -176,12 +175,12 @@ func (self *CiosMessaging) receive() (body []byte, err error) {
 	switch {
 	case websocket.IsCloseError(err, websocket.CloseNormalClosure):
 		err = nil
-		self.debug("Receive close err: ", fmt.Sprintf("%d, %s", messageType, convert.MustStr(err)))
+		self.debug("Receive close err: ", fmt.Sprintf("%d, %s", messageType, cnv.MustStr(err)))
 	case websocket.IsUnexpectedCloseError(err):
-		self.debug("Receive unexpected close err: ", fmt.Sprintf("%d, %s", messageType, convert.MustStr(err)))
+		self.debug("Receive unexpected close err: ", fmt.Sprintf("%d, %s", messageType, cnv.MustStr(err)))
 	case messageType == websocket.CloseMessage:
 		err = nil
-		self.debug("Receive CloseMessage: ", fmt.Sprintf("%d, %s", messageType, convert.MustStr(err)))
+		self.debug("Receive CloseMessage: ", fmt.Sprintf("%d, %s", messageType, cnv.MustStr(err)))
 	case messageType == websocket.TextMessage:
 		self.debug(string(body))
 	}
@@ -209,7 +208,7 @@ func (self *CiosMessaging) MapReceived(stct interface{}) error {
 	if err != nil {
 		return err
 	}
-	return convert.UnMarshalJson(res, stct)
+	return cnv.UnMarshalJson(res, stct)
 }
 
 func (self *CiosMessaging) Start(ctx sdkmodel.RequestCtx) (err error) {
@@ -291,7 +290,7 @@ func (self *PubSub) PublishMessagePackerOnly(id string, body interface{}, ctx sd
 	return self.PublishMessage(id, &body, nil, ctx)
 }
 func (self *PubSub) PublishMessageJSON(id string, body cios.PackerFormatJson, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
-	return self.PublishMessage(id, &body, convert.StringPtr("json"), ctx)
+	return self.PublishMessage(id, &body, cnv.StrPtr("json"), ctx)
 }
 
 // Deprecated: should not be used

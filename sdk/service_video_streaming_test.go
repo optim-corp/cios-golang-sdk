@@ -7,7 +7,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/convert"
+	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 
@@ -113,7 +113,7 @@ func TestVideo_UpdateVideoInfo(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		var body cios.VideoUpdateRequest
-		if err := convert.UnMarshalJson(r.Body, &body); err != nil {
+		if err := cnv.UnMarshalJson(r.Body, &body); err != nil {
 			t.Fatal(err.Error())
 		}
 		if *body.VideoName != "name" {

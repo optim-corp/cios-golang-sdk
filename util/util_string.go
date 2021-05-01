@@ -1,6 +1,8 @@
 package util
 
-import "github.com/optim-corp/cios-golang-sdk/util/go_advance_type/check"
+import (
+	"github.com/fcfcqloow/go-advance/check"
+)
 
 func ToNil(str *string) *string {
 	if check.IsNil(str) || str == nil {

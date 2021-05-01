@@ -7,9 +7,9 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	cnv "github.com/fcfcqloow/go-advance/convert"
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
-	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/convert"
 )
 
 func TestAccount_InviteGroup(t *testing.T) {
@@ -17,7 +17,7 @@ func TestAccount_InviteGroup(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		body := cios.GroupInviteRequest{}
 		byt, _ := ioutil.ReadAll(r.Body)
-		convert.UnMarshalJson(byt, &body)
+		cnv.UnMarshalJson(byt, &body)
 		if *body.Email != "email@temp.com" {
 			t.Fatal(body)
 		}

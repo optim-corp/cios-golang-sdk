@@ -8,10 +8,10 @@ import (
 	"net/url"
 	"testing"
 
+	cnv "github.com/fcfcqloow/go-advance/convert"
+	xmath "github.com/fcfcqloow/go-advance/math"
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
-	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/convert"
-	xmath "github.com/optim-corp/cios-golang-sdk/util/go_advance_type/math"
 )
 
 func TestResourceOwner_GetResourceOwners(t *testing.T) {
@@ -101,12 +101,12 @@ func TestResourceOwner_GetResourceOwnersAll(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleResourceOwner{Total: 3500, ResourceOwners: []cios.ResourceOwner{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		offsets = append(offsets, offset)
 		limits = append(limits, limit)
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.ResourceOwners = append(response.ResourceOwners, cios.ResourceOwner{Id: convert.MustStr(i)})
+			response.ResourceOwners = append(response.ResourceOwners, cios.ResourceOwner{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -155,10 +155,10 @@ func TestResourceOwner_GetResourceOwnersUnlimited(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleResourceOwner{Total: 3500, ResourceOwners: []cios.ResourceOwner{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.ResourceOwners = append(response.ResourceOwners, cios.ResourceOwner{Id: convert.MustStr(i)})
+			response.ResourceOwners = append(response.ResourceOwners, cios.ResourceOwner{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))

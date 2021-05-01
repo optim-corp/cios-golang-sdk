@@ -12,9 +12,9 @@ import (
 	"testing"
 	"time"
 
-	xmath "github.com/optim-corp/cios-golang-sdk/util/go_advance_type/math"
+	xmath "github.com/fcfcqloow/go-advance/math"
 
-	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/convert"
+	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 
@@ -111,8 +111,8 @@ func Test_RefreshGroup(t *testing.T) {
 	for i := 0; i < asyncTestNumber; i++ {
 		go func(i int) {
 			time.Sleep(time.Microsecond * time.Duration(rand.Int63n(100)))
-			response, _, _ := client.Account.GetGroups(MakeGetGroupsOpts().Name("async "+convert.MustStr(i)), MakeRequestCtx(convert.MustStr(i)))
-			if response.Groups[0].Id != "async "+convert.MustStr(i)+":Bearer "+convert.MustStr(i) {
+			response, _, _ := client.Account.GetGroups(MakeGetGroupsOpts().Name("async "+cnv.MustStr(i)), MakeRequestCtx(cnv.MustStr(i)))
+			if response.Groups[0].Id != "async "+cnv.MustStr(i)+":Bearer "+cnv.MustStr(i) {
 				t.Fatal(response.Groups)
 			}
 			t.Log(response)
@@ -216,12 +216,12 @@ func TestAccount_GetGroupsAll(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleGroup{Total: 3500, Groups: []cios.Group{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		offsets = append(offsets, offset)
 		limits = append(limits, limit)
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Groups = append(response.Groups, cios.Group{Id: convert.MustStr(i)})
+			response.Groups = append(response.Groups, cios.Group{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -269,10 +269,10 @@ func TestAccount_GetGroupsUnlimited(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleGroup{Total: 3500, Groups: []cios.Group{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Groups = append(response.Groups, cios.Group{Id: convert.MustStr(i)})
+			response.Groups = append(response.Groups, cios.Group{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -318,7 +318,7 @@ func TestAccount_CreateGroup(t *testing.T) {
 			t.Fatal(r.Method)
 		}
 		byts, _ := ioutil.ReadAll(r.Body)
-		convert.UnMarshalJson(byts, &body)
+		cnv.UnMarshalJson(byts, &body)
 		if body.Name != "name" ||
 			*body.ParentGroupId != "parent" ||
 			(*body.Tags)[0] != "key=value" {
@@ -329,7 +329,7 @@ func TestAccount_CreateGroup(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 	_, _, err := client.Account.CreateGroup(cios.GroupCreateRequest{
-		ParentGroupId: convert.StringPtr("parent"),
+		ParentGroupId: cnv.StrPtr("parent"),
 		Name:          "name",
 		Tags:          &[]string{"key=value", "a=b"},
 	}, context.Background())
@@ -368,7 +368,7 @@ func TestAccount_UpdateGroup(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 	_, _, err := client.Account.UpdateGroup("id", cios.GroupUpdateRequest{
-		Name: convert.StringPtr("name"),
+		Name: cnv.StrPtr("name"),
 	}, context.Background())
 	if err != nil {
 		t.Fatal(err.Error())

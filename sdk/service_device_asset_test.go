@@ -9,9 +9,9 @@ import (
 	"net/url"
 	"testing"
 
-	xmath "github.com/optim-corp/cios-golang-sdk/util/go_advance_type/math"
+	xmath "github.com/fcfcqloow/go-advance/math"
 
-	"github.com/optim-corp/cios-golang-sdk/util/go_advance_type/convert"
+	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
@@ -118,12 +118,12 @@ func TestDeviceAssetManagement_GetModelsAll(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleDeviceModel{Total: 3500, Models: []cios.DeviceModel{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		offsets = append(offsets, offset)
 		limits = append(limits, limit)
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Models = append(response.Models, cios.DeviceModel{Id: convert.MustStr(i)})
+			response.Models = append(response.Models, cios.DeviceModel{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -171,10 +171,10 @@ func TestDeviceAssetManagement_GetModelsUnlimited(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleDeviceModel{Total: 3500, Models: []cios.DeviceModel{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Models = append(response.Models, cios.DeviceModel{Id: convert.MustStr(i)})
+			response.Models = append(response.Models, cios.DeviceModel{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -217,7 +217,7 @@ func TestDeviceAssetManagement_CreateModel(t *testing.T) {
 			t.Fatal(r.Method)
 		}
 		byts, _ := ioutil.ReadAll(r.Body)
-		convert.UnMarshalJson(byts, &body)
+		cnv.UnMarshalJson(byts, &body)
 		if body.Name != "name" || body.ResourceOwnerId != "resource_owner_id" {
 			t.Fatal(body)
 		}
@@ -353,12 +353,12 @@ func TestDeviceAssetManagement_GetEntitiesAll(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleDeviceModelEntity{Total: 3500, Entities: []cios.DeviceModelsEntity{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		offsets = append(offsets, offset)
 		limits = append(limits, limit)
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Entities = append(response.Entities, cios.DeviceModelsEntity{Id: convert.MustStr(i)})
+			response.Entities = append(response.Entities, cios.DeviceModelsEntity{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -406,10 +406,10 @@ func TestDeviceAssetManagement_GetGetEntitiesUnlimited(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleDeviceModelEntity{Total: 3500, Entities: []cios.DeviceModelsEntity{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Entities = append(response.Entities, cios.DeviceModelsEntity{Id: convert.MustStr(i)})
+			response.Entities = append(response.Entities, cios.DeviceModelsEntity{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -454,7 +454,7 @@ func TestDeviceAssetManagement_CreateEntity(t *testing.T) {
 		if r.Method != "POST" {
 			t.Fatal(r.Method)
 		}
-		convert.UnMarshalJson(r.Body, &body)
+		cnv.UnMarshalJson(r.Body, &body)
 		if *body.SerialNumber != "111" {
 			t.Fatal(body)
 		}
@@ -463,7 +463,7 @@ func TestDeviceAssetManagement_CreateEntity(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceAssetManagementUrl: ts.URL}})
 	_, _, err := client.DeviceAssetManagement.CreateEntity("name", cios.Inventory{
-		SerialNumber: convert.StringPtr("111"),
+		SerialNumber: cnv.StrPtr("111"),
 	}, context.Background())
 	if err != nil {
 		t.Fatal(err.Error())
@@ -594,12 +594,12 @@ func TestDeviceAssetManagement_GetLifecyclesAll(t *testing.T) {
 			t.Fatal(r.URL.Path)
 		}
 		response := cios.MultipleLifeCycle{Total: 3500, Lifecycles: []cios.LifeCycle{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		offsets = append(offsets, offset)
 		limits = append(limits, limit)
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Lifecycles = append(response.Lifecycles, cios.LifeCycle{Id: convert.MustStr(i)})
+			response.Lifecycles = append(response.Lifecycles, cios.LifeCycle{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -650,10 +650,10 @@ func TestDeviceAssetManagement_GetLifecyclesUnlimited(t *testing.T) {
 			t.Fatal(r.URL.Path)
 		}
 		response := cios.MultipleLifeCycle{Total: 3500, Lifecycles: []cios.LifeCycle{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Lifecycles = append(response.Lifecycles, cios.LifeCycle{Id: convert.MustStr(i)})
+			response.Lifecycles = append(response.Lifecycles, cios.LifeCycle{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -671,7 +671,7 @@ func TestDeviceAssetManagement_CreateLifecycle(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		body := cios.LifeCycleRequest{}
 		byts, _ := ioutil.ReadAll(r.Body)
-		convert.UnMarshalJson(byts, &body)
+		cnv.UnMarshalJson(byts, &body)
 		if body.EventKind != "a" || body.EventMode != "b" || body.EventType != "c" || body.EventAt != "d" {
 			t.Fatal(body)
 		}
