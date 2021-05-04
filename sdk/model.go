@@ -4,12 +4,11 @@ import (
 	"context"
 	"net/http"
 
-	"github.com/optim-kazuhiro-seida/go-advance-type/check"
+	"github.com/fcfcqloow/go-advance/check"
+	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
-	_util "github.com/optim-kazuhiro-seida/go-advance-type/util"
 )
 
 var (
@@ -29,8 +28,7 @@ var (
 			return context.WithValue(ctx, cios.ContextServerIndex, index)
 		}
 	}
-	str = convert.MustStr
-	is  = _util.Is
+	str = cnv.MustStr
 )
 
 type (

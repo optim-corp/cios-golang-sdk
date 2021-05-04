@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
+	xmath "github.com/fcfcqloow/go-advance/math"
 
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
@@ -199,12 +199,12 @@ func TestFileStorage_GetBucketsAll(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleBucket{Total: 3500, Buckets: []cios.Bucket{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		offsets = append(offsets, offset)
 		limits = append(limits, limit)
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Buckets = append(response.Buckets, cios.Bucket{Id: convert.MustStr(i)})
+			response.Buckets = append(response.Buckets, cios.Bucket{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -252,10 +252,10 @@ func TestFileStorage_GetBucketsUnlimited(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleBucket{Total: 3500, Buckets: []cios.Bucket{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Buckets = append(response.Buckets, cios.Bucket{Id: convert.MustStr(i)})
+			response.Buckets = append(response.Buckets, cios.Bucket{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -301,7 +301,7 @@ func TestFileStorage_CreateBucket(t *testing.T) {
 			t.Fatal(r.Method)
 		}
 		byts, _ := ioutil.ReadAll(r.Body)
-		convert.UnMarshalJson(byts, &body)
+		cnv.UnMarshalJson(byts, &body)
 		if body.Name != "name" || body.ResourceOwnerId != "resource_owner_id" {
 			t.Fatal(body)
 		}
@@ -337,7 +337,7 @@ func TestFileStorage_UpdateBucket(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		body := cios.BucketName{}
 		byts, _ := ioutil.ReadAll(r.Body)
-		convert.UnMarshalJson(byts, &body)
+		cnv.UnMarshalJson(byts, &body)
 		if r.URL.Path != "/v2/file_storage/buckets/bucketid" {
 			t.Fatal(r.URL.Path)
 		}

@@ -8,10 +8,10 @@ import (
 	"net/url"
 	"testing"
 
+	cnv "github.com/fcfcqloow/go-advance/convert"
+	xmath "github.com/fcfcqloow/go-advance/math"
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
-	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
 )
 
 func TestContract_GetContracts(t *testing.T) {
@@ -92,12 +92,12 @@ func TestContract_GetContractsAll(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleContract{Total: 3500, Contracts: []cios.Contract{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		offsets = append(offsets, offset)
 		limits = append(limits, limit)
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Contracts = append(response.Contracts, cios.Contract{Id: convert.StringPtr(convert.MustStr(i))})
+			response.Contracts = append(response.Contracts, cios.Contract{Id: cnv.StrPtr(cnv.MustStr(i))})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -145,10 +145,10 @@ func TestContract_GetContractsUnlimited(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleContract{Total: 3500, Contracts: []cios.Contract{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Contracts = append(response.Contracts, cios.Contract{Id: convert.StringPtr(convert.MustStr(i))})
+			response.Contracts = append(response.Contracts, cios.Contract{Id: cnv.StrPtr(cnv.MustStr(i))})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))

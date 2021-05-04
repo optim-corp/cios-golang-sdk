@@ -3,15 +3,13 @@ package util
 import (
 	"strings"
 
+	cnv "github.com/fcfcqloow/go-advance/convert"
 	"github.com/optim-corp/cios-golang-sdk/cios"
-
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 )
-
 
 func DataStoreStreamToStruct(str []string, st interface{}) error {
 	value := "[" + strings.Join(str, ",") + "]"
-	return convert.UnMarshalJson(value, st)
+	return cnv.UnMarshalJson(value, st)
 }
 
 func MapPayloads(objects []cios.PackerFormatJson, stc interface{}) ([]cios.PackerFormatJsonHeader, error) {
@@ -25,10 +23,9 @@ func MapPayloads(objects []cios.PackerFormatJson, stc interface{}) ([]cios.Packe
 			arr = append(arr, obj.Payload)
 		}
 	}
-	byts, err := convert.MarshalJson(arr)
+	byts, err := cnv.MarshalJson(arr)
 	if err != nil {
 		return nil, err
 	}
-	return headers, convert.UnMarshalJson(byts, stc)
+	return headers, cnv.UnMarshalJson(byts, stc)
 }
-

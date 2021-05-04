@@ -8,9 +8,9 @@ import (
 	"net/url"
 	"testing"
 
-	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
+	xmath "github.com/fcfcqloow/go-advance/math"
 
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 
@@ -122,12 +122,12 @@ func TestPubSub_GetChannelsAll(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleChannel{Total: 3500, Channels: []cios.Channel{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		offsets = append(offsets, offset)
 		limits = append(limits, limit)
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Channels = append(response.Channels, cios.Channel{Id: convert.MustStr(i)})
+			response.Channels = append(response.Channels, cios.Channel{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -176,10 +176,10 @@ func TestPubSub_GetChannelsUnlimited(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleChannel{Total: 3500, Channels: []cios.Channel{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Channels = append(response.Channels, cios.Channel{Id: convert.MustStr(i)})
+			response.Channels = append(response.Channels, cios.Channel{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -218,7 +218,7 @@ func TestPubSub_CreateChannel(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		body := cios.ChannelProposal{}
-		convert.UnMarshalJson(r.Body, &body)
+		cnv.UnMarshalJson(r.Body, &body)
 		if body.ResourceOwnerId != "resource_owner_id" ||
 			*body.DatastoreConfig.Enabled != true ||
 			*body.DatastoreConfig.MaxCount != "222" ||
@@ -260,13 +260,13 @@ func TestPubSub_CreateChannel(t *testing.T) {
 			},
 		},
 		MessagingConfig: &cios.MessagingConfig{
-			Enabled:   convert.BoolPtr(true),
-			Persisted: convert.BoolPtr(true),
+			Enabled:   cnv.BoolPtr(true),
+			Persisted: cnv.BoolPtr(true),
 		},
 		DatastoreConfig: &cios.DataStoreConfig{
-			Enabled:  convert.BoolPtr(true),
-			MaxSize:  convert.StringPtr("1000"),
-			MaxCount: convert.StringPtr("222"),
+			Enabled:  cnv.BoolPtr(true),
+			MaxSize:  cnv.StrPtr("1000"),
+			MaxCount: cnv.StrPtr("222"),
 		},
 	}, context.Background())
 	if err != nil {

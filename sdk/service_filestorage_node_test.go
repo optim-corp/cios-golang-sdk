@@ -9,9 +9,9 @@ import (
 	"net/url"
 	"testing"
 
-	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
+	xmath "github.com/fcfcqloow/go-advance/math"
 
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
@@ -119,12 +119,12 @@ func TestFileStorage_GetNodesAll(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleNode{Total: 3500, Nodes: []cios.Node{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		offsets = append(offsets, offset)
 		limits = append(limits, limit)
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Nodes = append(response.Nodes, cios.Node{Id: convert.MustStr(i)})
+			response.Nodes = append(response.Nodes, cios.Node{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -172,10 +172,10 @@ func TestFileStorage_GetNodesUnlimited(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleNode{Total: 3500, Nodes: []cios.Node{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Nodes = append(response.Nodes, cios.Node{Id: convert.MustStr(i)})
+			response.Nodes = append(response.Nodes, cios.Node{Id: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -220,7 +220,7 @@ func TestFileStorage_CreateNode(t *testing.T) {
 			t.Fatal(r.Method)
 		}
 		byts, _ := ioutil.ReadAll(r.Body)
-		convert.UnMarshalJson(byts, &body)
+		cnv.UnMarshalJson(byts, &body)
 		if body.Name != "name" || *body.ParentNodeId != "parent" {
 			t.Fatal(body)
 		}
@@ -228,7 +228,7 @@ func TestFileStorage_CreateNode(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	_, _, err := client.FileStorage.CreateNode("test", "name", convert.StringPtr("parent"), context.Background())
+	_, _, err := client.FileStorage.CreateNode("test", "name", cnv.StrPtr("parent"), context.Background())
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -257,7 +257,7 @@ func TestFileStorage_RenameNode(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		byts, _ := ioutil.ReadAll(r.Body)
 		body := cios.NodeName{}
-		convert.UnMarshalJson(byts, &body)
+		cnv.UnMarshalJson(byts, &body)
 		if body.Name != "name" || r.URL.Path != "/v2/file_storage/buckets/bucketid/nodes/node/rename" {
 			t.Fatal(r.URL.Path)
 		}
@@ -278,7 +278,7 @@ func TestFileStorage_CopyNode(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		byts, _ := ioutil.ReadAll(r.Body)
 		body := cios.BucketEditBody{}
-		convert.UnMarshalJson(byts, &body)
+		cnv.UnMarshalJson(byts, &body)
 		if *body.DestBucketId != "destBucket" || *body.ParentNodeId != "destNode" || r.URL.Path != "/v2/file_storage/buckets/bucketid/nodes/node/copy" {
 			t.Fatal(r.URL.Path, body)
 		}
@@ -288,7 +288,7 @@ func TestFileStorage_CopyNode(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	_, _, err := client.FileStorage.CopyNode("bucketid", "node", convert.StringPtr("destBucket"), convert.StringPtr("destNode"), context.Background())
+	_, _, err := client.FileStorage.CopyNode("bucketid", "node", cnv.StrPtr("destBucket"), cnv.StrPtr("destNode"), context.Background())
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -298,7 +298,7 @@ func TestFileStorage_MoveNode(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		byts, _ := ioutil.ReadAll(r.Body)
 		body := cios.BucketEditBody{}
-		convert.UnMarshalJson(byts, &body)
+		cnv.UnMarshalJson(byts, &body)
 		if *body.DestBucketId != "destBucket" || *body.ParentNodeId != "destNode" || r.URL.Path != "/v2/file_storage/buckets/bucketid/nodes/node/move" {
 			t.Fatal(r.URL.Path, body)
 		}
@@ -308,7 +308,7 @@ func TestFileStorage_MoveNode(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	_, _, err := client.FileStorage.MoveNode("bucketid", "node", convert.StringPtr("destBucket"), convert.StringPtr("destNode"), context.Background())
+	_, _, err := client.FileStorage.MoveNode("bucketid", "node", cnv.StrPtr("destBucket"), cnv.StrPtr("destNode"), context.Background())
 	if err != nil {
 		t.Fatal(err.Error())
 	}

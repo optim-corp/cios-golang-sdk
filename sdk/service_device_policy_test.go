@@ -9,9 +9,9 @@ import (
 	"net/url"
 	"testing"
 
-	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
+	xmath "github.com/fcfcqloow/go-advance/math"
 
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 
@@ -118,12 +118,12 @@ func TestDeviceManagement_GetPoliciesAll(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleDevicePolicy{Total: 3500}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		offsets = append(offsets, offset)
 		limits = append(limits, limit)
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Policies = append(response.Policies, cios.DevicePolicy{ResourceOwnerId: convert.MustStr(i)})
+			response.Policies = append(response.Policies, cios.DevicePolicy{ResourceOwnerId: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -171,10 +171,10 @@ func TestDeviceManagement_GetPoliciesUnlimited(t *testing.T) {
 	ts := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		response := cios.MultipleDevicePolicy{Total: 3500, Policies: []cios.DevicePolicy{}}
-		offset := convert.MustInt(r.URL.Query().Get("offset"))
-		limit := convert.MustInt(r.URL.Query().Get("limit"))
+		offset := cnv.MustInt(r.URL.Query().Get("offset"))
+		limit := cnv.MustInt(r.URL.Query().Get("limit"))
 		for i := 0; i < xmath.MinInt(3500-offset, 1000, limit); i++ {
-			response.Policies = append(response.Policies, cios.DevicePolicy{ResourceOwnerId: convert.MustStr(i)})
+			response.Policies = append(response.Policies, cios.DevicePolicy{ResourceOwnerId: cnv.MustStr(i)})
 		}
 		json.NewEncoder(w).Encode(response)
 	}))
@@ -210,7 +210,7 @@ func TestDeviceManagement_CreatePolicy(t *testing.T) {
 		w.Header().Set("Content-Type", "application/json")
 		body := cios.DevicePolicyRequest{}
 		byts, _ := ioutil.ReadAll(r.Body)
-		convert.UnMarshalJson(byts, &body)
+		cnv.UnMarshalJson(byts, &body)
 		if body.ResourceOwnerId != "resource_owner_id" {
 			t.Fatal(body)
 		}

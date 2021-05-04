@@ -1,6 +1,8 @@
 package util
 
-import "github.com/optim-kazuhiro-seida/go-advance-type/check"
+import (
+	"github.com/fcfcqloow/go-advance/check"
+)
 
 func ToNil(str *string) *string {
 	if check.IsNil(str) || str == nil {
@@ -11,7 +13,7 @@ func ToNil(str *string) *string {
 	return str
 }
 func ToNilStr(str string) *string {
-	if str == ""  {
+	if str == "" {
 		return nil
 	}
 	return &str

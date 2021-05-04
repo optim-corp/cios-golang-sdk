@@ -7,10 +7,10 @@ import (
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
+	"github.com/fcfcqloow/go-advance/check"
+	cnv "github.com/fcfcqloow/go-advance/convert"
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
-	"github.com/optim-kazuhiro-seida/go-advance-type/check"
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
 )
 
 func NewCiosClient(config CiosClientConfig) *CiosClient {
@@ -120,7 +120,7 @@ func (self *CiosClient) _accessToken(accessToken string) *CiosClient {
 	token, _, err := new(jwt.Parser).ParseUnverified(accessToken, jwt.MapClaims{})
 	if err == nil {
 		if claims, ok := token.Claims.(jwt.MapClaims); ok {
-			self.tokenExp = convert.MustInt64(claims["exp"])
+			self.tokenExp = cnv.MustInt64(claims["exp"])
 		}
 	}
 	self.PubSub.token = &accessToken

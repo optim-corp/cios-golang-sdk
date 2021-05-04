@@ -3,11 +3,11 @@ package ciossdk
 import (
 	_nethttp "net/http"
 
+	cnv "github.com/fcfcqloow/go-advance/convert"
+	xmath "github.com/fcfcqloow/go-advance/math"
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-corp/cios-golang-sdk/util"
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
-	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
 )
 
 func MakeGetModelsOpts() cios.ApiGetDeviceModelsRequest {
@@ -45,7 +45,7 @@ func (self *DeviceAssetManagement) GetModelsAll(params cios.ApiGetDeviceModelsRe
 		_limit      = int64(1000)
 		offset      = int64(0)
 		getFunction = func(offset int64) (cios.MultipleDeviceModel, *_nethttp.Response, error) {
-			return self.GetModels(params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+convert.MustInt64(params.P_offset)), ctx)
+			return self.GetModels(params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+cnv.MustInt64(params.P_offset)), ctx)
 		}
 	)
 	if params.P_limit != nil {
@@ -144,7 +144,7 @@ func (self *DeviceAssetManagement) GetEntitiesAll(params cios.ApiGetDeviceEntiti
 		_limit      = int64(1000)
 		offset      = int64(0)
 		getFunction = func(offset int64) (cios.MultipleDeviceModelEntity, *_nethttp.Response, error) {
-			return self.GetEntities(params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+convert.MustInt64(params.P_offset)), ctx)
+			return self.GetEntities(params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+cnv.MustInt64(params.P_offset)), ctx)
 		}
 	)
 	if params.P_limit != nil {
@@ -246,7 +246,7 @@ func (self *DeviceAssetManagement) GetLifecyclesAll(key string, params cios.ApiG
 		_limit       = int64(1000)
 		offset       = int64(0)
 		getFunction  = func(offset int64) (cios.MultipleLifeCycle, *_nethttp.Response, error) {
-			return self.GetLifecycles(key, params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+convert.MustInt64(params.P_offset)), ctx)
+			return self.GetLifecycles(key, params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+cnv.MustInt64(params.P_offset)), ctx)
 		}
 	)
 	if params.P_limit != nil {
@@ -269,7 +269,7 @@ func (self *DeviceAssetManagement) GetLifecyclesAll(key string, params cios.ApiG
 			return nil, httpRes, err
 		}
 		result = append(result, res.Lifecycles...)
-		for offset = int64(1000); offset+convert.MustInt64(params.P_offset) < res.Total; offset += 1000 {
+		for offset = int64(1000); offset+cnv.MustInt64(params.P_offset) < res.Total; offset += 1000 {
 			res, httpRes, err = getFunction(offset)
 			if err != nil {
 				return nil, httpRes, err
@@ -331,7 +331,7 @@ type DeviceEntitiesComponentRange struct {
 func ToBetweenLifecycle(lifecycles cios.LifeCycleStream) (result [][]DeviceEntitiesComponentRange) {
 	streams := lifecycles.
 		Sort(func(i, j int) bool { return lifecycles.Get(i).EventAt < lifecycles.Get(j).EventAt }).
-		GroupBy(func(cycle cios.LifeCycle, _ int) string { return convert.MustStr(cycle.AfterId) })
+		GroupBy(func(cycle cios.LifeCycle, _ int) string { return cnv.MustStr(cycle.AfterId) })
 	for _, cycles := range streams {
 		result = append(result, toBetweenLifecycle(cycles))
 	}

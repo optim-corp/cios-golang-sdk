@@ -7,8 +7,8 @@ import (
 	_http "net/http"
 	"net/http/httputil"
 
-	"github.com/optim-kazuhiro-seida/go-advance-type/check"
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+	"github.com/fcfcqloow/go-advance/check"
+	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
@@ -76,7 +76,7 @@ func (self *VideoStreaming) GetThumbnail(videoID string, ctx sdkmodel.RequestCtx
 		token = self.token
 	}
 
-	req.Header.Add("Authentication", convert.MustStr(token))
+	req.Header.Add("Authentication", cnv.MustStr(token))
 
 	if self.ApiClient.GetConfig().Debug {
 		dump, err := httputil.DumpRequestOut(req, true)

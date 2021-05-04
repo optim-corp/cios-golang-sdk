@@ -5,12 +5,10 @@ import (
 	"encoding/base64"
 	_nethttp "net/http"
 
+	cnv "github.com/fcfcqloow/go-advance/convert"
+	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-corp/cios-golang-sdk/util"
-
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
-
-	"github.com/optim-corp/cios-golang-sdk/cios"
 )
 
 func MakeUploadFileOpts() cios.ApiUploadFileRequest {
@@ -44,8 +42,8 @@ func (self *FileStorage) UploadFile(bucketID string, body []byte, params cios.Ap
 	params.P_key = util.ToNil(params.P_key)
 	params.P_nodeId = util.ToNil(params.P_nodeId)
 	params.P_parentNodeId = util.ToNil(params.P_parentNodeId)
-	params.P_body = convert.StringPtr(string(body))
-	params.P_checksum = convert.StringPtr(toCheckSum(body))
+	params.P_body = cnv.StrPtr(string(body))
+	params.P_checksum = cnv.StrPtr(toCheckSum(body))
 	_, httpResponse, err := params.Execute()
 	return httpResponse, err
 }

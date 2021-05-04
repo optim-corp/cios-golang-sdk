@@ -8,7 +8,7 @@ import (
 	"net/url"
 	"strings"
 
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
@@ -62,7 +62,7 @@ func (self *Auth) GetAccessTokenOnClient() (sdkmodel.AccessToken, sdkmodel.Scope
 		return "", "", "", 0, err
 	}
 
-	err = convert.UnMarshalJson(body, &responseData)
+	err = cnv.UnMarshalJson(body, &responseData)
 	if err != nil {
 		return "", "", "", 0, err
 	}
@@ -91,7 +91,7 @@ func (self *Auth) GetAccessTokenOnDevice() (sdkmodel.AccessToken, sdkmodel.Scope
 		return "", "", "", 0, err
 	}
 	defer response.Body.Close()
-	if err := convert.UnMarshalJson(response.Body, &responseBody); err != nil {
+	if err := cnv.UnMarshalJson(response.Body, &responseBody); err != nil {
 		return "", "", "", 0, err
 	}
 	return responseBody.AccessToken, responseBody.Scope, responseBody.TokenType, responseBody.ExpiresIn, nil

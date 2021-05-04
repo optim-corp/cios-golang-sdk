@@ -13,10 +13,9 @@ import (
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-corp/cios-golang-sdk/util"
 
-	"github.com/optim-kazuhiro-seida/go-advance-type/check"
-	xmath "github.com/optim-kazuhiro-seida/go-advance-type/math"
-
-	"github.com/optim-kazuhiro-seida/go-advance-type/convert"
+	"github.com/fcfcqloow/go-advance/check"
+	cnv "github.com/fcfcqloow/go-advance/convert"
+	xmath "github.com/fcfcqloow/go-advance/math"
 
 	"github.com/gorilla/websocket"
 )
@@ -78,7 +77,7 @@ func (self *PubSub) GetObjectsAll(channelID string, params cios.ApiGetDataStoreO
 		offset      = int64(0)
 		_limit      = int64(1000)
 		getFunction = func(offset int64) (cios.MultipleDataStoreObject, *_nethttp.Response, error) {
-			return self.GetObjects(channelID, params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+convert.MustInt64(params.P_offset)), ctx)
+			return self.GetObjects(channelID, params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+cnv.MustInt64(params.P_offset)), ctx)
 		}
 	)
 	if params.P_limit != nil {
@@ -101,7 +100,7 @@ func (self *PubSub) GetObjectsAll(channelID string, params cios.ApiGetDataStoreO
 			return nil, httpRes, err
 		}
 		result = append(result, res.Objects...)
-		for offset = int64(1000); offset+convert.MustInt64(params.P_offset) < res.Total; offset += 1000 {
+		for offset = int64(1000); offset+cnv.MustInt64(params.P_offset) < res.Total; offset += 1000 {
 			res, httpRes, err = getFunction(offset)
 			if err != nil {
 				return nil, httpRes, err
@@ -144,7 +143,7 @@ func (self *PubSub) MapObjectLatest(channelID string, packerFormat *string, stc 
 	if err != nil {
 		return httpResponse, err
 	}
-	return httpResponse, convert.DeepCopy(response, stc)
+	return httpResponse, cnv.DeepCopy(response, stc)
 }
 func (self *PubSub) GetMultiObjectLatest(channelIDs []string, ctx sdkmodel.RequestCtx) (cios.MultipleDataStoreDataLatest, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
@@ -242,7 +241,7 @@ func (self *PubSub) GetStream(channelID string, params sdkmodel.ApiGetStreamRequ
 		channelProtocolVersionStr = &tmp
 	}
 	if params.LimitParam != nil {
-		limitStr = convert.StringPtr(convert.MustStr(params.LimitParam))
+		limitStr = cnv.StrPtr(cnv.MustStr(params.LimitParam))
 	}
 	_url.RawQuery = util.Query(_url, util.QueryMap{
 		"packer_format":            params.PackerFormatParam,
@@ -286,7 +285,7 @@ func (self *PubSub) GetStreamAll(channelID string, params sdkmodel.ApiGetStreamR
 		offset      = int64(0)
 		_limit      = int64(1000)
 		getFunction = func(offset int64) ([]string, error) {
-			return self.GetStream(channelID, params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+convert.MustInt64(params.OffsetParam)), ctx)
+			return self.GetStream(channelID, params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+cnv.MustInt64(params.OffsetParam)), ctx)
 		}
 	)
 	if params.LimitParam != nil {
@@ -328,7 +327,7 @@ func (self *PubSub) MapStreamAll(channelID string, params sdkmodel.ApiGetStreamR
 }
 func (self *PubSub) GetStreamUnlimited(channelID string, params sdkmodel.ApiGetStreamRequest, ctx sdkmodel.RequestCtx) ([]string, error) {
 	if params.TimestampRangeParam == nil {
-		timestampRange := ":" + convert.MustStr(time.Now().UnixNano())
+		timestampRange := ":" + cnv.MustStr(time.Now().UnixNano())
 		params.TimestampRangeParam = &timestampRange
 	}
 	params.LimitParam = nil
@@ -342,7 +341,7 @@ func (self *PubSub) MapStreamUnlimited(channelID string, params sdkmodel.ApiGetS
 	return util.DataStoreStreamToStruct(data, stc)
 }
 func (self *PubSub) GetJsonStreamUnlimited(channelID string, params sdkmodel.ApiGetStreamRequest, ctx sdkmodel.RequestCtx) (result []cios.PackerFormatJson, err error) {
-	params.PackerFormatParam = convert.StringPtr("json")
+	params.PackerFormatParam = cnv.StrPtr("json")
 	data, _err := self.GetStreamUnlimited(channelID, params, ctx)
 	if _err != nil {
 		err = _err
@@ -367,7 +366,7 @@ func (self *PubSub) MapStreamFirst(channelID string, params sdkmodel.ApiGetStrea
 	if err != nil {
 		return err
 	}
-	return convert.UnMarshalJson([]byte(value), stc)
+	return cnv.UnMarshalJson([]byte(value), stc)
 }
 func (self *PubSub) DeleteDataByChannel(channelID string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
