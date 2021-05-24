@@ -1,17 +1,5 @@
 package sdkmodel
 
-import (
-	"context"
-)
-
-const (
-	REFRESH_TYPE AuthType = "refreshToken"
-	CLIENT_TYPE  AuthType = "client"
-	DEVICE_TYPE  AuthType = "device"
-	NONE_TYPE    AuthType = "none"
-	ALSTROEMERIA Stage    = "ALSTROEMERIA"
-	VIOLA        Stage    = "VIOLA"
-)
 const (
 	AUTH_INDEX = iota
 	ACCOUNT_INDEX
@@ -23,6 +11,13 @@ const (
 	LICENSE_INDEX
 	LOCATION_INDEX
 	VIDEO_STREAMING_INDEX
+
+	REFRESH_TYPE AuthType = "refreshToken"
+	CLIENT_TYPE  AuthType = "client"
+	DEVICE_TYPE  AuthType = "device"
+	NONE_TYPE    AuthType = "none"
+	ALSTROEMERIA Stage    = "ALSTROEMERIA"
+	VIOLA        Stage    = "VIOLA"
 )
 
 type (
@@ -36,7 +31,6 @@ type (
 	TokenType    = string
 	Stage        = string
 	ExpiresIn    = int
-	RequestCtx   context.Context
 	CIOSUrl      struct {
 		LicenseUrl               string
 		ContractUrl              string

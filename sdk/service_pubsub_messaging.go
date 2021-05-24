@@ -12,6 +12,7 @@ import (
 	"github.com/fcfcqloow/go-advance/check"
 	cnv "github.com/fcfcqloow/go-advance/convert"
 	"github.com/optim-corp/cios-golang-sdk/cios"
+	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 
 	_nethttp "net/http"
@@ -42,34 +43,31 @@ type (
 		SubscribeFunc *func(body []byte) (bool, error)
 		PublishStr    *chan *string
 		Setting       *func(*websocket.Conn)
-		Context       sdkmodel.RequestCtx
+		Context       ciosctx.RequestCtx
 	}
 )
 
-var (
-	CreateCiosWsConn = func(isDebug bool, url, authorization string) (connection *websocket.Conn, err error) {
-		if isDebug {
-			log.Printf("Websocket URL: %s\nAuthorization: %s", url, authorization)
-		}
-		connection, _, err = (&websocket.Dialer{}).Dial(url, http.Header{"Authorization": []string{authorization}})
-		return
+func CreateCiosWsConn(isDebug bool, url, authorization string) (connection *websocket.Conn, err error) {
+	if isDebug {
+		log.Printf("Websocket URL: %s\nAuthorization: %s", url, authorization)
 	}
-	CreateCiosWsMessagingURL = func(httpUrl, channelID, mode string, packerFormat *string) string {
-		_url, err := url.Parse(strings.Replace(httpUrl, "https", "wss", 1) + "/v2/messaging")
-		if err != nil {
-			return ""
-		}
-		q := _url.Query()
-		q.Set("channel_id", channelID)
-		q.Set("mode", mode)
-		if packerFormat != nil {
-			q.Set("packer_format", *packerFormat)
-		}
-		_url.RawQuery = q.Encode()
-		return _url.String()
+	connection, _, err = (&websocket.Dialer{}).Dial(url, http.Header{"Authorization": []string{authorization}})
+	return
+}
+func CreateCiosWsMessagingURL(httpUrl, channelID, mode string, packerFormat *string) string {
+	_url, err := url.Parse(strings.Replace(httpUrl, "https", "wss", 1) + "/v2/messaging")
+	if err != nil {
+		return ""
 	}
-)
-
+	q := _url.Query()
+	q.Set("channel_id", channelID)
+	q.Set("mode", mode)
+	if packerFormat != nil {
+		q.Set("packer_format", *packerFormat)
+	}
+	_url.RawQuery = q.Encode()
+	return _url.String()
+}
 func (self *PubSub) NewMessaging(channelId, mode, packerFormat string) *CiosMessaging {
 	ref := func() (token string) {
 		self.refresh()
@@ -211,7 +209,7 @@ func (self *CiosMessaging) MapReceived(stct interface{}) error {
 	return cnv.UnMarshalJson(res, stct)
 }
 
-func (self *CiosMessaging) Start(ctx sdkmodel.RequestCtx) (err error) {
+func (self *CiosMessaging) Start(ctx ciosctx.RequestCtx) (err error) {
 	self.closed = make(chan bool)
 	if _token, ok := ctx.Value(cios.ContextAccessToken).(string); !ok && !check.IsNil(self.refresh) {
 		self.token = (*self.refresh)()
@@ -278,7 +276,7 @@ func (self *CiosMessaging) Close() (err error) {
 	return nil
 }
 
-func (self *PubSub) PublishMessage(id string, body interface{}, packerFormat *string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
+func (self *PubSub) PublishMessage(ctx ciosctx.RequestCtx, id string, body interface{}, packerFormat *string) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
@@ -286,11 +284,11 @@ func (self *PubSub) PublishMessage(id string, body interface{}, packerFormat *st
 	request.P_packerFormat = packerFormat
 	return request.Execute()
 }
-func (self *PubSub) PublishMessagePackerOnly(id string, body interface{}, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
-	return self.PublishMessage(id, &body, nil, ctx)
+func (self *PubSub) PublishMessagePackerOnly(ctx ciosctx.RequestCtx, id string, body interface{}) (*_nethttp.Response, error) {
+	return self.PublishMessage(ctx, id, &body, nil)
 }
-func (self *PubSub) PublishMessageJSON(id string, body cios.PackerFormatJson, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
-	return self.PublishMessage(id, &body, cnv.StrPtr("json"), ctx)
+func (self *PubSub) PublishMessageJSON(ctx ciosctx.RequestCtx, id string, body cios.PackerFormatJson) (*_nethttp.Response, error) {
+	return self.PublishMessage(ctx, id, &body, cnv.StrPtr("json"))
 }
 
 // Deprecated: should not be used

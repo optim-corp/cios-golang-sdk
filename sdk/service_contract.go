@@ -3,20 +3,21 @@ package ciossdk
 import (
 	_nethttp "net/http"
 
+	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
+
 	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/util"
 
 	xmath "github.com/fcfcqloow/go-advance/math"
 	"github.com/optim-corp/cios-golang-sdk/cios"
-	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
 func MakeGetContractsOpts() cios.ApiGetContractsRequest {
 	return cios.ApiGetContractsRequest{}
 }
 
-func (self *Contract) GetContracts(params cios.ApiGetContractsRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleContract, httpResponse *_nethttp.Response, err error) {
+func (self *Contract) GetContracts(ctx ciosctx.RequestCtx, params cios.ApiGetContractsRequest) (response cios.MultipleContract, httpResponse *_nethttp.Response, err error) {
 	if err := self.refresh(); err != nil {
 		return cios.MultipleContract{}, nil, err
 	}
@@ -26,7 +27,7 @@ func (self *Contract) GetContracts(params cios.ApiGetContractsRequest, ctx sdkmo
 	return params.Execute()
 }
 
-func (self *Contract) GetContractsAll(params cios.ApiGetContractsRequest, ctx sdkmodel.RequestCtx) ([]cios.Contract, *_nethttp.Response, error) {
+func (self *Contract) GetContractsAll(ctx ciosctx.RequestCtx, params cios.ApiGetContractsRequest) ([]cios.Contract, *_nethttp.Response, error) {
 	var (
 		result      []cios.Contract
 		httpRes     *_nethttp.Response
@@ -34,7 +35,7 @@ func (self *Contract) GetContractsAll(params cios.ApiGetContractsRequest, ctx sd
 		offset      = int64(0)
 		_limit      = int64(1000)
 		getFunction = func(offset int64) (cios.MultipleContract, *_nethttp.Response, error) {
-			return self.GetContracts(params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+cnv.MustInt64(params.P_offset)), ctx)
+			return self.GetContracts(ctx, params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+cnv.MustInt64(params.P_offset)))
 		}
 	)
 	if params.P_limit != nil {
@@ -67,7 +68,7 @@ func (self *Contract) GetContractsAll(params cios.ApiGetContractsRequest, ctx sd
 	}
 	return result, httpRes, err
 }
-func (self *Contract) GetContractsUnlimited(params cios.ApiGetContractsRequest, ctx sdkmodel.RequestCtx) ([]cios.Contract, *_nethttp.Response, error) {
+func (self *Contract) GetContractsUnlimited(ctx ciosctx.RequestCtx, params cios.ApiGetContractsRequest) ([]cios.Contract, *_nethttp.Response, error) {
 	params.P_limit = nil
-	return self.GetContractsAll(params, ctx)
+	return self.GetContractsAll(ctx, params)
 }

@@ -3,10 +3,11 @@ package ciossdk
 import (
 	_nethttp "net/http"
 
+	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
+
 	cnv "github.com/fcfcqloow/go-advance/convert"
 	xmath "github.com/fcfcqloow/go-advance/math"
 	"github.com/optim-corp/cios-golang-sdk/cios"
-	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-corp/cios-golang-sdk/util"
 )
 
@@ -14,7 +15,7 @@ func MakeGetResourceOwnersOpts() cios.ApiGetResourceOwnersRequest {
 	return cios.ApiGetResourceOwnersRequest{}
 }
 
-func (self *Account) GetResourceOwners(params cios.ApiGetResourceOwnersRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleResourceOwner, httpResponse *_nethttp.Response, err error) {
+func (self *Account) GetResourceOwners(ctx ciosctx.RequestCtx, params cios.ApiGetResourceOwnersRequest) (response cios.MultipleResourceOwner, httpResponse *_nethttp.Response, err error) {
 	if err := self.refresh(); err != nil {
 		return cios.MultipleResourceOwner{}, nil, err
 	}
@@ -27,7 +28,7 @@ func (self *Account) GetResourceOwners(params cios.ApiGetResourceOwnersRequest, 
 	params.P_userId = util.ToNil(params.P_userId)
 	return params.Execute()
 }
-func (self *Account) GetResourceOwnersAll(params cios.ApiGetResourceOwnersRequest, ctx sdkmodel.RequestCtx) ([]cios.ResourceOwner, *_nethttp.Response, error) {
+func (self *Account) GetResourceOwnersAll(ctx ciosctx.RequestCtx, params cios.ApiGetResourceOwnersRequest) ([]cios.ResourceOwner, *_nethttp.Response, error) {
 	var (
 		result      []cios.ResourceOwner
 		httpRes     *_nethttp.Response
@@ -35,7 +36,7 @@ func (self *Account) GetResourceOwnersAll(params cios.ApiGetResourceOwnersReques
 		_limit      = int64(1000)
 		offset      = int64(0)
 		getFunction = func(offset int64) (cios.MultipleResourceOwner, *_nethttp.Response, error) {
-			return self.GetResourceOwners(params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+cnv.MustInt64(params.P_offset)), ctx)
+			return self.GetResourceOwners(ctx, params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+cnv.MustInt64(params.P_offset)))
 		}
 	)
 	if params.P_limit != nil {
@@ -68,29 +69,29 @@ func (self *Account) GetResourceOwnersAll(params cios.ApiGetResourceOwnersReques
 	}
 	return result, httpRes, err
 }
-func (self *Account) GetResourceOwnersUnlimited(params cios.ApiGetResourceOwnersRequest, ctx sdkmodel.RequestCtx) ([]cios.ResourceOwner, *_nethttp.Response, error) {
+func (self *Account) GetResourceOwnersUnlimited(ctx ciosctx.RequestCtx, params cios.ApiGetResourceOwnersRequest) ([]cios.ResourceOwner, *_nethttp.Response, error) {
 	params.P_limit = nil
-	return self.GetResourceOwnersAll(params, ctx)
+	return self.GetResourceOwnersAll(ctx, params)
 }
 
-func (self *Account) GetResourceOwner(id string, ctx sdkmodel.RequestCtx) (cios.ResourceOwner, *_nethttp.Response, error) {
+func (self *Account) GetResourceOwner(ctx ciosctx.RequestCtx, id string) (cios.ResourceOwner, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.ResourceOwner{}, nil, err
 	}
 	return self.ApiClient.ResourceOwnerApi.GetResourceOwner(self.withHost(ctx), id).Execute()
 
 }
-func (self *Account) GetResourceOwnerByGroupId(groupID string, ctx sdkmodel.RequestCtx) (cios.ResourceOwner, *_nethttp.Response, error) {
-	resourceOwners, httpResponse, err := self.GetResourceOwners(cios.ApiGetResourceOwnersRequest{P_groupId: &groupID}, ctx)
+func (self *Account) GetResourceOwnerByGroupId(ctx ciosctx.RequestCtx, groupID string) (cios.ResourceOwner, *_nethttp.Response, error) {
+	resourceOwners, httpResponse, err := self.GetResourceOwners(ctx, cios.ApiGetResourceOwnersRequest{P_groupId: &groupID})
 	if err != nil {
 		return cios.ResourceOwner{}, httpResponse, err
 	}
 	return resourceOwners.ResourceOwners[0], httpResponse, err
 }
 
-func (self *Account) GetResourceOwnersMapByID(ctx sdkmodel.RequestCtx) (map[string]cios.ResourceOwner, *_nethttp.Response, error) {
+func (self *Account) GetResourceOwnersMapByID(ctx ciosctx.RequestCtx) (map[string]cios.ResourceOwner, *_nethttp.Response, error) {
 	resourceOwnerMap := map[string]cios.ResourceOwner{}
-	resourceOwners, httpResponse, err := self.GetResourceOwners(MakeGetResourceOwnersOpts(), ctx)
+	resourceOwners, httpResponse, err := self.GetResourceOwners(ctx, MakeGetResourceOwnersOpts())
 	if err != nil {
 		return nil, httpResponse, err
 	}
@@ -101,9 +102,9 @@ func (self *Account) GetResourceOwnersMapByID(ctx sdkmodel.RequestCtx) (map[stri
 
 }
 
-func (self *Account) GetResourceOwnersMapByGroupID(options sdkmodel.RequestCtx) (map[string]cios.ResourceOwner, error) {
+func (self *Account) GetResourceOwnersMapByGroupID(ctx ciosctx.RequestCtx) (map[string]cios.ResourceOwner, error) {
 	resourceOwnerMap := map[string]cios.ResourceOwner{}
-	resourceOwners, _, err := self.GetResourceOwners(MakeGetResourceOwnersOpts(), options)
+	resourceOwners, _, err := self.GetResourceOwners(ctx, MakeGetResourceOwnersOpts())
 	if err != nil {
 		return nil, err
 	}

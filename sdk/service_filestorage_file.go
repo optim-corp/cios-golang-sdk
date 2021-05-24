@@ -7,7 +7,7 @@ import (
 
 	cnv "github.com/fcfcqloow/go-advance/convert"
 	"github.com/optim-corp/cios-golang-sdk/cios"
-	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
+	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
 	"github.com/optim-corp/cios-golang-sdk/util"
 )
 
@@ -15,7 +15,7 @@ func MakeUploadFileOpts() cios.ApiUploadFileRequest {
 	return cios.ApiUploadFileRequest{}
 }
 
-func (self *FileStorage) DownloadFile(bucketID string, nodeID string, ctx sdkmodel.RequestCtx) ([]byte, *_nethttp.Response, error) {
+func (self *FileStorage) DownloadFile(ctx ciosctx.RequestCtx, bucketID string, nodeID string) ([]byte, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, nil, err
 	}
@@ -23,7 +23,7 @@ func (self *FileStorage) DownloadFile(bucketID string, nodeID string, ctx sdkmod
 	f, httpResponse, err := request.Execute()
 	return []byte(f), httpResponse, err
 }
-func (self *FileStorage) DownloadFileByKey(bucketID string, key string, ctx sdkmodel.RequestCtx) ([]byte, *_nethttp.Response, error) {
+func (self *FileStorage) DownloadFileByKey(ctx ciosctx.RequestCtx, bucketID string, key string) ([]byte, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, nil, err
 	}
@@ -31,7 +31,7 @@ func (self *FileStorage) DownloadFileByKey(bucketID string, key string, ctx sdkm
 	f, httpResponse, err := request.Execute()
 	return []byte(f), httpResponse, err
 }
-func (self *FileStorage) UploadFile(bucketID string, body []byte, params cios.ApiUploadFileRequest, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
+func (self *FileStorage) UploadFile(ctx ciosctx.RequestCtx, bucketID string, body []byte, params cios.ApiUploadFileRequest) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}

@@ -11,7 +11,7 @@ import (
 	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
-	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
+	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
 	"github.com/optim-corp/cios-golang-sdk/util"
 )
 
@@ -19,7 +19,7 @@ func MakeGetVideosOpts() cios.ApiGetVideoStreamsListRequest {
 	return cios.ApiGetVideoStreamsListRequest{}
 }
 
-func (self *VideoStreaming) GetVideoInfos(params cios.ApiGetVideoStreamsListRequest, ctx sdkmodel.RequestCtx) ([]cios.Video, *_http.Response, error) {
+func (self *VideoStreaming) GetVideoInfos(ctx ciosctx.RequestCtx, params cios.ApiGetVideoStreamsListRequest) ([]cios.Video, *_http.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, nil, err
 	}
@@ -33,7 +33,7 @@ func (self *VideoStreaming) GetVideoInfos(params cios.ApiGetVideoStreamsListRequ
 	}
 	return r.Videos, h, e
 }
-func (self *VideoStreaming) GetVideoInfo(videoID string, ctx sdkmodel.RequestCtx) (cios.Video, *_http.Response, error) {
+func (self *VideoStreaming) GetVideoInfo(ctx ciosctx.RequestCtx, videoID string) (cios.Video, *_http.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Video{}, nil, err
 	}
@@ -44,7 +44,7 @@ func (self *VideoStreaming) GetVideoInfo(videoID string, ctx sdkmodel.RequestCtx
 	return response.Video, httpResponse, err
 }
 
-func (self *VideoStreaming) UpdateVideoInfo(videoID string, name, description string, ctx sdkmodel.RequestCtx) (cios.Video, *_http.Response, error) {
+func (self *VideoStreaming) UpdateVideoInfo(ctx ciosctx.RequestCtx, videoID string, name, description string) (cios.Video, *_http.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Video{}, nil, err
 	}
@@ -61,7 +61,7 @@ func (self *VideoStreaming) UpdateVideoInfo(videoID string, name, description st
 }
 
 // MEMO: No OpenAPI
-func (self *VideoStreaming) GetThumbnail(videoID string, ctx sdkmodel.RequestCtx) (img []byte, httpResponse *_http.Response, err error) {
+func (self *VideoStreaming) GetThumbnail(ctx ciosctx.RequestCtx, videoID string) (img []byte, httpResponse *_http.Response, err error) {
 	if err := self.refresh(); err != nil {
 		return nil, nil, err
 	}
@@ -71,7 +71,7 @@ func (self *VideoStreaming) GetThumbnail(videoID string, ctx sdkmodel.RequestCtx
 		return
 	}
 
-	token := GetTokenFromCtx(ctx)
+	token := ciosctx.Token(ctx)
 	if check.IsNil(token) {
 		token = self.token
 	}
@@ -105,7 +105,7 @@ func (self *VideoStreaming) GetThumbnail(videoID string, ctx sdkmodel.RequestCtx
 	return
 }
 
-func (self *VideoStreaming) Play(videoID string, ctx sdkmodel.RequestCtx) (cios.Room, *_http.Response, error) {
+func (self *VideoStreaming) Play(ctx ciosctx.RequestCtx, videoID string) (cios.Room, *_http.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Room{}, nil, err
 	}
@@ -115,7 +115,7 @@ func (self *VideoStreaming) Play(videoID string, ctx sdkmodel.RequestCtx) (cios.
 	}
 	return room.Room, httpResponse, err
 }
-func (self *VideoStreaming) Stop(videoID string, ctx sdkmodel.RequestCtx) (*_http.Response, error) {
+func (self *VideoStreaming) Stop(ctx ciosctx.RequestCtx, videoID string) (*_http.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
