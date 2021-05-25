@@ -9,6 +9,8 @@ import (
 	"net/url"
 	"testing"
 
+	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
+
 	xmath "github.com/fcfcqloow/go-advance/math"
 
 	cnv "github.com/fcfcqloow/go-advance/convert"
@@ -106,7 +108,7 @@ func TestFileStorage_GetNodes(t *testing.T) {
 	)
 	defer ts.Close()
 	for _, test := range tests {
-		client.FileStorage.GetNodes("test", test.params, ctx)
+		client.FileStorage.GetNodes(ctx, "test", test.params)
 		test.test()
 	}
 
@@ -131,27 +133,27 @@ func TestFileStorage_GetNodesAll(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 
-	response, _, _ := client.FileStorage.GetNodesAll("test", MakeGetNodesOpts().Limit(999), context.Background())
+	response, _, _ := client.FileStorage.GetNodesAll(ciosctx.Background(), "test", MakeGetNodesOpts().Limit(999))
 	if len(response) != 999 || offsets[0] != 0 && limits[0] != 1000 {
 		t.Fatal(len(response))
 	}
 
 	offsets = []int{}
 	limits = []int{}
-	response, _, _ = client.FileStorage.GetNodesAll("test", MakeGetNodesOpts().Limit(1500), context.Background())
+	response, _, _ = client.FileStorage.GetNodesAll(ciosctx.Background(), "test", MakeGetNodesOpts().Limit(1500))
 	if len(response) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
 		t.Fatal(len(response), limits, offsets)
 	}
 	offsets = []int{}
 	limits = []int{}
-	response, _, _ = client.FileStorage.GetNodesAll("test", MakeGetNodesOpts().Limit(2001), context.Background())
+	response, _, _ = client.FileStorage.GetNodesAll(ciosctx.Background(), "test", MakeGetNodesOpts().Limit(2001))
 	if len(response) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
 		t.Fatal(len(response), limits, offsets)
 
 	}
 	offsets = []int{}
 	limits = []int{}
-	response, _, _ = client.FileStorage.GetNodesAll("test", MakeGetNodesOpts().Limit(3501), context.Background())
+	response, _, _ = client.FileStorage.GetNodesAll(ciosctx.Background(), "test", MakeGetNodesOpts().Limit(3501))
 	if len(response) != 3500 ||
 		offsets[0] != 0 || limits[0] != 1000 ||
 		offsets[1] != 1000 && limits[1] != 1000 ||
@@ -161,7 +163,7 @@ func TestFileStorage_GetNodesAll(t *testing.T) {
 	}
 	offsets = []int{}
 	limits = []int{}
-	response, _, _ = client.FileStorage.GetNodesAll("test", MakeGetNodesOpts().Limit(2001).Offset(20), context.Background())
+	response, _, _ = client.FileStorage.GetNodesAll(ciosctx.Background(), "test", MakeGetNodesOpts().Limit(2001).Offset(20))
 	if len(response) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
 		t.Fatal(len(response), limits, offsets)
 
@@ -182,7 +184,7 @@ func TestFileStorage_GetNodesUnlimited(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 
-	buckets, _, _ := client.FileStorage.GetNodesUnlimited("test", MakeGetNodesOpts().Limit(1), context.Background())
+	buckets, _, _ := client.FileStorage.GetNodesUnlimited(ciosctx.Background(), "test", MakeGetNodesOpts().Limit(1))
 	if len(buckets) != 3500 {
 		t.Fatal(len(buckets))
 	}
@@ -206,7 +208,7 @@ func TestFileStorage_GetNode(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	responseBody, response, err := client.FileStorage.GetNode("test1", "test2", context.Background())
+	responseBody, response, err := client.FileStorage.GetNode(ciosctx.Background(), "test1", "test2")
 	if responseBody.Id != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(responseBody)
 	}
@@ -228,7 +230,7 @@ func TestFileStorage_CreateNode(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	_, _, err := client.FileStorage.CreateNode("test", "name", cnv.StrPtr("parent"), context.Background())
+	_, _, err := client.FileStorage.CreateNode(ciosctx.Background(), "test", "name", cnv.StrPtr("parent"))
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -246,7 +248,7 @@ func TestFileStorage_DeleteNode(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	_, err := client.FileStorage.DeleteNode("bucketid", "delete", context.Background())
+	_, err := client.FileStorage.DeleteNode(ciosctx.Background(), "bucketid", "delete")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -267,7 +269,7 @@ func TestFileStorage_RenameNode(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	_, _, err := client.FileStorage.RenameNode("bucketid", "node", "name", context.Background())
+	_, _, err := client.FileStorage.RenameNode(ciosctx.Background(), "bucketid", "node", "name")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -288,7 +290,7 @@ func TestFileStorage_CopyNode(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	_, _, err := client.FileStorage.CopyNode("bucketid", "node", cnv.StrPtr("destBucket"), cnv.StrPtr("destNode"), context.Background())
+	_, _, err := client.FileStorage.CopyNode(ciosctx.Background(), "bucketid", "node", cnv.StrPtr("destBucket"), cnv.StrPtr("destNode"))
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -308,7 +310,7 @@ func TestFileStorage_MoveNode(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	_, _, err := client.FileStorage.MoveNode("bucketid", "node", cnv.StrPtr("destBucket"), cnv.StrPtr("destNode"), context.Background())
+	_, _, err := client.FileStorage.MoveNode(ciosctx.Background(), "bucketid", "node", cnv.StrPtr("destBucket"), cnv.StrPtr("destNode"))
 	if err != nil {
 		t.Fatal(err.Error())
 	}
