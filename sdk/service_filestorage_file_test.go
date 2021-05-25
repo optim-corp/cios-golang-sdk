@@ -23,7 +23,7 @@ func TestFileStorage_DownloadFile(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	client.FileStorage.DownloadFile("bucketid", "node", context.Background())
+	client.FileStorage.DownloadFile(context.Background(), "bucketid", "node")
 	if !requested {
 		t.Fatal(ts.URL)
 	}
@@ -43,7 +43,7 @@ func TestFileStorage_DownloadFileByKey(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	client.FileStorage.DownloadFileByKey("bucketid", "node", context.Background())
+	client.FileStorage.DownloadFileByKey(context.Background(), "bucketid", "node")
 	if !requested {
 		t.Fatal(ts.URL)
 	}
@@ -66,13 +66,13 @@ func TestFileStorage_UploadFile(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	client.FileStorage.UploadFile("bucketid", []byte("node"),
-		MakeUploadFileOpts().Key("").NodeId(""), context.Background())
+	client.FileStorage.UploadFile(context.Background(), "bucketid", []byte("node"),
+		MakeUploadFileOpts().Key("").NodeId(""))
 	if nodeId != "" || key != "" {
 		t.Fatal(nodeId, key)
 	}
-	client.FileStorage.UploadFile("bucketid", []byte("node"),
-		MakeUploadFileOpts().Key("test").NodeId("test"), context.Background())
+	client.FileStorage.UploadFile(context.Background(), "bucketid", []byte("node"),
+		MakeUploadFileOpts().Key("test").NodeId("test"))
 	if nodeId != "test" || key != "test" {
 		t.Fatal(nodeId, key)
 	}

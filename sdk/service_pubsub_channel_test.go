@@ -8,6 +8,8 @@ import (
 	"net/url"
 	"testing"
 
+	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
+
 	xmath "github.com/fcfcqloow/go-advance/math"
 
 	cnv "github.com/fcfcqloow/go-advance/convert"
@@ -109,7 +111,7 @@ func TestPubSub_Channels(t *testing.T) {
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
 	defer ts.Close()
 	for _, test := range tests {
-		client.PubSub.GetChannels(test.params, ctx)
+		client.PubSub.GetChannels(ctx, test.params)
 		test.test()
 	}
 
@@ -134,27 +136,27 @@ func TestPubSub_GetChannelsAll(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
 
-	responses, _, _ := client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(999), context.Background())
+	responses, _, _ := client.PubSub.GetChannelsAll(ciosctx.Background(), MakeGetChannelsOpts().Limit(999))
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
 		t.Fatal(len(responses))
 	}
 
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(1500), context.Background())
+	responses, _, _ = client.PubSub.GetChannelsAll(ciosctx.Background(), MakeGetChannelsOpts().Limit(1500))
 	if len(responses) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
 		t.Fatal(len(responses), limits, offsets)
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(2001), context.Background())
+	responses, _, _ = client.PubSub.GetChannelsAll(ciosctx.Background(), MakeGetChannelsOpts().Limit(2001))
 	if len(responses) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(3501), context.Background())
+	responses, _, _ = client.PubSub.GetChannelsAll(ciosctx.Background(), MakeGetChannelsOpts().Limit(3501))
 	if len(responses) != 3500 ||
 		offsets[0] != 0 || limits[0] != 1000 ||
 		offsets[1] != 1000 && limits[1] != 1000 ||
@@ -165,7 +167,7 @@ func TestPubSub_GetChannelsAll(t *testing.T) {
 
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.PubSub.GetChannelsAll(MakeGetChannelsOpts().Limit(2001).Offset(20), nil)
+	responses, _, _ = client.PubSub.GetChannelsAll(ciosctx.Background(), MakeGetChannelsOpts().Limit(2001).Offset(20))
 	if len(responses) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
@@ -186,7 +188,7 @@ func TestPubSub_GetChannelsUnlimited(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
 
-	response, _, _ := client.PubSub.GetChannelsUnlimited(MakeGetChannelsOpts().Limit(1), context.Background())
+	response, _, _ := client.PubSub.GetChannelsUnlimited(ciosctx.Background(), MakeGetChannelsOpts().Limit(1))
 	if len(response) != 3500 {
 		t.Fatal(len(response))
 	}
@@ -208,7 +210,7 @@ func TestPubSub_GetChannel(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
-	responseB, response, err := client.PubSub.GetChannel("test", nil, nil, context.Background())
+	responseB, response, err := client.PubSub.GetChannel(ciosctx.Background(), "test", nil, nil)
 	if responseB.Id != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(responseB)
 	}
@@ -239,7 +241,7 @@ func TestPubSub_CreateChannel(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
-	_, _, err := client.PubSub.CreateChannel(cios.ChannelProposal{
+	_, _, err := client.PubSub.CreateChannel(ciosctx.Background(), cios.ChannelProposal{
 		ResourceOwnerId:  "resource_owner_id",
 		ChannelProtocols: nil,
 		DisplayInfo: cios.DisplayInfoStream{
@@ -268,7 +270,7 @@ func TestPubSub_CreateChannel(t *testing.T) {
 			MaxSize:  cnv.StrPtr("1000"),
 			MaxCount: cnv.StrPtr("222"),
 		},
-	}, context.Background())
+	})
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -286,7 +288,7 @@ func TestPubSub_DeleteChannel(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
-	_, err := client.PubSub.DeleteChannel("id", context.Background())
+	_, err := client.PubSub.DeleteChannel(ciosctx.Background(), "id")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -303,13 +305,13 @@ func TestPubSub_UpdateChannel(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
-	_, _, err := client.PubSub.UpdateChannel("id", cios.ChannelUpdateProposal{
+	_, _, err := client.PubSub.UpdateChannel(ciosctx.Background(), "id", cios.ChannelUpdateProposal{
 		ChannelProtocols: nil,
 		DisplayInfo:      nil,
 		Labels:           nil,
 		MessagingConfig:  nil,
 		DatastoreConfig:  nil,
-	}, context.Background())
+	})
 	if err != nil {
 		t.Fatal(err.Error())
 	}

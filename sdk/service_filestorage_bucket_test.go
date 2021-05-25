@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
+
 	xmath "github.com/fcfcqloow/go-advance/math"
 
 	cnv "github.com/fcfcqloow/go-advance/convert"
@@ -46,11 +48,11 @@ func Test_RefreshBucket(t *testing.T) {
 		),
 	})
 	funcs := []func(){
-		func() { client.FileStorage.GetBuckets(MakeGetBucketsOpts(), ctx) },
-		func() { client.FileStorage.CreateBucket("", "", ctx) },
-		func() { client.FileStorage.GetBucket("", ctx) },
-		func() { client.FileStorage.UpdateBucket("", "", ctx) },
-		func() { client.FileStorage.DeleteBucket("", ctx) },
+		func() { client.FileStorage.GetBuckets(ctx, MakeGetBucketsOpts()) },
+		func() { client.FileStorage.CreateBucket(ctx, "", "") },
+		func() { client.FileStorage.GetBucket(ctx, "") },
+		func() { client.FileStorage.UpdateBucket(ctx, "", "") },
+		func() { client.FileStorage.DeleteBucket(ctx, "") },
 	}
 	for i, fnc := range funcs {
 		fnc()
@@ -74,7 +76,7 @@ func Test_RefreshBucket(t *testing.T) {
 		_token = ""
 	}
 
-	ctx = MakeRequestCtx("AAA")
+	ctx = ciosctx.WithToken(ctx, "AAA")
 	count = 0
 	_token = ""
 	client = NewCiosClient(CiosClientConfig{
@@ -186,7 +188,7 @@ func TestFileStorage_GetBuckets(t *testing.T) {
 	)
 	defer ts.Close()
 	for _, test := range tests {
-		client.FileStorage.GetBuckets(test.params, ctx)
+		client.FileStorage.GetBuckets(ctx, test.params)
 		test.test()
 	}
 
@@ -211,27 +213,27 @@ func TestFileStorage_GetBucketsAll(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 
-	buckets, _, _ := client.FileStorage.GetBucketsAll(MakeGetBucketsOpts().Limit(999), context.Background())
+	buckets, _, _ := client.FileStorage.GetBucketsAll(nil, MakeGetBucketsOpts().Limit(999))
 	if len(buckets) != 999 || offsets[0] != 0 && limits[0] != 1000 {
 		t.Fatal(len(buckets))
 	}
 
 	offsets = []int{}
 	limits = []int{}
-	buckets, _, _ = client.FileStorage.GetBucketsAll(MakeGetBucketsOpts().Limit(1500), context.Background())
+	buckets, _, _ = client.FileStorage.GetBucketsAll(nil, MakeGetBucketsOpts().Limit(1500))
 	if len(buckets) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
 		t.Fatal(len(buckets), limits, offsets)
 	}
 	offsets = []int{}
 	limits = []int{}
-	buckets, _, _ = client.FileStorage.GetBucketsAll(MakeGetBucketsOpts().Limit(2001), context.Background())
+	buckets, _, _ = client.FileStorage.GetBucketsAll(nil, MakeGetBucketsOpts().Limit(2001))
 	if len(buckets) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
 		t.Fatal(len(buckets), limits, offsets)
 
 	}
 	offsets = []int{}
 	limits = []int{}
-	buckets, _, _ = client.FileStorage.GetBucketsAll(MakeGetBucketsOpts().Limit(3501), context.Background())
+	buckets, _, _ = client.FileStorage.GetBucketsAll(nil, MakeGetBucketsOpts().Limit(3501))
 	if len(buckets) != 3500 ||
 		offsets[0] != 0 || limits[0] != 1000 ||
 		offsets[1] != 1000 && limits[1] != 1000 ||
@@ -241,7 +243,7 @@ func TestFileStorage_GetBucketsAll(t *testing.T) {
 	}
 	offsets = []int{}
 	limits = []int{}
-	buckets, _, _ = client.FileStorage.GetBucketsAll(MakeGetBucketsOpts().Limit(2001).Offset(20), context.Background())
+	buckets, _, _ = client.FileStorage.GetBucketsAll(nil, MakeGetBucketsOpts().Limit(2001).Offset(20))
 	if len(buckets) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
 		t.Fatal(len(buckets), limits, offsets)
 
@@ -262,7 +264,7 @@ func TestFileStorage_GetBucketsUnlimited(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 
-	buckets, _, _ := client.FileStorage.GetBucketsUnlimited(MakeGetBucketsOpts().Limit(1), context.Background())
+	buckets, _, _ := client.FileStorage.GetBucketsUnlimited(nil, MakeGetBucketsOpts().Limit(1))
 	if len(buckets) != 3500 {
 		t.Fatal(len(buckets))
 	}
@@ -287,7 +289,7 @@ func TestFileStorage_GetBucket(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	bucket, response, err := client.FileStorage.GetBucket("test", context.Background())
+	bucket, response, err := client.FileStorage.GetBucket(nil, "test")
 	if bucket.Id != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(bucket)
 	}
@@ -309,7 +311,7 @@ func TestFileStorage_CreateBucket(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	_, _, err := client.FileStorage.CreateBucket("resource_owner_id", "name", context.Background())
+	_, _, err := client.FileStorage.CreateBucket(nil, "resource_owner_id", "name")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -327,7 +329,7 @@ func TestFileStorage_DeleteBucket(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	_, err := client.FileStorage.DeleteBucket("bucketid", context.Background())
+	_, err := client.FileStorage.DeleteBucket(nil, "bucketid")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -350,7 +352,7 @@ func TestFileStorage_UpdateBucket(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
-	_, err := client.FileStorage.UpdateBucket("bucketid", "test", context.Background())
+	_, err := client.FileStorage.UpdateBucket(nil, "bucketid", "test")
 	if err != nil {
 		t.Fatal(err.Error())
 	}

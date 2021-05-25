@@ -58,7 +58,7 @@ func TestVideo_Videos(t *testing.T) {
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{VideoStreamingUrl: ts.URL}})
 	defer ts.Close()
 	for _, test := range tests {
-		client.Video.GetVideoInfos(test.params, nil)
+		client.Video.GetVideoInfos(nil, test.params)
 		test.test()
 	}
 
@@ -86,7 +86,7 @@ func TestVideo_GetVideoInfo(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{VideoStreamingUrl: ts.URL}})
-	responseB, response, err := client.Video.GetVideoInfo("test", nil)
+	responseB, response, err := client.Video.GetVideoInfo(nil, "test")
 	if responseB.Id != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(responseB)
 	}
@@ -103,7 +103,7 @@ func TestVideo_GetThumbnail(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{VideoStreamingUrl: ts.URL}})
-	responseB, response, err := client.Video.GetThumbnail("test", nil)
+	responseB, response, err := client.Video.GetThumbnail(nil, "test")
 	if string(responseB) != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(responseB)
 
@@ -125,7 +125,7 @@ func TestVideo_UpdateVideoInfo(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{VideoStreamingUrl: ts.URL}})
-	_, _, err := client.Video.UpdateVideoInfo("test", "name", "dp", nil)
+	_, _, err := client.Video.UpdateVideoInfo(nil, "test", "name", "dp")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -142,7 +142,7 @@ func TestVideo_Play(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{VideoStreamingUrl: ts.URL}})
-	_, _, err := client.Video.Play("id", nil)
+	_, _, err := client.Video.Play(nil, "id")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -159,7 +159,7 @@ func TestVideo_Stop(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{VideoStreamingUrl: ts.URL}})
-	_, err := client.Video.Stop("id", nil)
+	_, err := client.Video.Stop(nil, "id")
 	if err != nil {
 		t.Fatal(err.Error())
 	}

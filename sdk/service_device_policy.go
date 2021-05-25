@@ -3,12 +3,13 @@ package ciossdk
 import (
 	_nethttp "net/http"
 
+	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
+
 	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	xmath "github.com/fcfcqloow/go-advance/math"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
-	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 	"github.com/optim-corp/cios-golang-sdk/util"
 )
 
@@ -16,7 +17,7 @@ func MakeGetPoliciesOpts() cios.ApiGetDevicePoliciesRequest {
 	return cios.ApiGetDevicePoliciesRequest{}
 }
 
-func (self *DeviceManagement) GetPolicies(params cios.ApiGetDevicePoliciesRequest, ctx sdkmodel.RequestCtx) (response cios.MultipleDevicePolicy, httpResponse *_nethttp.Response, err error) {
+func (self *DeviceManagement) GetPolicies(ctx ciosctx.RequestCtx, params cios.ApiGetDevicePoliciesRequest) (response cios.MultipleDevicePolicy, httpResponse *_nethttp.Response, err error) {
 	if err := self.refresh(); err != nil {
 		return cios.MultipleDevicePolicy{}, nil, err
 	}
@@ -28,7 +29,7 @@ func (self *DeviceManagement) GetPolicies(params cios.ApiGetDevicePoliciesReques
 	return params.Execute()
 }
 
-func (self *DeviceManagement) GetPoliciesAll(params cios.ApiGetDevicePoliciesRequest, ctx sdkmodel.RequestCtx) ([]cios.DevicePolicy, *_nethttp.Response, error) {
+func (self *DeviceManagement) GetPoliciesAll(ctx ciosctx.RequestCtx, params cios.ApiGetDevicePoliciesRequest) ([]cios.DevicePolicy, *_nethttp.Response, error) {
 	var (
 		result       []cios.DevicePolicy
 		httpResponse *_nethttp.Response
@@ -36,7 +37,7 @@ func (self *DeviceManagement) GetPoliciesAll(params cios.ApiGetDevicePoliciesReq
 		_limit       = int64(1000)
 		offset       = int64(0)
 		getFunction  = func(offset int64) (cios.MultipleDevicePolicy, *_nethttp.Response, error) {
-			return self.GetPolicies(params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+cnv.MustInt64(params.P_offset)), ctx)
+			return self.GetPolicies(ctx, params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+cnv.MustInt64(params.P_offset)))
 		}
 	)
 	if params.P_limit != nil {
@@ -69,17 +70,17 @@ func (self *DeviceManagement) GetPoliciesAll(params cios.ApiGetDevicePoliciesReq
 	}
 	return result, httpResponse, err
 }
-func (self *DeviceManagement) GetPoliciesUnlimited(params cios.ApiGetDevicePoliciesRequest, ctx sdkmodel.RequestCtx) ([]cios.DevicePolicy, *_nethttp.Response, error) {
+func (self *DeviceManagement) GetPoliciesUnlimited(ctx ciosctx.RequestCtx, params cios.ApiGetDevicePoliciesRequest) ([]cios.DevicePolicy, *_nethttp.Response, error) {
 	params.P_limit = nil
-	return self.GetPoliciesAll(params, ctx)
+	return self.GetPoliciesAll(ctx, params)
 }
-func (self *DeviceManagement) DeletePolicy(id string, ctx sdkmodel.RequestCtx) (*_nethttp.Response, error) {
+func (self *DeviceManagement) DeletePolicy(ctx ciosctx.RequestCtx, id string) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
 	return self.ApiClient.DeviceApi.DeletePolicy(self.withHost(ctx), id).Execute()
 }
-func (self *DeviceManagement) CreatePolicy(resourceOwnerID string, ctx sdkmodel.RequestCtx) (cios.DevicePolicy, *_nethttp.Response, error) {
+func (self *DeviceManagement) CreatePolicy(ctx ciosctx.RequestCtx, resourceOwnerID string) (cios.DevicePolicy, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.DevicePolicy{}, nil, err
 	}

@@ -1,10 +1,11 @@
 package ciossdk
 
 import (
-	"context"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
 
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
@@ -21,7 +22,7 @@ func TestPubSub_GetLicenses(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{LicenseUrl: ts.URL}})
-	_, _, err := client.License.GetLicenses(MakeGetLicensesOpts(), context.Background())
+	_, _, err := client.License.GetLicenses(ciosctx.Background(), MakeGetLicensesOpts())
 	if err != nil {
 		t.Fatal(err.Error())
 	}

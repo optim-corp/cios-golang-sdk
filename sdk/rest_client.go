@@ -1,7 +1,6 @@
 package ciossdk
 
 import (
-	"context"
 	"regexp"
 	"strings"
 	"time"
@@ -37,19 +36,25 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 	instance.DeviceAssetManagement = &DeviceAssetManagement{ApiClient: client, Url: config.Urls.DeviceAssetManagementUrl, withHost: getWithHostFunc(sdkmodel.DEVICE_ASSET_INDEX)}
 	instance.FileStorage = &FileStorage{ApiClient: client, Url: config.Urls.StorageUrl, withHost: getWithHostFunc(sdkmodel.FILE_STORAGE_INDEX)}
 	instance.Geography = &Geography{ApiClient: client, Url: config.Urls.LocationUrl, withHost: getWithHostFunc(sdkmodel.LOCATION_INDEX)}
-	instance.Auth = &Auth{}
-	instance.Auth.ApiClient = client
-	instance.Auth.Url = config.Urls.AuthUrl
-	instance.Auth.withHost = getWithHostFunc(sdkmodel.AUTH_INDEX)
-	instance.PubSub = &PubSub{}
-	instance.PubSub.ApiClient = client
-	instance.PubSub.Url = config.Urls.MessagingUrl
-	instance.PubSub.withHost = getWithHostFunc(sdkmodel.MESSAGING_INDEX)
+	instance.Auth = &Auth{
+		_instance: _instance{
+			ApiClient: client,
+			Url:       config.Urls.AuthUrl,
+			withHost:  getWithHostFunc(sdkmodel.AUTH_INDEX),
+		},
+	}
+	instance.PubSub = &PubSub{
+		_instance: _instance{
+			ApiClient: client,
+			Url:       config.Urls.MessagingUrl,
+			withHost:  getWithHostFunc(sdkmodel.MESSAGING_INDEX),
+			refresh:   nil,
+		},
+	}
 	instance.Video = &VideoStreaming{
 		_instance: _instance{
 			ApiClient: client,
 			Url:       config.Urls.VideoStreamingUrl,
-			Host:      "",
 			withHost:  getWithHostFunc(sdkmodel.VIDEO_STREAMING_INDEX),
 		},
 	}
@@ -135,21 +140,6 @@ func (self *CiosClient) RequestScope(scope string) *CiosClient {
 	return self
 }
 
-func MakeRequestCtx(token string) sdkmodel.RequestCtx {
-	if token == "" {
-		return context.Background()
-	}
-	return context.WithValue(context.Background(), cios.ContextAccessToken, regexp.MustCompile(`^bearer|Bearer| `).ReplaceAllString(token, ""))
-}
-
-func GetTokenFromCtx(ctx sdkmodel.RequestCtx) (token *string) {
-	if !check.IsNil(ctx) {
-		if _token, ok := ctx.Value(cios.ContextAccessToken).(string); ok {
-			token = &_token
-		}
-	}
-	return
-}
 func ParseAccessToken(accessToken string) string {
 	if !strings.Contains(accessToken, "Bearer ") {
 		return "Bearer " + accessToken
