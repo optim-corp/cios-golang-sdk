@@ -89,6 +89,7 @@ type (
 		clientId     string
 		clientSecret string
 	}
+	Collection            _instance
 	Contract              _instance
 	DeviceAssetManagement _instance
 	DeviceManagement      _instance
