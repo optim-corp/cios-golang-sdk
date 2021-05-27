@@ -16,7 +16,7 @@ import (
 func MakeGetNodesOpts() cios.ApiGetNodesRequest {
 	return cios.ApiGetNodesRequest{}
 }
-func (self *FileStorage) GetNodes(bucketID string, params cios.ApiGetNodesRequest, ctx ciosctx.RequestCtx) (response cios.MultipleNode, httpResponse *_nethttp.Response, err error) {
+func (self *FileStorage) GetNodes(ctx ciosctx.RequestCtx, bucketID string, params cios.ApiGetNodesRequest) (response cios.MultipleNode, httpResponse *_nethttp.Response, err error) {
 	if err := self.refresh(); err != nil {
 		return cios.MultipleNode{}, nil, err
 	}
@@ -30,7 +30,7 @@ func (self *FileStorage) GetNodes(bucketID string, params cios.ApiGetNodesReques
 	params.P_key = util.ToNil(params.P_key)
 	return params.Execute()
 }
-func (self *FileStorage) GetNodesAll(bucketID string, params cios.ApiGetNodesRequest, ctx ciosctx.RequestCtx) ([]cios.Node, *_nethttp.Response, error) {
+func (self *FileStorage) GetNodesAll(ctx ciosctx.RequestCtx, bucketID string, params cios.ApiGetNodesRequest) ([]cios.Node, *_nethttp.Response, error) {
 	var (
 		result      []cios.Node
 		httpRes     *_nethttp.Response
@@ -38,7 +38,7 @@ func (self *FileStorage) GetNodesAll(bucketID string, params cios.ApiGetNodesReq
 		offset      = int64(0)
 		_limit      = int64(1000)
 		getFunction = func(offset int64) (cios.MultipleNode, *_nethttp.Response, error) {
-			return self.GetNodes(bucketID, params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+cnv.MustInt64(params.P_offset)), ctx)
+			return self.GetNodes(ctx, bucketID, params.Limit(xmath.MinInt64(_limit, 1000)).Offset(offset+cnv.MustInt64(params.P_offset)))
 		}
 	)
 	if params.P_limit != nil {
@@ -71,12 +71,12 @@ func (self *FileStorage) GetNodesAll(bucketID string, params cios.ApiGetNodesReq
 	}
 	return result, httpRes, err
 }
-func (self *FileStorage) GetNodesUnlimited(bucketID string, params cios.ApiGetNodesRequest, ctx ciosctx.RequestCtx) ([]cios.Node, *_nethttp.Response, error) {
+func (self *FileStorage) GetNodesUnlimited(ctx ciosctx.RequestCtx, bucketID string, params cios.ApiGetNodesRequest) ([]cios.Node, *_nethttp.Response, error) {
 	params.P_limit = nil
-	return self.GetNodesAll(bucketID, params, ctx)
+	return self.GetNodesAll(ctx, bucketID, params)
 }
 
-func (self *FileStorage) GetNode(bucketID string, nodeID string, ctx ciosctx.RequestCtx) (cios.Node, *_nethttp.Response, error) {
+func (self *FileStorage) GetNode(ctx ciosctx.RequestCtx, bucketID string, nodeID string) (cios.Node, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Node{}, nil, err
 	}
@@ -87,13 +87,13 @@ func (self *FileStorage) GetNode(bucketID string, nodeID string, ctx ciosctx.Req
 	}
 	return response.Node, httpResponse, err
 }
-func (self *FileStorage) CreateNode(bucketID string, name string, parentNodeID *string, ctx ciosctx.RequestCtx) (cios.Node, *_nethttp.Response, error) {
-	return self.CreateNodeOnNodeID(bucketID, cios.NodeRequest{
+func (self *FileStorage) CreateNode(ctx ciosctx.RequestCtx, bucketID string, name string, parentNodeID *string) (cios.Node, *_nethttp.Response, error) {
+	return self.CreateNodeOnNodeID(ctx, bucketID, cios.NodeRequest{
 		Name:         name,
 		ParentNodeId: parentNodeID,
-	}, ctx)
+	})
 }
-func (self *FileStorage) CreateNodeOnNodeID(bucketID string, body cios.NodeRequest, ctx ciosctx.RequestCtx) (cios.Node, *_nethttp.Response, error) {
+func (self *FileStorage) CreateNodeOnNodeID(ctx ciosctx.RequestCtx, bucketID string, body cios.NodeRequest) (cios.Node, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Node{}, nil, err
 	}
@@ -105,14 +105,14 @@ func (self *FileStorage) CreateNodeOnNodeID(bucketID string, body cios.NodeReque
 	return response.Node, httpResponse, err
 }
 
-func (self *FileStorage) DeleteNode(bucketID string, nodeID string, ctx ciosctx.RequestCtx) (*_nethttp.Response, error) {
+func (self *FileStorage) DeleteNode(ctx ciosctx.RequestCtx, bucketID string, nodeID string) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
 	return self.ApiClient.FileStorageApi.DeleteNode(self.withHost(ctx), bucketID, nodeID).Execute()
 }
 
-func (self *FileStorage) CopyNode(bucketID string, nodeID string, destBucketID *string, destParentNodeID *string, ctx ciosctx.RequestCtx) (cios.Node, *_nethttp.Response, error) {
+func (self *FileStorage) CopyNode(ctx ciosctx.RequestCtx, bucketID string, nodeID string, destBucketID *string, destParentNodeID *string) (cios.Node, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Node{}, nil, err
 	}
@@ -127,7 +127,7 @@ func (self *FileStorage) CopyNode(bucketID string, nodeID string, destBucketID *
 	return response.Node, httpResponse, err
 }
 
-func (self *FileStorage) MoveNode(bucketID string, nodeID string, destBucketID *string, destParentNodeID *string, ctx ciosctx.RequestCtx) (cios.Node, *_nethttp.Response, error) {
+func (self *FileStorage) MoveNode(ctx ciosctx.RequestCtx, bucketID string, nodeID string, destBucketID *string, destParentNodeID *string) (cios.Node, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Node{}, nil, err
 	}
@@ -142,7 +142,7 @@ func (self *FileStorage) MoveNode(bucketID string, nodeID string, destBucketID *
 	return response.Node, httpResponse, err
 }
 
-func (self *FileStorage) RenameNode(bucketID string, nodeID string, name string, ctx ciosctx.RequestCtx) (cios.Node, *_nethttp.Response, error) {
+func (self *FileStorage) RenameNode(ctx ciosctx.RequestCtx, bucketID string, nodeID string, name string) (cios.Node, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Node{}, nil, err
 	}
