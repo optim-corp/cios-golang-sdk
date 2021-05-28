@@ -9,6 +9,8 @@ import (
 	"sync"
 	"time"
 
+	ciossdk_pusub_enum "github.com/optim-corp/cios-golang-sdk/sdk/enum/pubsub"
+
 	"github.com/fcfcqloow/go-advance/check"
 	cnv "github.com/fcfcqloow/go-advance/convert"
 	"github.com/optim-corp/cios-golang-sdk/cios"
@@ -68,7 +70,7 @@ func CreateCiosWsMessagingURL(httpUrl, channelID, mode string, packerFormat *str
 	_url.RawQuery = q.Encode()
 	return _url.String()
 }
-func (self *CiosPubSub) NewMessaging(channelId, mode, packerFormat string) *CiosMessaging {
+func (self *CiosPubSub) NewMessaging(channelId string, mode ciossdk_pusub_enum.MessagingMode, packerFormat ciossdk_pusub_enum.PackerFormat) *CiosMessaging {
 	ref := func() (token string) {
 		self.refresh()
 		if !check.IsNil(self.token) {
@@ -80,7 +82,7 @@ func (self *CiosPubSub) NewMessaging(channelId, mode, packerFormat string) *Cios
 		packerFormat = "payload_only"
 	}
 	instance := CiosMessaging{}
-	instance.wsUrl = CreateCiosWsMessagingURL(self.Url, channelId, mode, &packerFormat)
+	instance.wsUrl = CreateCiosWsMessagingURL(self.Url, channelId, string(mode), cnv.StrPtr(string(packerFormat)))
 	instance.isDebug = self.debug
 	instance.refresh = &ref
 	instance.CloseFunc = func() {}
