@@ -15,7 +15,7 @@ func MakeUploadFileOpts() cios.ApiUploadFileRequest {
 	return cios.ApiUploadFileRequest{}
 }
 
-func (self *FileStorage) DownloadFile(ctx ciosctx.RequestCtx, bucketID string, nodeID string) ([]byte, *_nethttp.Response, error) {
+func (self *CiosFileStorage) DownloadFile(ctx ciosctx.RequestCtx, bucketID string, nodeID string) ([]byte, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, nil, err
 	}
@@ -23,7 +23,7 @@ func (self *FileStorage) DownloadFile(ctx ciosctx.RequestCtx, bucketID string, n
 	f, httpResponse, err := request.Execute()
 	return []byte(f), httpResponse, err
 }
-func (self *FileStorage) DownloadFileByKey(ctx ciosctx.RequestCtx, bucketID string, key string) ([]byte, *_nethttp.Response, error) {
+func (self *CiosFileStorage) DownloadFileByKey(ctx ciosctx.RequestCtx, bucketID string, key string) ([]byte, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, nil, err
 	}
@@ -31,7 +31,7 @@ func (self *FileStorage) DownloadFileByKey(ctx ciosctx.RequestCtx, bucketID stri
 	f, httpResponse, err := request.Execute()
 	return []byte(f), httpResponse, err
 }
-func (self *FileStorage) UploadFile(ctx ciosctx.RequestCtx, bucketID string, body []byte, params cios.ApiUploadFileRequest) (*_nethttp.Response, error) {
+func (self *CiosFileStorage) UploadFile(ctx ciosctx.RequestCtx, bucketID string, body []byte, params cios.ApiUploadFileRequest) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}

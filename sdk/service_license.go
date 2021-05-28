@@ -9,11 +9,13 @@ import (
 	"github.com/optim-corp/cios-golang-sdk/cios"
 )
 
+type CiosLicense _instance
+
 func MakeGetLicensesOpts() cios.ApiGetMyLicensesRequest {
 	return cios.ApiGetMyLicensesRequest{}
 }
 
-func (self *License) GetLicenses(ctx ciosctx.RequestCtx, params cios.ApiGetMyLicensesRequest) (response []cios.License, httpResponse *_nethttp.Response, err error) {
+func (self *CiosLicense) GetLicenses(ctx ciosctx.RequestCtx, params cios.ApiGetMyLicensesRequest) (response []cios.License, httpResponse *_nethttp.Response, err error) {
 	if err = self.refresh(); err != nil {
 		return
 	}

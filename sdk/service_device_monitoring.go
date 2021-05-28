@@ -8,7 +8,7 @@ import (
 	"github.com/optim-corp/cios-golang-sdk/cios"
 )
 
-func (self *DeviceManagement) GetMonitoringLatestList(ctx ciosctx.RequestCtx, deviceIDs []string) ([]cios.DeviceMonitoring, *_nethttp.Response, error) {
+func (self *CiosDeviceManagement) GetMonitoringLatestList(ctx ciosctx.RequestCtx, deviceIDs []string) ([]cios.DeviceMonitoring, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return []cios.DeviceMonitoring{}, nil, err
 	}
@@ -18,7 +18,7 @@ func (self *DeviceManagement) GetMonitoringLatestList(ctx ciosctx.RequestCtx, de
 	}
 	return response.Monitorings, httpResponse, err
 }
-func (self *DeviceManagement) GetMonitoring(ctx ciosctx.RequestCtx, deviceID string) (cios.DeviceMonitoring, *_nethttp.Response, error) {
+func (self *CiosDeviceManagement) GetMonitoring(ctx ciosctx.RequestCtx, deviceID string) (cios.DeviceMonitoring, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.DeviceMonitoring{}, nil, err
 	}

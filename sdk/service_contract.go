@@ -13,11 +13,13 @@ import (
 	"github.com/optim-corp/cios-golang-sdk/cios"
 )
 
+type CiosContract _instance
+
 func MakeGetContractsOpts() cios.ApiGetContractsRequest {
 	return cios.ApiGetContractsRequest{}
 }
 
-func (self *Contract) GetContracts(ctx ciosctx.RequestCtx, params cios.ApiGetContractsRequest) (response cios.MultipleContract, httpResponse *_nethttp.Response, err error) {
+func (self *CiosContract) GetContracts(ctx ciosctx.RequestCtx, params cios.ApiGetContractsRequest) (response cios.MultipleContract, httpResponse *_nethttp.Response, err error) {
 	if err := self.refresh(); err != nil {
 		return cios.MultipleContract{}, nil, err
 	}
@@ -27,7 +29,7 @@ func (self *Contract) GetContracts(ctx ciosctx.RequestCtx, params cios.ApiGetCon
 	return params.Execute()
 }
 
-func (self *Contract) GetContractsAll(ctx ciosctx.RequestCtx, params cios.ApiGetContractsRequest) ([]cios.Contract, *_nethttp.Response, error) {
+func (self *CiosContract) GetContractsAll(ctx ciosctx.RequestCtx, params cios.ApiGetContractsRequest) ([]cios.Contract, *_nethttp.Response, error) {
 	var (
 		result      []cios.Contract
 		httpRes     *_nethttp.Response
@@ -68,7 +70,7 @@ func (self *Contract) GetContractsAll(ctx ciosctx.RequestCtx, params cios.ApiGet
 	}
 	return result, httpRes, err
 }
-func (self *Contract) GetContractsUnlimited(ctx ciosctx.RequestCtx, params cios.ApiGetContractsRequest) ([]cios.Contract, *_nethttp.Response, error) {
+func (self *CiosContract) GetContractsUnlimited(ctx ciosctx.RequestCtx, params cios.ApiGetContractsRequest) ([]cios.Contract, *_nethttp.Response, error) {
 	params.P_limit = nil
 	return self.GetContractsAll(ctx, params)
 }
