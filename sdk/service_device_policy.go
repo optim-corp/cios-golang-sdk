@@ -17,7 +17,7 @@ func MakeGetPoliciesOpts() cios.ApiGetDevicePoliciesRequest {
 	return cios.ApiGetDevicePoliciesRequest{}
 }
 
-func (self *DeviceManagement) GetPolicies(ctx ciosctx.RequestCtx, params cios.ApiGetDevicePoliciesRequest) (response cios.MultipleDevicePolicy, httpResponse *_nethttp.Response, err error) {
+func (self *CiosDeviceManagement) GetPolicies(ctx ciosctx.RequestCtx, params cios.ApiGetDevicePoliciesRequest) (response cios.MultipleDevicePolicy, httpResponse *_nethttp.Response, err error) {
 	if err := self.refresh(); err != nil {
 		return cios.MultipleDevicePolicy{}, nil, err
 	}
@@ -29,7 +29,7 @@ func (self *DeviceManagement) GetPolicies(ctx ciosctx.RequestCtx, params cios.Ap
 	return params.Execute()
 }
 
-func (self *DeviceManagement) GetPoliciesAll(ctx ciosctx.RequestCtx, params cios.ApiGetDevicePoliciesRequest) ([]cios.DevicePolicy, *_nethttp.Response, error) {
+func (self *CiosDeviceManagement) GetPoliciesAll(ctx ciosctx.RequestCtx, params cios.ApiGetDevicePoliciesRequest) ([]cios.DevicePolicy, *_nethttp.Response, error) {
 	var (
 		result       []cios.DevicePolicy
 		httpResponse *_nethttp.Response
@@ -70,17 +70,17 @@ func (self *DeviceManagement) GetPoliciesAll(ctx ciosctx.RequestCtx, params cios
 	}
 	return result, httpResponse, err
 }
-func (self *DeviceManagement) GetPoliciesUnlimited(ctx ciosctx.RequestCtx, params cios.ApiGetDevicePoliciesRequest) ([]cios.DevicePolicy, *_nethttp.Response, error) {
+func (self *CiosDeviceManagement) GetPoliciesUnlimited(ctx ciosctx.RequestCtx, params cios.ApiGetDevicePoliciesRequest) ([]cios.DevicePolicy, *_nethttp.Response, error) {
 	params.P_limit = nil
 	return self.GetPoliciesAll(ctx, params)
 }
-func (self *DeviceManagement) DeletePolicy(ctx ciosctx.RequestCtx, id string) (*_nethttp.Response, error) {
+func (self *CiosDeviceManagement) DeletePolicy(ctx ciosctx.RequestCtx, id string) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
 	return self.ApiClient.DeviceApi.DeletePolicy(self.withHost(ctx), id).Execute()
 }
-func (self *DeviceManagement) CreatePolicy(ctx ciosctx.RequestCtx, resourceOwnerID string) (cios.DevicePolicy, *_nethttp.Response, error) {
+func (self *CiosDeviceManagement) CreatePolicy(ctx ciosctx.RequestCtx, resourceOwnerID string) (cios.DevicePolicy, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.DevicePolicy{}, nil, err
 	}

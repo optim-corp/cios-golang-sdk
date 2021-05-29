@@ -18,7 +18,7 @@ func MakeGetChannelsOpts() cios.ApiGetChannelsRequest {
 	return cios.ApiGetChannelsRequest{}
 }
 
-func (self *PubSub) GetChannels(ctx ciosctx.RequestCtx, params cios.ApiGetChannelsRequest) (response cios.MultipleChannel, httpResponse *_nethttp.Response, err error) {
+func (self *CiosPubSub) GetChannels(ctx ciosctx.RequestCtx, params cios.ApiGetChannelsRequest) (response cios.MultipleChannel, httpResponse *_nethttp.Response, err error) {
 	if err = self.refresh(); err != nil {
 		return
 	}
@@ -37,7 +37,7 @@ func (self *PubSub) GetChannels(ctx ciosctx.RequestCtx, params cios.ApiGetChanne
 	params.P_messagingPersisted = util.ToNil(params.P_messagingPersisted)
 	return params.Execute()
 }
-func (self *PubSub) GetChannelsAll(ctx ciosctx.RequestCtx, params cios.ApiGetChannelsRequest) ([]cios.Channel, *_nethttp.Response, error) {
+func (self *CiosPubSub) GetChannelsAll(ctx ciosctx.RequestCtx, params cios.ApiGetChannelsRequest) ([]cios.Channel, *_nethttp.Response, error) {
 	var (
 		result      []cios.Channel
 		httpRes     *_nethttp.Response
@@ -78,11 +78,11 @@ func (self *PubSub) GetChannelsAll(ctx ciosctx.RequestCtx, params cios.ApiGetCha
 	}
 	return result, httpRes, err
 }
-func (self *PubSub) GetChannelsUnlimited(ctx ciosctx.RequestCtx, params cios.ApiGetChannelsRequest) ([]cios.Channel, *_nethttp.Response, error) {
+func (self *CiosPubSub) GetChannelsUnlimited(ctx ciosctx.RequestCtx, params cios.ApiGetChannelsRequest) ([]cios.Channel, *_nethttp.Response, error) {
 	params.P_limit = nil
 	return self.GetChannelsAll(ctx, params)
 }
-func (self *PubSub) GetChannel(ctx ciosctx.RequestCtx, channelID string, isDev *bool, lang *string) (cios.Channel, *_nethttp.Response, error) {
+func (self *CiosPubSub) GetChannel(ctx ciosctx.RequestCtx, channelID string, isDev *bool, lang *string) (cios.Channel, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Channel{}, nil, err
 	}
@@ -99,7 +99,7 @@ func (self *PubSub) GetChannel(ctx ciosctx.RequestCtx, channelID string, isDev *
 	}
 	return response.Channel, httpResponse, err
 }
-func (self *PubSub) GetChannelFirst(ctx ciosctx.RequestCtx, params cios.ApiGetChannelsRequest) (cios.Channel, *_nethttp.Response, error) {
+func (self *CiosPubSub) GetChannelFirst(ctx ciosctx.RequestCtx, params cios.ApiGetChannelsRequest) (cios.Channel, *_nethttp.Response, error) {
 	response, httpResponse, err := self.GetChannels(ctx, params.Limit(1))
 	if err != nil {
 		return cios.Channel{}, httpResponse, err
@@ -109,7 +109,7 @@ func (self *PubSub) GetChannelFirst(ctx ciosctx.RequestCtx, params cios.ApiGetCh
 	}
 	return response.Channels[0], httpResponse, err
 }
-func (self *PubSub) GetChannelsMapByID(ctx ciosctx.RequestCtx, params cios.ApiGetChannelsRequest) (map[string]cios.Channel, *_nethttp.Response, error) {
+func (self *CiosPubSub) GetChannelsMapByID(ctx ciosctx.RequestCtx, params cios.ApiGetChannelsRequest) (map[string]cios.Channel, *_nethttp.Response, error) {
 	channels, httpResponse, err := self.GetChannelsUnlimited(ctx, params)
 	if err != nil {
 		return nil, httpResponse, err
@@ -120,7 +120,7 @@ func (self *PubSub) GetChannelsMapByID(ctx ciosctx.RequestCtx, params cios.ApiGe
 	}
 	return channelsMap, httpResponse, nil
 }
-func (self *PubSub) GetChannelsMapByResourceOwnerID(ctx ciosctx.RequestCtx, params cios.ApiGetChannelsRequest) (map[string][]cios.Channel, *_nethttp.Response, error) {
+func (self *CiosPubSub) GetChannelsMapByResourceOwnerID(ctx ciosctx.RequestCtx, params cios.ApiGetChannelsRequest) (map[string][]cios.Channel, *_nethttp.Response, error) {
 	channels, httpResponse, err := self.GetChannelsUnlimited(ctx, params)
 	if err != nil {
 		return nil, httpResponse, err
@@ -131,7 +131,7 @@ func (self *PubSub) GetChannelsMapByResourceOwnerID(ctx ciosctx.RequestCtx, para
 	}
 	return channelsMap, httpResponse, nil
 }
-func (self *PubSub) DeleteChannel(ctx ciosctx.RequestCtx, channelID string) (*_nethttp.Response, error) {
+func (self *CiosPubSub) DeleteChannel(ctx ciosctx.RequestCtx, channelID string) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
@@ -143,14 +143,14 @@ func (self *PubSub) DeleteChannel(ctx ciosctx.RequestCtx, channelID string) (*_n
 	httpResponse, err := request.Execute()
 	return httpResponse, err
 }
-func (self *PubSub) GetOrCreateChannel(ctx ciosctx.RequestCtx, params cios.ApiGetChannelsRequest, body cios.ChannelProposal) (cios.Channel, *_nethttp.Response, error) {
+func (self *CiosPubSub) GetOrCreateChannel(ctx ciosctx.RequestCtx, params cios.ApiGetChannelsRequest, body cios.ChannelProposal) (cios.Channel, *_nethttp.Response, error) {
 	channels, httpResponse, err := self.GetChannelsUnlimited(ctx, params)
 	if len(channels) == 0 {
 		return self.CreateChannel(ctx, body)
 	}
 	return channels[0], httpResponse, err
 }
-func (self *PubSub) CreateChannel(ctx ciosctx.RequestCtx, body cios.ChannelProposal) (cios.Channel, *_nethttp.Response, error) {
+func (self *CiosPubSub) CreateChannel(ctx ciosctx.RequestCtx, body cios.ChannelProposal) (cios.Channel, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Channel{}, nil, err
 	}
@@ -161,17 +161,9 @@ func (self *PubSub) CreateChannel(ctx ciosctx.RequestCtx, body cios.ChannelPropo
 	}
 	return response.Channel, httpResponse, err
 }
-func (self *PubSub) UpdateChannel(ctx ciosctx.RequestCtx, channelID string, body cios.ChannelUpdateProposal) (cios.MultipleChannel, *_nethttp.Response, error) {
+func (self *CiosPubSub) UpdateChannel(ctx ciosctx.RequestCtx, channelID string, body cios.ChannelUpdateProposal) (cios.MultipleChannel, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.MultipleChannel{}, nil, err
 	}
 	return self.ApiClient.PublishSubscribeApi.UpdateChannel(self.withHost(ctx), channelID).ChannelUpdateProposal(body).Execute()
-}
-func GetDefaultDisplayInfo(displayInfos []cios.DisplayInfo) *cios.DisplayInfo {
-	for _, v := range displayInfos {
-		if v.IsDefault == true {
-			return &v
-		}
-	}
-	return nil
 }

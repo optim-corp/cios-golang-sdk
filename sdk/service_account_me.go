@@ -8,7 +8,7 @@ import (
 	"github.com/optim-corp/cios-golang-sdk/cios"
 )
 
-func (self *Account) GetMe(ctx ciosctx.RequestCtx) (cios.Me, *_nethttp.Response, error) {
+func (self *CiosAccount) GetMe(ctx ciosctx.RequestCtx) (cios.Me, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Me{}, nil, err
 	}

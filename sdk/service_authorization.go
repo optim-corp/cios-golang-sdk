@@ -13,7 +13,41 @@ import (
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
-func (self *Auth) GetAccessTokenByRefreshToken() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
+type CiosAuth struct {
+	_instance
+	debug        bool
+	scope        string
+	assertion    string
+	ref          string
+	clientId     string
+	clientSecret string
+}
+
+func (self *CiosAuth) SetScope(scope string) {
+	self.scope = scope
+}
+
+func (self *CiosAuth) SetClientSecret(clientSecret string) {
+	self.clientSecret = clientSecret
+}
+
+func (self *CiosAuth) SetClientId(clientId string) {
+	self.clientId = clientId
+}
+
+func (self *CiosAuth) SetRef(ref string) {
+	self.ref = ref
+}
+
+func (self *CiosAuth) SetAssertion(assertion string) {
+	self.assertion = assertion
+}
+
+func (self *CiosAuth) SetDebug(debug bool) {
+	self.debug = debug
+}
+
+func (self *CiosAuth) GetAccessTokenByRefreshToken() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
 	if self.debug {
 		log.Printf("%s", "Refresh AccessToken.")
 	}
@@ -35,7 +69,7 @@ func (self *Auth) GetAccessTokenByRefreshToken() (sdkmodel.AccessToken, sdkmodel
 
 }
 
-func (self *Auth) GetAccessTokenOnClient() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
+func (self *CiosAuth) GetAccessTokenOnClient() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
 	if self.debug {
 		log.Printf("%s", "Refresh AccessToken.")
 	}
@@ -69,7 +103,7 @@ func (self *Auth) GetAccessTokenOnClient() (sdkmodel.AccessToken, sdkmodel.Scope
 	return responseData.AccessToken, responseData.Scope, responseData.TokenType, responseData.ExpiresIn, nil
 }
 
-func (self *Auth) GetAccessTokenOnDevice() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
+func (self *CiosAuth) GetAccessTokenOnDevice() (sdkmodel.AccessToken, sdkmodel.Scope, sdkmodel.TokenType, sdkmodel.ExpiresIn, error) {
 	if self.debug {
 		log.Printf("%s", "Refresh AccessToken.")
 	}

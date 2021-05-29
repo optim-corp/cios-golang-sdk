@@ -33,16 +33,16 @@ var (
 
 type (
 	CiosClient struct {
-		PubSub                *PubSub
-		Account               *Account
-		DeviceAssetManagement *DeviceAssetManagement
-		DeviceManagement      *DeviceManagement
-		FileStorage           *FileStorage
-		Geography             *Geography
-		Auth                  *Auth
-		License               *License
-		Contract              *Contract
-		Video                 *VideoStreaming
+		PubSub                PubSub
+		Account               Account
+		DeviceAssetManagement DeviceAssetManagement
+		DeviceManagement      DeviceManagement
+		FileStorage           FileStorage
+		Geography             Geography
+		Auth                  Auth
+		License               License
+		Contract              Contract
+		Video                 VideoStreaming
 		tokenExp              int64
 		cfg                   *cios.Configuration
 	}
@@ -72,33 +72,6 @@ type (
 		Host      string
 		withHost  func(context.Context) context.Context
 		refresh   func() error
-	}
-	PubSub struct {
-		_instance
-		debug          bool
-		token          *string
-		wsReadTimeout  int64
-		wsWriteTimeout int64
-	}
-	Auth struct {
-		_instance
-		debug        bool
-		scope        string
-		assertion    string
-		ref          string
-		clientId     string
-		clientSecret string
-	}
-	Contract              _instance
-	DeviceAssetManagement _instance
-	DeviceManagement      _instance
-	FileStorage           _instance
-	Geography             _instance
-	License               _instance
-	Account               _instance
-	VideoStreaming        struct {
-		_instance
-		token *string
 	}
 )
 

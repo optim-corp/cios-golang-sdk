@@ -15,11 +15,23 @@ import (
 	"github.com/optim-corp/cios-golang-sdk/util"
 )
 
+type CiosVideoStreaming struct {
+	_instance
+	token *string
+}
+
+func (self *CiosVideoStreaming) setToken(token string) {
+	if token == "" {
+		self.token = nil
+	} else {
+		self.token = &token
+	}
+}
 func MakeGetVideosOpts() cios.ApiGetVideoStreamsListRequest {
 	return cios.ApiGetVideoStreamsListRequest{}
 }
 
-func (self *VideoStreaming) GetVideoInfos(ctx ciosctx.RequestCtx, params cios.ApiGetVideoStreamsListRequest) ([]cios.Video, *_http.Response, error) {
+func (self *CiosVideoStreaming) GetVideoInfos(ctx ciosctx.RequestCtx, params cios.ApiGetVideoStreamsListRequest) ([]cios.Video, *_http.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, nil, err
 	}
@@ -33,7 +45,7 @@ func (self *VideoStreaming) GetVideoInfos(ctx ciosctx.RequestCtx, params cios.Ap
 	}
 	return r.Videos, h, e
 }
-func (self *VideoStreaming) GetVideoInfo(ctx ciosctx.RequestCtx, videoID string) (cios.Video, *_http.Response, error) {
+func (self *CiosVideoStreaming) GetVideoInfo(ctx ciosctx.RequestCtx, videoID string) (cios.Video, *_http.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Video{}, nil, err
 	}
@@ -44,7 +56,7 @@ func (self *VideoStreaming) GetVideoInfo(ctx ciosctx.RequestCtx, videoID string)
 	return response.Video, httpResponse, err
 }
 
-func (self *VideoStreaming) UpdateVideoInfo(ctx ciosctx.RequestCtx, videoID string, name, description string) (cios.Video, *_http.Response, error) {
+func (self *CiosVideoStreaming) UpdateVideoInfo(ctx ciosctx.RequestCtx, videoID string, name, description string) (cios.Video, *_http.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Video{}, nil, err
 	}
@@ -61,7 +73,7 @@ func (self *VideoStreaming) UpdateVideoInfo(ctx ciosctx.RequestCtx, videoID stri
 }
 
 // MEMO: No OpenAPI
-func (self *VideoStreaming) GetThumbnail(ctx ciosctx.RequestCtx, videoID string) (img []byte, httpResponse *_http.Response, err error) {
+func (self *CiosVideoStreaming) GetThumbnail(ctx ciosctx.RequestCtx, videoID string) (img []byte, httpResponse *_http.Response, err error) {
 	if err := self.refresh(); err != nil {
 		return nil, nil, err
 	}
@@ -105,7 +117,7 @@ func (self *VideoStreaming) GetThumbnail(ctx ciosctx.RequestCtx, videoID string)
 	return
 }
 
-func (self *VideoStreaming) Play(ctx ciosctx.RequestCtx, videoID string) (cios.Room, *_http.Response, error) {
+func (self *CiosVideoStreaming) Play(ctx ciosctx.RequestCtx, videoID string) (cios.Room, *_http.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Room{}, nil, err
 	}
@@ -115,7 +127,7 @@ func (self *VideoStreaming) Play(ctx ciosctx.RequestCtx, videoID string) (cios.R
 	}
 	return room.Room, httpResponse, err
 }
-func (self *VideoStreaming) Stop(ctx ciosctx.RequestCtx, videoID string) (*_http.Response, error) {
+func (self *CiosVideoStreaming) Stop(ctx ciosctx.RequestCtx, videoID string) (*_http.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}

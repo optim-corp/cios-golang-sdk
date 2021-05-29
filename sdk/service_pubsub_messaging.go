@@ -9,6 +9,8 @@ import (
 	"sync"
 	"time"
 
+	ciossdk_pusub_enum "github.com/optim-corp/cios-golang-sdk/sdk/enum/pubsub"
+
 	"github.com/fcfcqloow/go-advance/check"
 	cnv "github.com/fcfcqloow/go-advance/convert"
 	"github.com/optim-corp/cios-golang-sdk/cios"
@@ -68,7 +70,7 @@ func CreateCiosWsMessagingURL(httpUrl, channelID, mode string, packerFormat *str
 	_url.RawQuery = q.Encode()
 	return _url.String()
 }
-func (self *PubSub) NewMessaging(channelId, mode, packerFormat string) *CiosMessaging {
+func (self *CiosPubSub) NewMessaging(channelId string, mode ciossdk_pusub_enum.MessagingMode, packerFormat ciossdk_pusub_enum.PackerFormat) *CiosMessaging {
 	ref := func() (token string) {
 		self.refresh()
 		if !check.IsNil(self.token) {
@@ -80,7 +82,7 @@ func (self *PubSub) NewMessaging(channelId, mode, packerFormat string) *CiosMess
 		packerFormat = "payload_only"
 	}
 	instance := CiosMessaging{}
-	instance.wsUrl = CreateCiosWsMessagingURL(self.Url, channelId, mode, &packerFormat)
+	instance.wsUrl = CreateCiosWsMessagingURL(self.Url, channelId, string(mode), cnv.StrPtr(string(packerFormat)))
 	instance.isDebug = self.debug
 	instance.refresh = &ref
 	instance.CloseFunc = func() {}
@@ -276,7 +278,7 @@ func (self *CiosMessaging) Close() (err error) {
 	return nil
 }
 
-func (self *PubSub) PublishMessage(ctx ciosctx.RequestCtx, id string, body interface{}, packerFormat *string) (*_nethttp.Response, error) {
+func (self *CiosPubSub) PublishMessage(ctx ciosctx.RequestCtx, id string, body interface{}, packerFormat *string) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
@@ -284,15 +286,15 @@ func (self *PubSub) PublishMessage(ctx ciosctx.RequestCtx, id string, body inter
 	request.P_packerFormat = packerFormat
 	return request.Execute()
 }
-func (self *PubSub) PublishMessagePackerOnly(ctx ciosctx.RequestCtx, id string, body interface{}) (*_nethttp.Response, error) {
+func (self *CiosPubSub) PublishMessagePackerOnly(ctx ciosctx.RequestCtx, id string, body interface{}) (*_nethttp.Response, error) {
 	return self.PublishMessage(ctx, id, &body, nil)
 }
-func (self *PubSub) PublishMessageJSON(ctx ciosctx.RequestCtx, id string, body cios.PackerFormatJson) (*_nethttp.Response, error) {
+func (self *CiosPubSub) PublishMessageJSON(ctx ciosctx.RequestCtx, id string, body cios.PackerFormatJson) (*_nethttp.Response, error) {
 	return self.PublishMessage(ctx, id, &body, cnv.StrPtr("json"))
 }
 
 // Deprecated: should not be used
-func (self *PubSub) ConnectWebSocket(channelID string, done chan bool, params ConnectWebSocketOptions) (err error) {
+func (self *CiosPubSub) ConnectWebSocket(channelID string, done chan bool, params ConnectWebSocketOptions) (err error) {
 	if params.SubscribeFunc == nil && params.PublishStr == nil {
 		return errors.New("no publish str and subscribe func")
 	}
@@ -307,7 +309,7 @@ func (self *PubSub) ConnectWebSocket(channelID string, done chan bool, params Co
 	}
 	if _token == "" {
 		_ = self.refresh()
-		_token = str(self.token)
+		_token = cnv.MustStr(self.token)
 	}
 
 	var (
@@ -346,7 +348,7 @@ func (self *PubSub) ConnectWebSocket(channelID string, done chan bool, params Co
 		}
 		reconnection = func() error {
 			_ = self.refresh()
-			_connection, _err := self.CreateCIOSWebsocketConnection(wsUrl, ParseAccessToken(str(self.token)))
+			_connection, _err := self.CreateCIOSWebsocketConnection(wsUrl, ParseAccessToken(cnv.MustStr(self.token)))
 			closeConnection()
 			if _err != nil {
 				return _err
@@ -480,7 +482,7 @@ func (self *PubSub) ConnectWebSocket(channelID string, done chan bool, params Co
 }
 
 // Deprecated: should not be used
-func (self *PubSub) CreateMessagingURL(channelID string, mode string, packerFormat *string) string {
+func (self *CiosPubSub) CreateMessagingURL(channelID string, mode string, packerFormat *string) string {
 	_url, err := url.Parse(strings.Replace(self.Url, "https", "wss", 1) + "/v2/messaging")
 	if err != nil {
 		return ""
@@ -496,7 +498,7 @@ func (self *PubSub) CreateMessagingURL(channelID string, mode string, packerForm
 }
 
 // Deprecated: should not be used
-func (self *PubSub) CreateCIOSWebsocketConnection(url string, authorization string) (connection *websocket.Conn, err error) {
+func (self *CiosPubSub) CreateCIOSWebsocketConnection(url string, authorization string) (connection *websocket.Conn, err error) {
 	if self.debug {
 		log.Printf("Websocket URL: %s\nAuthorization: %s", url, authorization)
 	}

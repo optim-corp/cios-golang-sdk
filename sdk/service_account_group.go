@@ -19,7 +19,7 @@ func MakeGetGroupsOpts() cios.ApiGetGroupsRequest {
 	return cios.ApiGetGroupsRequest{}
 }
 
-func (self *Account) GetGroups(ctx ciosctx.RequestCtx, params cios.ApiGetGroupsRequest) (response cios.MultipleGroup, httpResponse *_nethttp.Response, err error) {
+func (self *CiosAccount) GetGroups(ctx ciosctx.RequestCtx, params cios.ApiGetGroupsRequest) (response cios.MultipleGroup, httpResponse *_nethttp.Response, err error) {
 	if err := self.refresh(); err != nil {
 		return cios.MultipleGroup{}, nil, err
 	}
@@ -41,7 +41,7 @@ func (self *Account) GetGroups(ctx ciosctx.RequestCtx, params cios.ApiGetGroupsR
 	params.P_type_ = util.ToNil(params.P_type_)
 	return params.Execute()
 }
-func (self *Account) GetGroupsAll(ctx ciosctx.RequestCtx, params cios.ApiGetGroupsRequest) ([]cios.Group, *_nethttp.Response, error) {
+func (self *CiosAccount) GetGroupsAll(ctx ciosctx.RequestCtx, params cios.ApiGetGroupsRequest) ([]cios.Group, *_nethttp.Response, error) {
 	var (
 		result      []cios.Group
 		httpRes     *_nethttp.Response
@@ -82,12 +82,12 @@ func (self *Account) GetGroupsAll(ctx ciosctx.RequestCtx, params cios.ApiGetGrou
 	}
 	return result, httpRes, err
 }
-func (self *Account) GetGroupsUnlimited(ctx ciosctx.RequestCtx, params cios.ApiGetGroupsRequest) ([]cios.Group, *_nethttp.Response, error) {
+func (self *CiosAccount) GetGroupsUnlimited(ctx ciosctx.RequestCtx, params cios.ApiGetGroupsRequest) ([]cios.Group, *_nethttp.Response, error) {
 	params.P_limit = nil
 	return self.GetGroupsAll(ctx, params)
 }
 
-func (self *Account) GetGroup(ctx ciosctx.RequestCtx, groupId string, includes *string) (cios.Group, *_nethttp.Response, error) {
+func (self *CiosAccount) GetGroup(ctx ciosctx.RequestCtx, groupId string, includes *string) (cios.Group, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Group{}, nil, err
 	}
@@ -97,7 +97,7 @@ func (self *Account) GetGroup(ctx ciosctx.RequestCtx, groupId string, includes *
 	}
 	return req.Execute()
 }
-func (self *Account) GetGroupByResourceOwnerId(ctx ciosctx.RequestCtx, resourceOwnerID string, includes *string) (cios.Group, *_nethttp.Response, error) {
+func (self *CiosAccount) GetGroupByResourceOwnerId(ctx ciosctx.RequestCtx, resourceOwnerID string, includes *string) (cios.Group, *_nethttp.Response, error) {
 	resourceOwner, httpResponse, err := self.GetResourceOwner(ctx, resourceOwnerID)
 	if err != nil {
 		return cios.Group{}, httpResponse, err
@@ -108,7 +108,7 @@ func (self *Account) GetGroupByResourceOwnerId(ctx ciosctx.RequestCtx, resourceO
 	return cios.Group{}, nil, errors.New("No Group")
 }
 
-func (self *Account) GetGroupMapByResourceOwner(ctx ciosctx.RequestCtx, p1 cios.ApiGetGroupsRequest, p2 cios.ApiGetResourceOwnersRequest) (map[string]cios.Group, *_nethttp.Response, error) {
+func (self *CiosAccount) GetGroupMapByResourceOwner(ctx ciosctx.RequestCtx, p1 cios.ApiGetGroupsRequest, p2 cios.ApiGetResourceOwnersRequest) (map[string]cios.Group, *_nethttp.Response, error) {
 	ros, httpResponse, err := self.GetResourceOwnersUnlimited(ctx, p2)
 	if err != nil {
 		return nil, httpResponse, err
@@ -128,21 +128,21 @@ func (self *Account) GetGroupMapByResourceOwner(ctx ciosctx.RequestCtx, p1 cios.
 	return result, nil, nil
 }
 
-func (self *Account) DeleteGroup(ctx ciosctx.RequestCtx, groupID string) (*_nethttp.Response, error) {
+func (self *CiosAccount) DeleteGroup(ctx ciosctx.RequestCtx, groupID string) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
 	return self.ApiClient.GroupApi.DeleteGroup(self.withHost(ctx), groupID).Execute()
 }
 
-func (self *Account) CreateGroup(ctx ciosctx.RequestCtx, body cios.GroupCreateRequest) (cios.Group, *_nethttp.Response, error) {
+func (self *CiosAccount) CreateGroup(ctx ciosctx.RequestCtx, body cios.GroupCreateRequest) (cios.Group, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Group{}, nil, err
 	}
 	return self.ApiClient.GroupApi.CreateGroup(self.withHost(ctx)).GroupCreateRequest(body).Execute()
 }
 
-func (self *Account) UpdateGroup(ctx ciosctx.RequestCtx, groupID string, body cios.GroupUpdateRequest) (cios.Group, *_nethttp.Response, error) {
+func (self *CiosAccount) UpdateGroup(ctx ciosctx.RequestCtx, groupID string, body cios.GroupUpdateRequest) (cios.Group, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Group{}, nil, err
 	}

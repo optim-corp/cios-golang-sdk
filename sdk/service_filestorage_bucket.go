@@ -18,7 +18,7 @@ func MakeGetBucketsOpts() cios.ApiGetBucketsRequest {
 	return cios.ApiGetBucketsRequest{}
 }
 
-func (self *FileStorage) GetBuckets(ctx ciosctx.RequestCtx, params cios.ApiGetBucketsRequest) (response cios.MultipleBucket, httpResponse *_nethttp.Response, err error) {
+func (self *CiosFileStorage) GetBuckets(ctx ciosctx.RequestCtx, params cios.ApiGetBucketsRequest) (response cios.MultipleBucket, httpResponse *_nethttp.Response, err error) {
 	if err = self.refresh(); err != nil {
 		return
 	}
@@ -30,7 +30,7 @@ func (self *FileStorage) GetBuckets(ctx ciosctx.RequestCtx, params cios.ApiGetBu
 	params.P_resourceOwnerId = util.ToNil(params.P_resourceOwnerId)
 	return params.Execute()
 }
-func (self *FileStorage) GetBucketsAll(ctx ciosctx.RequestCtx, params cios.ApiGetBucketsRequest) ([]cios.Bucket, *_nethttp.Response, error) {
+func (self *CiosFileStorage) GetBucketsAll(ctx ciosctx.RequestCtx, params cios.ApiGetBucketsRequest) ([]cios.Bucket, *_nethttp.Response, error) {
 	var (
 		result      []cios.Bucket
 		httpRes     *_nethttp.Response
@@ -71,12 +71,12 @@ func (self *FileStorage) GetBucketsAll(ctx ciosctx.RequestCtx, params cios.ApiGe
 	}
 	return result, httpRes, err
 }
-func (self *FileStorage) GetBucketsUnlimited(ctx ciosctx.RequestCtx, params cios.ApiGetBucketsRequest) ([]cios.Bucket, *_nethttp.Response, error) {
+func (self *CiosFileStorage) GetBucketsUnlimited(ctx ciosctx.RequestCtx, params cios.ApiGetBucketsRequest) ([]cios.Bucket, *_nethttp.Response, error) {
 	params.P_limit = nil
 	return self.GetBucketsAll(ctx, params)
 }
 
-func (self *FileStorage) GetBucket(ctx ciosctx.RequestCtx, bucketID string) (cios.Bucket, *_nethttp.Response, error) {
+func (self *CiosFileStorage) GetBucket(ctx ciosctx.RequestCtx, bucketID string) (cios.Bucket, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Bucket{}, nil, err
 	}
@@ -86,7 +86,7 @@ func (self *FileStorage) GetBucket(ctx ciosctx.RequestCtx, bucketID string) (cio
 	}
 	return response.Bucket, httpResponse, err
 }
-func (self *FileStorage) GetBucketByResourceOwnerIDAndName(ctx ciosctx.RequestCtx, resourceOwnerID string, name string) (cios.Bucket, *_nethttp.Response, error) {
+func (self *CiosFileStorage) GetBucketByResourceOwnerIDAndName(ctx ciosctx.RequestCtx, resourceOwnerID string, name string) (cios.Bucket, *_nethttp.Response, error) {
 	buckets, httpResponse, err := self.GetBucketsUnlimited(ctx, MakeGetBucketsOpts().ResourceOwnerId(resourceOwnerID).Name(name))
 	if len(buckets) == 0 {
 		return cios.Bucket{}, nil, errors.New("No Bucket")
@@ -96,14 +96,14 @@ func (self *FileStorage) GetBucketByResourceOwnerIDAndName(ctx ciosctx.RequestCt
 	}
 	return buckets[0], httpResponse, err
 }
-func (self *FileStorage) GetOrCreateBucket(ctx ciosctx.RequestCtx, resourceOwnerID string, name string) (cios.Bucket, *_nethttp.Response, error) {
+func (self *CiosFileStorage) GetOrCreateBucket(ctx ciosctx.RequestCtx, resourceOwnerID string, name string) (cios.Bucket, *_nethttp.Response, error) {
 	res, httpResponse, err := self.GetBucketByResourceOwnerIDAndName(ctx, resourceOwnerID, name)
 	if err != nil || res.Id == "" {
 		return self.CreateBucket(ctx, resourceOwnerID, name)
 	}
 	return res, httpResponse, err
 }
-func (self *FileStorage) CreateBucket(ctx ciosctx.RequestCtx, resourceOwnerID string, name string) (cios.Bucket, *_nethttp.Response, error) {
+func (self *CiosFileStorage) CreateBucket(ctx ciosctx.RequestCtx, resourceOwnerID string, name string) (cios.Bucket, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Bucket{}, nil, err
 	}
@@ -114,13 +114,13 @@ func (self *FileStorage) CreateBucket(ctx ciosctx.RequestCtx, resourceOwnerID st
 	}
 	return response.Bucket, httpResponse, err
 }
-func (self *FileStorage) DeleteBucket(ctx ciosctx.RequestCtx, bucketID string) (*_nethttp.Response, error) {
+func (self *CiosFileStorage) DeleteBucket(ctx ciosctx.RequestCtx, bucketID string) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
 	return self.ApiClient.FileStorageApi.DeleteBucket(self.withHost(ctx), bucketID).Execute()
 }
-func (self *FileStorage) UpdateBucket(ctx ciosctx.RequestCtx, bucketID string, name string) (*_nethttp.Response, error) {
+func (self *CiosFileStorage) UpdateBucket(ctx ciosctx.RequestCtx, bucketID string, name string) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}

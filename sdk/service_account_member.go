@@ -8,7 +8,7 @@ import (
 	"github.com/optim-corp/cios-golang-sdk/cios"
 )
 
-func (self *Account) InviteGroup(ctx ciosctx.RequestCtx, groupID string, email string) (response cios.Member, httpResponse *_nethttp.Response, err error) {
+func (self *CiosAccount) InviteGroup(ctx ciosctx.RequestCtx, groupID string, email string) (response cios.Member, httpResponse *_nethttp.Response, err error) {
 	if err := self.refresh(); err != nil {
 		return cios.Member{}, nil, err
 	}

@@ -18,7 +18,7 @@ func MakeGetDevicesOpts() cios.ApiGetDevicesRequest {
 	return cios.ApiGetDevicesRequest{}
 }
 
-func (self DeviceManagement) GetDevices(ctx ciosctx.RequestCtx, params cios.ApiGetDevicesRequest) (response cios.MultipleDevice, httpResponse *_nethttp.Response, err error) {
+func (self *CiosDeviceManagement) GetDevices(ctx ciosctx.RequestCtx, params cios.ApiGetDevicesRequest) (response cios.MultipleDevice, httpResponse *_nethttp.Response, err error) {
 	if err := self.refresh(); err != nil {
 		return cios.MultipleDevice{}, nil, err
 	}
@@ -35,7 +35,7 @@ func (self DeviceManagement) GetDevices(ctx ciosctx.RequestCtx, params cios.ApiG
 	params.P_lang = util.ToNil(params.P_lang)
 	return params.Execute()
 }
-func (self DeviceManagement) GetDevicesAll(ctx ciosctx.RequestCtx, params cios.ApiGetDevicesRequest) ([]cios.Device, *_nethttp.Response, error) {
+func (self *CiosDeviceManagement) GetDevicesAll(ctx ciosctx.RequestCtx, params cios.ApiGetDevicesRequest) ([]cios.Device, *_nethttp.Response, error) {
 	var (
 		result       []cios.Device
 		httpResponse *_nethttp.Response
@@ -76,11 +76,11 @@ func (self DeviceManagement) GetDevicesAll(ctx ciosctx.RequestCtx, params cios.A
 	}
 	return result, httpResponse, err
 }
-func (self DeviceManagement) GetDevicesUnlimited(ctx ciosctx.RequestCtx, params cios.ApiGetDevicesRequest) ([]cios.Device, *_nethttp.Response, error) {
+func (self *CiosDeviceManagement) GetDevicesUnlimited(ctx ciosctx.RequestCtx, params cios.ApiGetDevicesRequest) ([]cios.Device, *_nethttp.Response, error) {
 	params.P_limit = nil
 	return self.GetDevicesAll(ctx, params)
 }
-func (self DeviceManagement) GetDevice(ctx ciosctx.RequestCtx, deviceID string, lang *string, isDev *bool) (cios.Device, *_nethttp.Response, error) {
+func (self *CiosDeviceManagement) GetDevice(ctx ciosctx.RequestCtx, deviceID string, lang *string, isDev *bool) (cios.Device, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Device{}, nil, err
 	}
@@ -97,19 +97,19 @@ func (self DeviceManagement) GetDevice(ctx ciosctx.RequestCtx, deviceID string, 
 	}
 	return response.Device, httpResponse, err
 }
-func (self DeviceManagement) GetDeviceInventory(ctx ciosctx.RequestCtx, deviceID string) (map[string]interface{}, *_nethttp.Response, error) {
+func (self *CiosDeviceManagement) GetDeviceInventory(ctx ciosctx.RequestCtx, deviceID string) (map[string]interface{}, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, nil, err
 	}
 	return self.ApiClient.DeviceApi.GetDeviceInventoryLatest(ctx, deviceID).Execute()
 }
-func (self DeviceManagement) DeleteDevice(ctx ciosctx.RequestCtx, id string) (*_nethttp.Response, error) {
+func (self *CiosDeviceManagement) DeleteDevice(ctx ciosctx.RequestCtx, id string) (*_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return nil, err
 	}
 	return self.ApiClient.DeviceApi.DeleteDevice(self.withHost(ctx), id).Execute()
 }
-func (self DeviceManagement) CreateDevice(ctx ciosctx.RequestCtx, body cios.DeviceInfo) (cios.Device, *_nethttp.Response, error) {
+func (self *CiosDeviceManagement) CreateDevice(ctx ciosctx.RequestCtx, body cios.DeviceInfo) (cios.Device, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Device{}, nil, err
 	}
@@ -119,7 +119,7 @@ func (self DeviceManagement) CreateDevice(ctx ciosctx.RequestCtx, body cios.Devi
 	}
 	return response.Device, httpResponse, err
 }
-func (self DeviceManagement) UpdateDevice(ctx ciosctx.RequestCtx, deviceId string, body cios.DeviceUpdateRequest) (cios.Device, *_nethttp.Response, error) {
+func (self *CiosDeviceManagement) UpdateDevice(ctx ciosctx.RequestCtx, deviceId string, body cios.DeviceUpdateRequest) (cios.Device, *_nethttp.Response, error) {
 	if err := self.refresh(); err != nil {
 		return cios.Device{}, nil, err
 	}
