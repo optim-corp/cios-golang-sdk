@@ -3,9 +3,9 @@ package ciossdmock
 import (
 	_nethttp "net/http"
 
-	srvpubsub "github.com/optim-corp/cios-golang-sdk/sdk/service/pubsub"
+	"github.com/optim-corp/cios-golang-sdk/sdk/enum"
 
-	sdkenum "github.com/optim-corp/cios-golang-sdk/sdk/enum/pubsub"
+	srvpubsub "github.com/optim-corp/cios-golang-sdk/sdk/service/pubsub"
 
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 
@@ -152,7 +152,7 @@ func (NoImplementPubsub) DeleteObject(ctx ciosctx.RequestCtx, s string, s2 strin
 	panic("implement me")
 }
 
-func (NoImplementPubsub) NewMessaging(s string, mode sdkenum.MessagingMode, format sdkenum.PackerFormat) *cios.MessagingConfig {
+func (NoImplementPubsub) NewMessaging(s string, mode enum.MessagingMode, format enum.PackerFormat) *cios.MessagingConfig {
 	panic("implement me")
 }
 

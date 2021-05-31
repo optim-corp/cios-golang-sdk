@@ -9,7 +9,8 @@ import (
 	"sync"
 	"time"
 
-	sdkenum "github.com/optim-corp/cios-golang-sdk/sdk/enum/pubsub"
+	"github.com/optim-corp/cios-golang-sdk/sdk/enum"
+
 	ciosutil "github.com/optim-corp/cios-golang-sdk/util/cios"
 
 	"github.com/fcfcqloow/go-advance/check"
@@ -71,7 +72,7 @@ func CreateCiosWsMessagingURL(httpUrl, channelID, mode string, packerFormat *str
 	_url.RawQuery = q.Encode()
 	return _url.String()
 }
-func (self *CiosPubSub) NewMessaging(channelId string, mode sdkenum.MessagingMode, packerFormat sdkenum.PackerFormat) *CiosMessaging {
+func (self *CiosPubSub) NewMessaging(channelId string, mode enum.MessagingMode, packerFormat enum.PackerFormat) *CiosMessaging {
 	ref := func() (token string) {
 		self.refresh()
 		if !check.IsNil(self.token) {

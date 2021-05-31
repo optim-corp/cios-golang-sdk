@@ -1,4 +1,4 @@
-package sdkenum
+package enum
 
 type (
 	PackerFormat  string

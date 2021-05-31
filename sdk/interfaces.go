@@ -3,9 +3,9 @@ package ciossdk
 import (
 	_nethttp "net/http"
 
-	srvpubsub "github.com/optim-corp/cios-golang-sdk/sdk/service/pubsub"
+	"github.com/optim-corp/cios-golang-sdk/sdk/enum"
 
-	sdkenum "github.com/optim-corp/cios-golang-sdk/sdk/enum/pubsub"
+	srvpubsub "github.com/optim-corp/cios-golang-sdk/sdk/service/pubsub"
 
 	"github.com/gorilla/websocket"
 	"github.com/optim-corp/cios-golang-sdk/cios"
@@ -48,7 +48,7 @@ type (
 		MapStreamFirst(ciosctx.RequestCtx, string, sdkmodel.ApiGetStreamRequest, interface{}) error
 		DeleteDataByChannel(ciosctx.RequestCtx, string) (*_nethttp.Response, error)
 		DeleteObject(ciosctx.RequestCtx, string, string) (*_nethttp.Response, error)
-		NewMessaging(string, sdkenum.MessagingMode, sdkenum.PackerFormat) *srvpubsub.CiosMessaging
+		NewMessaging(string, enum.MessagingMode, enum.PackerFormat) *srvpubsub.CiosMessaging
 		PublishMessage(ciosctx.RequestCtx, string, interface{}, *string) (*_nethttp.Response, error)
 		PublishMessagePackerOnly(ciosctx.RequestCtx, string, interface{}) (*_nethttp.Response, error)
 		PublishMessageJSON(ciosctx.RequestCtx, string, cios.PackerFormatJson) (*_nethttp.Response, error)
