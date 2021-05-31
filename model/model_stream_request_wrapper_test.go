@@ -4,6 +4,8 @@ import (
 	"reflect"
 	"testing"
 
+	cnv "github.com/fcfcqloow/go-advance/convert"
+
 	"github.com/optim-corp/cios-golang-sdk/cios"
 )
 
@@ -34,7 +36,22 @@ func TestApiGetStreamRequest_Ascending(t *testing.T) {
 		args   args
 		want   ApiGetStreamRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name:   "Test ascending true",
+			fields: fields{},
+			args:   args{false},
+			want: ApiGetStreamRequest{
+				AscendingParam: cnv.BoolPtr(false),
+			},
+		},
+		{
+			name:   "Test ascending true",
+			fields: fields{},
+			args:   args{true},
+			want: ApiGetStreamRequest{
+				AscendingParam: cnv.BoolPtr(true),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -89,7 +106,22 @@ func TestApiGetStreamRequest_ChannelProtocolId(t *testing.T) {
 		args   args
 		want   ApiGetStreamRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name:   "Test channelProtocolId true",
+			fields: fields{},
+			args:   args{""},
+			want: ApiGetStreamRequest{
+				ChannelProtocolIdParam: nil,
+			},
+		},
+		{
+			name:   "Test channelProtocolId true",
+			fields: fields{},
+			args:   args{"test"},
+			want: ApiGetStreamRequest{
+				ChannelProtocolIdParam: cnv.StrPtr("test"),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -144,7 +176,22 @@ func TestApiGetStreamRequest_ChannelProtocolVersion(t *testing.T) {
 		args   args
 		want   ApiGetStreamRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name:   "Test channelProtocolVersion true",
+			fields: fields{},
+			args:   args{1},
+			want: ApiGetStreamRequest{
+				ChannelProtocolVersionParam: cnv.Int32Ptr(1),
+			},
+		},
+		{
+			name:   "Test channelProtocolVersion true",
+			fields: fields{},
+			args:   args{12},
+			want: ApiGetStreamRequest{
+				ChannelProtocolVersionParam: cnv.Int32Ptr(12),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -199,7 +246,22 @@ func TestApiGetStreamRequest_Label(t *testing.T) {
 		args   args
 		want   ApiGetStreamRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name:   "Test label true",
+			fields: fields{},
+			args:   args{""},
+			want: ApiGetStreamRequest{
+				LabelParam: nil,
+			},
+		},
+		{
+			name:   "Test label true",
+			fields: fields{},
+			args:   args{"test"},
+			want: ApiGetStreamRequest{
+				LabelParam: cnv.StrPtr("test"),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -254,7 +316,22 @@ func TestApiGetStreamRequest_Limit(t *testing.T) {
 		args   args
 		want   ApiGetStreamRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name:   "Test limit true",
+			fields: fields{},
+			args:   args{21},
+			want: ApiGetStreamRequest{
+				LimitParam: cnv.Int64Ptr(21),
+			},
+		},
+		{
+			name:   "Test limit true",
+			fields: fields{},
+			args:   args{0},
+			want: ApiGetStreamRequest{
+				LimitParam: cnv.Int64Ptr(0),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -309,7 +386,22 @@ func TestApiGetStreamRequest_Location(t *testing.T) {
 		args   args
 		want   ApiGetStreamRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name:   "Test location true",
+			fields: fields{},
+			args:   args{""},
+			want: ApiGetStreamRequest{
+				LocationParam: nil,
+			},
+		},
+		{
+			name:   "Test location true",
+			fields: fields{},
+			args:   args{"test"},
+			want: ApiGetStreamRequest{
+				LocationParam: cnv.StrPtr("test"),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -364,7 +456,22 @@ func TestApiGetStreamRequest_LocationRange(t *testing.T) {
 		args   args
 		want   ApiGetStreamRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name:   "Test locationRange true",
+			fields: fields{},
+			args:   args{""},
+			want: ApiGetStreamRequest{
+				LocationRangeParam: nil,
+			},
+		},
+		{
+			name:   "Test locationRange true",
+			fields: fields{},
+			args:   args{"test"},
+			want: ApiGetStreamRequest{
+				LocationRangeParam: cnv.StrPtr("test"),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -419,7 +526,22 @@ func TestApiGetStreamRequest_Offset(t *testing.T) {
 		args   args
 		want   ApiGetStreamRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name:   "Test offset true",
+			fields: fields{},
+			args:   args{0},
+			want: ApiGetStreamRequest{
+				OffsetParam: cnv.Int64Ptr(0),
+			},
+		},
+		{
+			name:   "Test offset true",
+			fields: fields{},
+			args:   args{21},
+			want: ApiGetStreamRequest{
+				OffsetParam: cnv.Int64Ptr(21),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -474,7 +596,22 @@ func TestApiGetStreamRequest_PackerFormat(t *testing.T) {
 		args   args
 		want   ApiGetStreamRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name:   "Test packerPacker true",
+			fields: fields{},
+			args:   args{""},
+			want: ApiGetStreamRequest{
+				PackerFormatParam: nil,
+			},
+		},
+		{
+			name:   "Test packerPacker true",
+			fields: fields{},
+			args:   args{"test"},
+			want: ApiGetStreamRequest{
+				PackerFormatParam: cnv.StrPtr("test"),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -529,7 +666,22 @@ func TestApiGetStreamRequest_SessionID(t *testing.T) {
 		args   args
 		want   ApiGetStreamRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name:   "Test sessionID true",
+			fields: fields{},
+			args:   args{""},
+			want: ApiGetStreamRequest{
+				SessionIdParam: nil,
+			},
+		},
+		{
+			name:   "Test sessionID true",
+			fields: fields{},
+			args:   args{"test"},
+			want: ApiGetStreamRequest{
+				SessionIdParam: cnv.StrPtr("test"),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -584,7 +736,22 @@ func TestApiGetStreamRequest_Timeout(t *testing.T) {
 		args   args
 		want   ApiGetStreamRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name:   "Test timeout true",
+			fields: fields{},
+			args:   args{0},
+			want: ApiGetStreamRequest{
+				TimeoutParam: cnv.IntPtr(0),
+			},
+		},
+		{
+			name:   "Test timeout true",
+			fields: fields{},
+			args:   args{12},
+			want: ApiGetStreamRequest{
+				TimeoutParam: cnv.IntPtr(12),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -639,7 +806,22 @@ func TestApiGetStreamRequest_Timestamp(t *testing.T) {
 		args   args
 		want   ApiGetStreamRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name:   "Test timestamp true",
+			fields: fields{},
+			args:   args{""},
+			want: ApiGetStreamRequest{
+				TimestampParam: nil,
+			},
+		},
+		{
+			name:   "Test timestamp true",
+			fields: fields{},
+			args:   args{"test"},
+			want: ApiGetStreamRequest{
+				TimestampParam: cnv.StrPtr("test"),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -694,7 +876,22 @@ func TestApiGetStreamRequest_TimestampRange(t *testing.T) {
 		args   args
 		want   ApiGetStreamRequest
 	}{
-		// TODO: Add test cases.
+		{
+			name:   "Test timestampRange true",
+			fields: fields{},
+			args:   args{""},
+			want: ApiGetStreamRequest{
+				TimestampRangeParam: nil,
+			},
+		},
+		{
+			name:   "Test timestampRange true",
+			fields: fields{},
+			args:   args{"test"},
+			want: ApiGetStreamRequest{
+				TimestampRangeParam: cnv.StrPtr("test"),
+			},
+		},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
