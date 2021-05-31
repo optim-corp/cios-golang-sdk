@@ -8,6 +8,8 @@ import (
 	"net/url"
 	"testing"
 
+	srvpubsub "github.com/optim-corp/cios-golang-sdk/sdk/service/pubsub"
+
 	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
 
 	xmath "github.com/fcfcqloow/go-advance/math"
@@ -29,7 +31,7 @@ func TestPubSub_Channels(t *testing.T) {
 			test   func()
 		}{
 			{
-				params: MakeGetChannelsOpts().Limit(1000),
+				params: srvpubsub.MakeGetChannelsOpts().Limit(1000),
 				test: func() {
 					if query.Get("limit") != "1000" {
 						t.Fatal("Missing Query", query.Encode())
@@ -39,7 +41,7 @@ func TestPubSub_Channels(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetChannelsOpts().Limit(1000).Offset(50),
+				params: srvpubsub.MakeGetChannelsOpts().Limit(1000).Offset(50),
 				test: func() {
 					if query.Get("limit") != "1000" || query.Get("offset") != "50" {
 						t.Fatal("Missing Query", query.Encode())
@@ -49,7 +51,7 @@ func TestPubSub_Channels(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetChannelsOpts().ResourceOwnerId("aaaaa"),
+				params: srvpubsub.MakeGetChannelsOpts().ResourceOwnerId("aaaaa"),
 				test: func() {
 					if query.Get("resource_owner_id") != "aaaaa" {
 						t.Fatal("Missing Query", query.Encode())
@@ -59,7 +61,7 @@ func TestPubSub_Channels(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetChannelsOpts().Limit(1000).Offset(50).ResourceOwnerId("aaaaa").Name("name"),
+				params: srvpubsub.MakeGetChannelsOpts().Limit(1000).Offset(50).ResourceOwnerId("aaaaa").Name("name"),
 				test: func() {
 					if query.Get("resource_owner_id") != "aaaaa" ||
 						query.Get("name") != "name" {
@@ -70,7 +72,7 @@ func TestPubSub_Channels(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetChannelsOpts().OrderBy("created_at"),
+				params: srvpubsub.MakeGetChannelsOpts().OrderBy("created_at"),
 				test: func() {
 					if query.Get("order_by") != "created_at" {
 						t.Fatal("Missing Query", query.Encode())
@@ -80,7 +82,7 @@ func TestPubSub_Channels(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetChannelsOpts().
+				params: srvpubsub.MakeGetChannelsOpts().
 					OrderBy("").
 					Order("").
 					ResourceOwnerId("").
@@ -136,27 +138,27 @@ func TestPubSub_GetChannelsAll(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
 
-	responses, _, _ := client.PubSub.GetChannelsAll(ciosctx.Background(), MakeGetChannelsOpts().Limit(999))
+	responses, _, _ := client.PubSub.GetChannelsAll(ciosctx.Background(), srvpubsub.MakeGetChannelsOpts().Limit(999))
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
 		t.Fatal(len(responses))
 	}
 
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.PubSub.GetChannelsAll(ciosctx.Background(), MakeGetChannelsOpts().Limit(1500))
+	responses, _, _ = client.PubSub.GetChannelsAll(ciosctx.Background(), srvpubsub.MakeGetChannelsOpts().Limit(1500))
 	if len(responses) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
 		t.Fatal(len(responses), limits, offsets)
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.PubSub.GetChannelsAll(ciosctx.Background(), MakeGetChannelsOpts().Limit(2001))
+	responses, _, _ = client.PubSub.GetChannelsAll(ciosctx.Background(), srvpubsub.MakeGetChannelsOpts().Limit(2001))
 	if len(responses) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.PubSub.GetChannelsAll(ciosctx.Background(), MakeGetChannelsOpts().Limit(3501))
+	responses, _, _ = client.PubSub.GetChannelsAll(ciosctx.Background(), srvpubsub.MakeGetChannelsOpts().Limit(3501))
 	if len(responses) != 3500 ||
 		offsets[0] != 0 || limits[0] != 1000 ||
 		offsets[1] != 1000 && limits[1] != 1000 ||
@@ -167,7 +169,7 @@ func TestPubSub_GetChannelsAll(t *testing.T) {
 
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.PubSub.GetChannelsAll(ciosctx.Background(), MakeGetChannelsOpts().Limit(2001).Offset(20))
+	responses, _, _ = client.PubSub.GetChannelsAll(ciosctx.Background(), srvpubsub.MakeGetChannelsOpts().Limit(2001).Offset(20))
 	if len(responses) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
@@ -188,7 +190,7 @@ func TestPubSub_GetChannelsUnlimited(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: ts.URL}})
 
-	response, _, _ := client.PubSub.GetChannelsUnlimited(ciosctx.Background(), MakeGetChannelsOpts().Limit(1))
+	response, _, _ := client.PubSub.GetChannelsUnlimited(ciosctx.Background(), srvpubsub.MakeGetChannelsOpts().Limit(1))
 	if len(response) != 3500 {
 		t.Fatal(len(response))
 	}

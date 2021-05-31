@@ -1,4 +1,4 @@
-package ciossdk_mock
+package ciossdmock
 
 import (
 	_nethttp "net/http"

@@ -2,7 +2,6 @@ package ciossdk
 
 import (
 	"regexp"
-	"strings"
 	"time"
 
 	"github.com/dgrijalva/jwt-go"
@@ -10,6 +9,16 @@ import (
 	cnv "github.com/fcfcqloow/go-advance/convert"
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
+	srvaccount "github.com/optim-corp/cios-golang-sdk/sdk/service/account"
+	srvauth "github.com/optim-corp/cios-golang-sdk/sdk/service/authorization"
+	srvcontract "github.com/optim-corp/cios-golang-sdk/sdk/service/contract"
+	srvdevice "github.com/optim-corp/cios-golang-sdk/sdk/service/device"
+	srvfilestorage "github.com/optim-corp/cios-golang-sdk/sdk/service/filestorage"
+	srvgeography "github.com/optim-corp/cios-golang-sdk/sdk/service/geography"
+	srvlicense "github.com/optim-corp/cios-golang-sdk/sdk/service/license"
+	srvpubsub "github.com/optim-corp/cios-golang-sdk/sdk/service/pubsub"
+	srvvideo "github.com/optim-corp/cios-golang-sdk/sdk/service/video"
+	ciosutil "github.com/optim-corp/cios-golang-sdk/util/cios"
 )
 
 func NewCiosClient(config CiosClientConfig) *CiosClient {
@@ -28,50 +37,30 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 	}, config.Debug)
 
 	instance.cfg = client.GetConfig()
-	contract := &CiosContract{ApiClient: client, Url: config.Urls.ContractUrl, withHost: getWithHostFunc(sdkmodel.CONTRACT_INDEX)}
-	license := &CiosLicense{ApiClient: client, Url: config.Urls.LicenseUrl, withHost: getWithHostFunc(sdkmodel.LICENSE_INDEX)}
-	account := &CiosAccount{ApiClient: client, Url: config.Urls.AccountsUrl, withHost: getWithHostFunc(sdkmodel.ACCOUNT_INDEX)}
-	deviceManagement := &CiosDeviceManagement{ApiClient: client, Url: config.Urls.DeviceManagementUrl, withHost: getWithHostFunc(sdkmodel.DEVICE_INDEX)}
-	deviceAssetManagement := &CiosDeviceAssetManagement{ApiClient: client, Url: config.Urls.DeviceAssetManagementUrl, withHost: getWithHostFunc(sdkmodel.DEVICE_ASSET_INDEX)}
-	fileStorage := &CiosFileStorage{ApiClient: client, Url: config.Urls.StorageUrl, withHost: getWithHostFunc(sdkmodel.FILE_STORAGE_INDEX)}
-	geography := &CiosGeography{ApiClient: client, Url: config.Urls.LocationUrl, withHost: getWithHostFunc(sdkmodel.LOCATION_INDEX)}
-	auth := &CiosAuth{
-		_instance: _instance{
-			ApiClient: client,
-			Url:       config.Urls.AuthUrl,
-			withHost:  getWithHostFunc(sdkmodel.AUTH_INDEX),
-		},
-	}
-	pubsub := &CiosPubSub{
-		_instance: _instance{
-			ApiClient: client,
-			Url:       config.Urls.MessagingUrl,
-			withHost:  getWithHostFunc(sdkmodel.MESSAGING_INDEX),
-			refresh:   nil,
-		},
-	}
-	video := &CiosVideoStreaming{
-		_instance: _instance{
-			ApiClient: client,
-			Url:       config.Urls.VideoStreamingUrl,
-			withHost:  getWithHostFunc(sdkmodel.VIDEO_STREAMING_INDEX),
-		},
-	}
-	// Instance
+	account := srvaccount.NewCiosAccount(client, config.Urls.AccountsUrl, getWithHostFunc(sdkmodel.ACCOUNT_INDEX))
+	contract := srvcontract.NewCiosContract(client, config.Urls.ContractUrl, getWithHostFunc(sdkmodel.CONTRACT_INDEX))
+	license := srvlicense.NewCiosLicense(client, config.Urls.LicenseUrl, getWithHostFunc(sdkmodel.LICENSE_INDEX))
+	deviceManagement := srvdevice.NewCiosDeviceManagement(client, config.Urls.DeviceManagementUrl, getWithHostFunc(sdkmodel.DEVICE_INDEX))
+	deviceAssetManagement := srvdevice.NewCiosDeviceAssetManagement(client, config.Urls.DeviceAssetManagementUrl, getWithHostFunc(sdkmodel.DEVICE_ASSET_INDEX))
+	fileStorage := srvfilestorage.NewCiosFileStorage(client, config.Urls.StorageUrl, getWithHostFunc(sdkmodel.FILE_STORAGE_INDEX))
+	geography := srvgeography.NewCiosGeography(client, config.Urls.LocationUrl, getWithHostFunc(sdkmodel.LOCATION_INDEX))
+	auth := srvauth.NewCiosAuth(client, config.Urls.AuthUrl, getWithHostFunc(sdkmodel.AUTH_INDEX))
+	pubsub := srvpubsub.NewCiosPubSub(client, config.Urls.MessagingUrl, getWithHostFunc(sdkmodel.MESSAGING_INDEX))
+	video := srvvideo.NewCiosVideoStreaming(client, config.Urls.VideoStreamingUrl, getWithHostFunc(sdkmodel.VIDEO_STREAMING_INDEX))
 
 	// AuthConfig
 	if config.AuthConfig != nil {
-		auth.clientId = config.AuthConfig.ClientID
-		auth.clientSecret = config.AuthConfig.ClientSecret
-		auth.assertion = config.AuthConfig.Assertion
-		auth.ref = config.AuthConfig.RefreshToken
-		auth.scope = config.AuthConfig.Scope
+		auth.SetClientId(config.AuthConfig.ClientID)
+		auth.SetClientSecret(config.AuthConfig.ClientSecret)
+		auth.SetAssertion(config.AuthConfig.Assertion)
+		auth.SetRef(config.AuthConfig.RefreshToken)
+		auth.SetScope(config.AuthConfig.Scope)
 	}
 	// WebSocketConfig
 
 	if !check.IsNil(config.WebSocketConfig) {
-		pubsub.wsReadTimeout = config.WebSocketConfig.ReadTimeoutMilliSec
-		pubsub.wsWriteTimeout = config.WebSocketConfig.WriteTimeoutMilliSec
+		pubsub.SetWsReadTimeout(config.WebSocketConfig.ReadTimeoutMilliSec)
+		pubsub.SetWsWriteTimeout(config.WebSocketConfig.WriteTimeoutMilliSec)
 	}
 	refFunc := func() error {
 		if config.AutoRefresh && config.AuthConfig != nil {
@@ -102,15 +91,15 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 		return nil
 	}
 
-	video.refresh = refFunc
-	account.refresh = refFunc
-	license.refresh = refFunc
-	contract.refresh = refFunc
-	geography.refresh = refFunc
-	fileStorage.refresh = refFunc
-	deviceManagement.refresh = refFunc
-	deviceAssetManagement.refresh = refFunc
-	pubsub.refresh = refFunc
+	video.SetRefresh(refFunc)
+	account.SetRefresh(refFunc)
+	license.SetRefresh(refFunc)
+	contract.SetRefresh(refFunc)
+	geography.SetRefresh(refFunc)
+	fileStorage.SetRefresh(refFunc)
+	deviceManagement.SetRefresh(refFunc)
+	deviceAssetManagement.SetRefresh(refFunc)
+	pubsub.SetRefresh(refFunc)
 
 	instance.Contract = contract
 	instance.License = license
@@ -130,7 +119,7 @@ func (self *CiosClient) Debug(debug bool) *CiosClient {
 	if !check.IsNil(self.cfg) {
 		self.cfg.Debug = debug
 	}
-	self.PubSub.setDebug(debug)
+	self.PubSub.SetDebug(debug)
 	return self
 }
 func (self *CiosClient) _accessToken(accessToken string) *CiosClient {
@@ -141,24 +130,16 @@ func (self *CiosClient) _accessToken(accessToken string) *CiosClient {
 			self.tokenExp = cnv.MustInt64(claims["exp"])
 		}
 	}
-	self.PubSub.setToken(accessToken)
-	self.Video.setToken(accessToken)
+	self.PubSub.SetToken(accessToken)
+	self.Video.SetToken(accessToken)
 	if !check.IsNil(self.cfg) {
-		self.cfg.AddDefaultHeader("Authorization", ParseAccessToken(accessToken))
+		self.cfg.AddDefaultHeader("Authorization", ciosutil.ParseAccessToken(accessToken))
 	}
 	return self
 }
 func (self *CiosClient) RequestScope(scope string) *CiosClient {
 	self.Auth.SetScope(scope)
 	return self
-}
-
-func ParseAccessToken(accessToken string) string {
-	if !strings.Contains(accessToken, "Bearer ") {
-		return "Bearer " + accessToken
-	} else {
-		return accessToken
-	}
 }
 
 func (self CiosClient) String() string {

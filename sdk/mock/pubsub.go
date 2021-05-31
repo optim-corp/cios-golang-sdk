@@ -1,10 +1,11 @@
-package ciossdk_mock
+package ciossdmock
 
 import (
 	_nethttp "net/http"
 
-	ciossdk "github.com/optim-corp/cios-golang-sdk/sdk"
-	ciossdk_pusub_enum "github.com/optim-corp/cios-golang-sdk/sdk/enum/pubsub"
+	srvpubsub "github.com/optim-corp/cios-golang-sdk/sdk/service/pubsub"
+
+	sdkenum "github.com/optim-corp/cios-golang-sdk/sdk/enum/pubsub"
 
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 
@@ -151,7 +152,7 @@ func (NoImplementPubsub) DeleteObject(ctx ciosctx.RequestCtx, s string, s2 strin
 	panic("implement me")
 }
 
-func (NoImplementPubsub) NewMessaging(s string, mode ciossdk_pusub_enum.MessagingMode, format ciossdk_pusub_enum.PackerFormat) *cios.MessagingConfig {
+func (NoImplementPubsub) NewMessaging(s string, mode sdkenum.MessagingMode, format sdkenum.PackerFormat) *cios.MessagingConfig {
 	panic("implement me")
 }
 
@@ -167,7 +168,7 @@ func (NoImplementPubsub) PublishMessageJSON(ctx ciosctx.RequestCtx, s string, js
 	panic("implement me")
 }
 
-func (NoImplementPubsub) ConnectWebSocket(s string, bools chan bool, options ciossdk.ConnectWebSocketOptions) error {
+func (NoImplementPubsub) ConnectWebSocket(s string, bools chan bool, options srvpubsub.ConnectWebSocketOptions) error {
 	panic("implement me")
 }
 

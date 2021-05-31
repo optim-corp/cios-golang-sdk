@@ -1,4 +1,4 @@
-package cios_util_test
+package ciosutil_test
 
 import (
 	"reflect"
@@ -6,7 +6,7 @@ import (
 
 	cnv "github.com/fcfcqloow/go-advance/convert"
 	"github.com/optim-corp/cios-golang-sdk/cios"
-	cios_util "github.com/optim-corp/cios-golang-sdk/util/cios"
+	ciosutil "github.com/optim-corp/cios-golang-sdk/util/cios"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -95,7 +95,7 @@ func TestDataStoreStreamToStruct(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := cios_util.DataStoreStreamToStruct(tt.args.str, &tt.args.st); (err != nil) != tt.wantErr {
+			if err := ciosutil.DataStoreStreamToStruct(tt.args.str, &tt.args.st); (err != nil) != tt.wantErr {
 				t.Errorf("DataStoreStreamToStruct() error = %v, wantErr %v", err, tt.wantErr)
 			} else {
 				assert.Equal(t, tt.result, cnv.MustCompactJson(tt.args.st))
@@ -149,7 +149,7 @@ func TestMapPayloads(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := cios_util.MapPayloads(tt.args.objects, &tt.args.stc)
+			got, err := ciosutil.MapPayloads(tt.args.objects, &tt.args.stc)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("MapPayloads() error = %v, wantErr %v", err, tt.wantErr)
 				return

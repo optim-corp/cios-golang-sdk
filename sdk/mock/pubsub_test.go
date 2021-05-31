@@ -1,7 +1,9 @@
-package ciossdk_mock_test
+package ciossdmock_test
 
 import (
 	"testing"
+
+	srvpubsub "github.com/optim-corp/cios-golang-sdk/sdk/service/pubsub"
 
 	ciossdk_mock "github.com/optim-corp/cios-golang-sdk/sdk/mock"
 	"github.com/stretchr/testify/assert"
@@ -9,7 +11,6 @@ import (
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
-	ciossdk "github.com/optim-corp/cios-golang-sdk/sdk"
 )
 
 func TestNoImplementPubsub_ConnectWebSocket(t *testing.T) {
@@ -19,7 +20,7 @@ func TestNoImplementPubsub_ConnectWebSocket(t *testing.T) {
 		t.Log("Panic Err", err)
 		assert.Equal(t, "implement me", err)
 	}()
-	mock.ConnectWebSocket("", make(chan bool), ciossdk.ConnectWebSocketOptions{})
+	mock.ConnectWebSocket("", make(chan bool), srvpubsub.ConnectWebSocketOptions{})
 }
 
 func TestNoImplementPubsub_CreateCIOSWebsocketConnection(t *testing.T) {

@@ -8,6 +8,8 @@ import (
 	"net/url"
 	"testing"
 
+	srvaccount "github.com/optim-corp/cios-golang-sdk/sdk/service/account"
+
 	cnv "github.com/fcfcqloow/go-advance/convert"
 	xmath "github.com/fcfcqloow/go-advance/math"
 	"github.com/optim-corp/cios-golang-sdk/cios"
@@ -24,7 +26,7 @@ func TestResourceOwner_GetResourceOwners(t *testing.T) {
 			test   func()
 		}{
 			{
-				params: MakeGetResourceOwnersOpts().Limit(1000),
+				params: srvaccount.MakeGetResourceOwnersOpts().Limit(1000),
 				test: func() {
 					if query.Get("limit") != "1000" {
 						t.Fatal("Missing Query", query.Encode())
@@ -34,7 +36,7 @@ func TestResourceOwner_GetResourceOwners(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetResourceOwnersOpts().Limit(1000).Offset(50),
+				params: srvaccount.MakeGetResourceOwnersOpts().Limit(1000).Offset(50),
 				test: func() {
 					if query.Get("limit") != "1000" || query.Get("offset") != "50" {
 						t.Fatal("Missing Query", query.Encode())
@@ -44,7 +46,7 @@ func TestResourceOwner_GetResourceOwners(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetResourceOwnersOpts().Page("aaaaa"),
+				params: srvaccount.MakeGetResourceOwnersOpts().Page("aaaaa"),
 				test: func() {
 					if query.Get("page") != "aaaaa" {
 						t.Fatal("Missing Query", query.Encode())
@@ -54,7 +56,7 @@ func TestResourceOwner_GetResourceOwners(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetResourceOwnersOpts().GroupId("aaaaa"),
+				params: srvaccount.MakeGetResourceOwnersOpts().GroupId("aaaaa"),
 				test: func() {
 					if query.Get("group_id") != "aaaaa" {
 						t.Fatal("Missing Query", query.Encode())
@@ -64,7 +66,7 @@ func TestResourceOwner_GetResourceOwners(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetResourceOwnersOpts().Page(""),
+				params: srvaccount.MakeGetResourceOwnersOpts().Page(""),
 				test: func() {
 					if query.Encode() != "" {
 						t.Fatal("Missing Query", query.Encode())
@@ -113,27 +115,27 @@ func TestResourceOwner_GetResourceOwnersAll(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 
-	responses, _, _ := client.Account.GetResourceOwnersAll(nil, MakeGetResourceOwnersOpts().Limit(999))
+	responses, _, _ := client.Account.GetResourceOwnersAll(nil, srvaccount.MakeGetResourceOwnersOpts().Limit(999))
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
 		t.Fatal(len(responses))
 	}
 
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.Account.GetResourceOwnersAll(nil, MakeGetResourceOwnersOpts().Limit(1500))
+	responses, _, _ = client.Account.GetResourceOwnersAll(nil, srvaccount.MakeGetResourceOwnersOpts().Limit(1500))
 	if len(responses) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
 		t.Fatal(len(responses), limits, offsets)
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.Account.GetResourceOwnersAll(nil, MakeGetResourceOwnersOpts().Limit(2001))
+	responses, _, _ = client.Account.GetResourceOwnersAll(nil, srvaccount.MakeGetResourceOwnersOpts().Limit(2001))
 	if len(responses) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.Account.GetResourceOwnersAll(nil, MakeGetResourceOwnersOpts().Limit(3501))
+	responses, _, _ = client.Account.GetResourceOwnersAll(nil, srvaccount.MakeGetResourceOwnersOpts().Limit(3501))
 	if len(responses) != 3500 ||
 		offsets[0] != 0 || limits[0] != 1000 ||
 		offsets[1] != 1000 && limits[1] != 1000 ||
@@ -144,7 +146,7 @@ func TestResourceOwner_GetResourceOwnersAll(t *testing.T) {
 
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.Account.GetResourceOwnersAll(nil, MakeGetResourceOwnersOpts().Limit(2001).Offset(20))
+	responses, _, _ = client.Account.GetResourceOwnersAll(nil, srvaccount.MakeGetResourceOwnersOpts().Limit(2001).Offset(20))
 	if len(responses) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
@@ -165,7 +167,7 @@ func TestResourceOwner_GetResourceOwnersUnlimited(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 
-	responses, _, _ := client.Account.GetResourceOwnersUnlimited(nil, MakeGetResourceOwnersOpts().Limit(1))
+	responses, _, _ := client.Account.GetResourceOwnersUnlimited(nil, srvaccount.MakeGetResourceOwnersOpts().Limit(1))
 	if len(responses) != 3500 {
 		t.Fatal(len(responses))
 	}

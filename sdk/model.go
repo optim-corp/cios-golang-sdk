@@ -66,13 +66,6 @@ type (
 		sdkmodel.Scope
 		_type string
 	}
-	_instance struct {
-		ApiClient *cios.APIClient
-		Url       string
-		Host      string
-		withHost  func(context.Context) context.Context
-		refresh   func() error
-	}
 )
 
 func ClientAuthConf(clientId, clientSecret, scope string) *AuthConfig {

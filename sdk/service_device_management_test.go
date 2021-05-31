@@ -9,6 +9,8 @@ import (
 	"net/url"
 	"testing"
 
+	srvdevice "github.com/optim-corp/cios-golang-sdk/sdk/service/device"
+
 	xmath "github.com/fcfcqloow/go-advance/math"
 
 	cnv "github.com/fcfcqloow/go-advance/convert"
@@ -27,7 +29,7 @@ func TestDeviceManagement_GetDevices(t *testing.T) {
 			test   func()
 		}{
 			{
-				params: MakeGetDevicesOpts().Limit(1000),
+				params: srvdevice.MakeGetDevicesOpts().Limit(1000),
 				test: func() {
 					if query.Get("limit") != "1000" {
 						t.Fatal("Missing Query", query.Encode())
@@ -37,7 +39,7 @@ func TestDeviceManagement_GetDevices(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetDevicesOpts().Limit(1000).Offset(50),
+				params: srvdevice.MakeGetDevicesOpts().Limit(1000).Offset(50),
 				test: func() {
 					if query.Get("limit") != "1000" || query.Get("offset") != "50" {
 						t.Fatal("Missing Query", query.Encode())
@@ -47,7 +49,7 @@ func TestDeviceManagement_GetDevices(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetDevicesOpts().ResourceOwnerId("aaaaa"),
+				params: srvdevice.MakeGetDevicesOpts().ResourceOwnerId("aaaaa"),
 				test: func() {
 					if query.Get("resource_owner_id") != "aaaaa" {
 						t.Fatal("Missing Query", query.Encode())
@@ -57,7 +59,7 @@ func TestDeviceManagement_GetDevices(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetDevicesOpts().Limit(1000).Offset(50).ResourceOwnerId("aaaaa").Name("name"),
+				params: srvdevice.MakeGetDevicesOpts().Limit(1000).Offset(50).ResourceOwnerId("aaaaa").Name("name"),
 				test: func() {
 					if query.Get("resource_owner_id") != "aaaaa" ||
 						query.Get("name") != "name" {
@@ -68,7 +70,7 @@ func TestDeviceManagement_GetDevices(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetDevicesOpts().OrderBy("created_at"),
+				params: srvdevice.MakeGetDevicesOpts().OrderBy("created_at"),
 				test: func() {
 					if query.Get("order_by") != "created_at" {
 						t.Fatal("Missing Query", query.Encode())
@@ -78,7 +80,7 @@ func TestDeviceManagement_GetDevices(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetDevicesOpts().OrderBy("").Order("").ResourceOwnerId("").Name(""),
+				params: srvdevice.MakeGetDevicesOpts().OrderBy("").Order("").ResourceOwnerId("").Name(""),
 				test: func() {
 					if query.Encode() != "" {
 						t.Fatal("Missing Query", query.Encode())
@@ -154,27 +156,27 @@ func TestDeviceManagement_GetDevicesAll(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 
-	responses, _, _ := client.DeviceManagement.GetDevicesAll(nil, MakeGetDevicesOpts().Limit(999))
+	responses, _, _ := client.DeviceManagement.GetDevicesAll(nil, srvdevice.MakeGetDevicesOpts().Limit(999))
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
 		t.Fatal(len(responses))
 	}
 
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.DeviceManagement.GetDevicesAll(nil, MakeGetDevicesOpts().Limit(1500))
+	responses, _, _ = client.DeviceManagement.GetDevicesAll(nil, srvdevice.MakeGetDevicesOpts().Limit(1500))
 	if len(responses) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
 		t.Fatal(len(responses), limits, offsets)
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.DeviceManagement.GetDevicesAll(nil, MakeGetDevicesOpts().Limit(2001))
+	responses, _, _ = client.DeviceManagement.GetDevicesAll(nil, srvdevice.MakeGetDevicesOpts().Limit(2001))
 	if len(responses) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.DeviceManagement.GetDevicesAll(nil, MakeGetDevicesOpts().Limit(3501))
+	responses, _, _ = client.DeviceManagement.GetDevicesAll(nil, srvdevice.MakeGetDevicesOpts().Limit(3501))
 	if len(responses) != 3500 ||
 		offsets[0] != 0 || limits[0] != 1000 ||
 		offsets[1] != 1000 && limits[1] != 1000 ||
@@ -184,7 +186,7 @@ func TestDeviceManagement_GetDevicesAll(t *testing.T) {
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.DeviceManagement.GetDevicesAll(nil, MakeGetDevicesOpts().Limit(2001).Offset(20))
+	responses, _, _ = client.DeviceManagement.GetDevicesAll(nil, srvdevice.MakeGetDevicesOpts().Limit(2001).Offset(20))
 	if len(responses) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
@@ -205,7 +207,7 @@ func TestDeviceManagement_GetDevicesUnlimited(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 
-	responses, _, _ := client.DeviceManagement.GetDevicesUnlimited(nil, MakeGetDevicesOpts().Limit(1))
+	responses, _, _ := client.DeviceManagement.GetDevicesUnlimited(nil, srvdevice.MakeGetDevicesOpts().Limit(1))
 	if len(responses) != 3500 {
 		t.Fatal(len(responses))
 	}

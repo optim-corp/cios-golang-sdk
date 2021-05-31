@@ -7,6 +7,8 @@ import (
 	"net/url"
 	"testing"
 
+	srvvideo "github.com/optim-corp/cios-golang-sdk/sdk/service/video"
+
 	cnv "github.com/fcfcqloow/go-advance/convert"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
@@ -22,7 +24,7 @@ func TestVideo_Videos(t *testing.T) {
 			test   func()
 		}{
 			{
-				params: MakeGetVideosOpts().
+				params: srvvideo.MakeGetVideosOpts().
 					ResourceOwnerId("test").
 					DeviceId("test"),
 				test: func() {
@@ -34,7 +36,7 @@ func TestVideo_Videos(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetVideosOpts().
+				params: srvvideo.MakeGetVideosOpts().
 					ResourceOwnerId("test").
 					DeviceId(""),
 				test: func() {

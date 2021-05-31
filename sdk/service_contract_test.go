@@ -8,6 +8,8 @@ import (
 	"net/url"
 	"testing"
 
+	srvcontract "github.com/optim-corp/cios-golang-sdk/sdk/service/contract"
+
 	cnv "github.com/fcfcqloow/go-advance/convert"
 	xmath "github.com/fcfcqloow/go-advance/math"
 	"github.com/optim-corp/cios-golang-sdk/cios"
@@ -24,7 +26,7 @@ func TestContract_GetContracts(t *testing.T) {
 			test   func()
 		}{
 			{
-				params: MakeGetContractsOpts().Limit(1000),
+				params: srvcontract.MakeGetContractsOpts().Limit(1000),
 				test: func() {
 					if query.Get("limit") != "1000" {
 						t.Fatal("Missing Query", query.Encode())
@@ -34,7 +36,7 @@ func TestContract_GetContracts(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetContractsOpts().Limit(1000).Offset(50),
+				params: srvcontract.MakeGetContractsOpts().Limit(1000).Offset(50),
 				test: func() {
 					if query.Get("limit") != "1000" || query.Get("offset") != "50" {
 						t.Fatal("Missing Query", query.Encode())
@@ -44,7 +46,7 @@ func TestContract_GetContracts(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetContractsOpts().Page("aaaaa"),
+				params: srvcontract.MakeGetContractsOpts().Page("aaaaa"),
 				test: func() {
 					if query.Get("page") != "aaaaa" {
 						t.Fatal("Missing Query", query.Encode())
@@ -54,7 +56,7 @@ func TestContract_GetContracts(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetContractsOpts().Page(""),
+				params: srvcontract.MakeGetContractsOpts().Page(""),
 				test: func() {
 					if query.Encode() != "" {
 						t.Fatal("Missing Query", query.Encode())
@@ -104,27 +106,27 @@ func TestContract_GetContractsAll(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{ContractUrl: ts.URL}})
 
-	responses, _, _ := client.Contract.GetContractsAll(nil, MakeGetContractsOpts().Limit(999))
+	responses, _, _ := client.Contract.GetContractsAll(nil, srvcontract.MakeGetContractsOpts().Limit(999))
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
 		t.Fatal(len(responses))
 	}
 
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.Contract.GetContractsAll(nil, MakeGetContractsOpts().Limit(1500))
+	responses, _, _ = client.Contract.GetContractsAll(nil, srvcontract.MakeGetContractsOpts().Limit(1500))
 	if len(responses) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
 		t.Fatal(len(responses), limits, offsets)
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.Contract.GetContractsAll(nil, MakeGetContractsOpts().Limit(2001))
+	responses, _, _ = client.Contract.GetContractsAll(nil, srvcontract.MakeGetContractsOpts().Limit(2001))
 	if len(responses) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.Contract.GetContractsAll(nil, MakeGetContractsOpts().Limit(3501))
+	responses, _, _ = client.Contract.GetContractsAll(nil, srvcontract.MakeGetContractsOpts().Limit(3501))
 	if len(responses) != 3500 ||
 		offsets[0] != 0 || limits[0] != 1000 ||
 		offsets[1] != 1000 && limits[1] != 1000 ||
@@ -134,7 +136,7 @@ func TestContract_GetContractsAll(t *testing.T) {
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.Contract.GetContractsAll(nil, MakeGetContractsOpts().Limit(2001).Offset(20))
+	responses, _, _ = client.Contract.GetContractsAll(nil, srvcontract.MakeGetContractsOpts().Limit(2001).Offset(20))
 	if len(responses) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
@@ -155,7 +157,7 @@ func TestContract_GetContractsUnlimited(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{ContractUrl: ts.URL}})
 
-	responses, _, _ := client.Contract.GetContractsUnlimited(nil, MakeGetContractsOpts().Limit(1))
+	responses, _, _ := client.Contract.GetContractsUnlimited(nil, srvcontract.MakeGetContractsOpts().Limit(1))
 	if len(responses) != 3500 {
 		t.Fatal(len(responses))
 	}

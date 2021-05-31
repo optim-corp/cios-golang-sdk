@@ -1,10 +1,10 @@
-package cios_util_test
+package ciosutil_test
 
 import (
 	"reflect"
 	"testing"
 
-	cios_util "github.com/optim-corp/cios-golang-sdk/util/cios"
+	ciosutil "github.com/optim-corp/cios-golang-sdk/util/cios"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 )
@@ -37,13 +37,13 @@ import (
 //	tests := []struct {
 //		name       string
 //		args       args
-//		wantResult [][]cios_util.DeviceEntitiesComponentRange
+//		wantResult [][]ciosutil.DeviceEntitiesComponentRange
 //	}{
 //		// TODO: Add test cases.
 //	}
 //	for _, tt := range tests {
 //		t.Run(tt.name, func(t *testing.T) {
-//			if gotResult := cios_util.ToBetweenLifecycle(tt.args.lifecycles); !reflect.DeepEqual(gotResult, tt.wantResult) {
+//			if gotResult := ciosutil.ToBetweenLifecycle(tt.args.lifecycles); !reflect.DeepEqual(gotResult, tt.wantResult) {
 //				t.Errorf("ToBetweenLifecycle() = %v, want %v", gotResult, tt.wantResult)
 //			}
 //		})
@@ -57,13 +57,13 @@ import (
 //	tests := []struct {
 //		name       string
 //		args       args
-//		wantResult []cios_util.DeviceEntitiesComponentRange
+//		wantResult []ciosutil.DeviceEntitiesComponentRange
 //	}{
 //		// TODO: Add test cases.
 //	}
 //	for _, tt := range tests {
 //		t.Run(tt.name, func(t *testing.T) {
-//			if gotResult := cios_util.ToBetweenLifecycle(tt.args.lifecycles); !reflect.DeepEqual(gotResult, tt.wantResult) {
+//			if gotResult := ciosutil.ToBetweenLifecycle(tt.args.lifecycles); !reflect.DeepEqual(gotResult, tt.wantResult) {
 //				t.Errorf("toBetweenLifecycle() = %v, want %v", gotResult, tt.wantResult)
 //			}
 //		})
@@ -78,7 +78,7 @@ import (
 //	tests := []struct {
 //		name string
 //		args args
-//		want cios_util.DeviceEntitiesComponentRange
+//		want ciosutil.DeviceEntitiesComponentRange
 //	}{
 //		// TODO: Add test cases.
 //	}
@@ -142,7 +142,7 @@ func TestGetDefaultDisplayInfo(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := cios_util.GetDefaultDisplayInfo(tt.args.displayInfos); !reflect.DeepEqual(got, tt.want) {
+			if got := ciosutil.GetDefaultDisplayInfo(tt.args.displayInfos); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GetDefaultDisplayInfo() = %v, want %v", got, tt.want)
 			}
 		})

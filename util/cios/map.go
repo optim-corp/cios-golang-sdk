@@ -1,4 +1,4 @@
-package cios_util
+package ciosutil
 
 import (
 	cnv "github.com/fcfcqloow/go-advance/convert"

@@ -1,4 +1,4 @@
-package ciossdk_pusub_enum
+package sdkenum
 
 type (
 	PackerFormat  string

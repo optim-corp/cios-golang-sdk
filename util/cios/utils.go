@@ -1,4 +1,4 @@
-package cios_util
+package ciosutil
 
 import (
 	"github.com/optim-corp/cios-golang-sdk/cios"
