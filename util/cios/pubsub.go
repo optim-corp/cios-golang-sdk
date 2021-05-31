@@ -1,6 +1,7 @@
-package util
+package cios_util
 
 import (
+	"fmt"
 	"strings"
 
 	cnv "github.com/fcfcqloow/go-advance/convert"
@@ -8,8 +9,7 @@ import (
 )
 
 func DataStoreStreamToStruct(str []string, st interface{}) error {
-	value := "[" + strings.Join(str, ",") + "]"
-	return cnv.UnMarshalJson(value, st)
+	return cnv.UnMarshalJson(fmt.Sprintf("[%s]", strings.Join(str, ",")), st)
 }
 
 func MapPayloads(objects []cios.PackerFormatJson, stc interface{}) ([]cios.PackerFormatJsonHeader, error) {
@@ -23,9 +23,5 @@ func MapPayloads(objects []cios.PackerFormatJson, stc interface{}) ([]cios.Packe
 			arr = append(arr, obj.Payload)
 		}
 	}
-	byts, err := cnv.MarshalJson(arr)
-	if err != nil {
-		return nil, err
-	}
-	return headers, cnv.UnMarshalJson(byts, stc)
+	return headers, cnv.DeepCopy(arr, stc)
 }
