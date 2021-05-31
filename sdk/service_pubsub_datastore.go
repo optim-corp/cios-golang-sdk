@@ -9,6 +9,8 @@ import (
 	"strings"
 	"time"
 
+	cios_util "github.com/optim-corp/cios-golang-sdk/util/cios"
+
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
@@ -164,7 +166,7 @@ func (self *CiosPubSub) MapMultiObjectLatestPayload(ctx ciosctx.RequestCtx, chan
 	var headers []cios.PackerFormatJsonHeader
 	objects, httpResponse, err := self.GetMultiObjectLatest(ctx, channelIDs)
 	if err == nil {
-		headers, err = util.MapPayloads(*objects.Objects, stc)
+		headers, err = cios_util.MapPayloads(*objects.Objects, stc)
 	}
 	return headers, httpResponse, err
 }
@@ -332,14 +334,14 @@ func (self *CiosPubSub) MapStreamAll(ctx ciosctx.RequestCtx, channelID string, p
 	if err != nil {
 		return err
 	}
-	return util.DataStoreStreamToStruct(data, stc)
+	return cios_util.DataStoreStreamToStruct(data, stc)
 }
 func (self *CiosPubSub) MapStreamUnlimited(ctx ciosctx.RequestCtx, channelID string, params sdkmodel.ApiGetStreamRequest, stc interface{}) error {
 	data, err := self.GetStreamUnlimited(ctx, channelID, params)
 	if err != nil {
 		return err
 	}
-	return util.DataStoreStreamToStruct(data, stc)
+	return cios_util.DataStoreStreamToStruct(data, stc)
 }
 func (self *CiosPubSub) GetJsonStreamUnlimited(ctx ciosctx.RequestCtx, channelID string, params sdkmodel.ApiGetStreamRequest) (result []cios.PackerFormatJson, err error) {
 	params.PackerFormatParam = cnv.StrPtr("json")
@@ -347,7 +349,7 @@ func (self *CiosPubSub) GetJsonStreamUnlimited(ctx ciosctx.RequestCtx, channelID
 	if _err != nil {
 		err = _err
 	}
-	err = util.DataStoreStreamToStruct(data, &result)
+	err = cios_util.DataStoreStreamToStruct(data, &result)
 	return
 }
 func (self *CiosPubSub) GetStreamFirst(ctx ciosctx.RequestCtx, channelID string, params sdkmodel.ApiGetStreamRequest) (string, error) {

@@ -51,8 +51,11 @@ type (
 		PublishMessage(ciosctx.RequestCtx, string, interface{}, *string) (*_nethttp.Response, error)
 		PublishMessagePackerOnly(ciosctx.RequestCtx, string, interface{}) (*_nethttp.Response, error)
 		PublishMessageJSON(ciosctx.RequestCtx, string, cios.PackerFormatJson) (*_nethttp.Response, error)
+		// Deprecated: should not be used
 		ConnectWebSocket(string, chan bool, ConnectWebSocketOptions) error
+		// Deprecated: should not be used
 		CreateMessagingURL(string, string, *string) string
+		// Deprecated: should not be used
 		CreateCIOSWebsocketConnection(string, string) (*websocket.Conn, error)
 		setDebug(bool)
 		setToken(string)
