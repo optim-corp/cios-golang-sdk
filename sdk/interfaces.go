@@ -3,7 +3,9 @@ package ciossdk
 import (
 	_nethttp "net/http"
 
-	ciossdk_pusub_enum "github.com/optim-corp/cios-golang-sdk/sdk/enum/pubsub"
+	"github.com/optim-corp/cios-golang-sdk/sdk/enum"
+
+	srvpubsub "github.com/optim-corp/cios-golang-sdk/sdk/service/pubsub"
 
 	"github.com/gorilla/websocket"
 	"github.com/optim-corp/cios-golang-sdk/cios"
@@ -36,7 +38,6 @@ type (
 		GetMultiObjectLatestByChannels(ciosctx.RequestCtx, []cios.Channel) (cios.MultipleDataStoreDataLatest, *_nethttp.Response, error)
 		MapMultiObjectLatestPayload(ciosctx.RequestCtx, []string, interface{}) ([]cios.PackerFormatJsonHeader, *_nethttp.Response, error)
 		MapMultiObjectLatestPayloadByChannels(ciosctx.RequestCtx, []cios.Channel, interface{}) ([]cios.PackerFormatJsonHeader, *_nethttp.Response, error)
-		subscribeCiosWebSocket(ciosctx.RequestCtx, string, *func(closeError *websocket.Conn), func([]byte) (bool, error), int64, int64) error
 		GetStream(ciosctx.RequestCtx, string, sdkmodel.ApiGetStreamRequest) ([]string, error)
 		GetStreamAll(ciosctx.RequestCtx, string, sdkmodel.ApiGetStreamRequest) ([]string, error)
 		GetStreamUnlimited(ciosctx.RequestCtx, string, sdkmodel.ApiGetStreamRequest) ([]string, error)
@@ -47,18 +48,18 @@ type (
 		MapStreamFirst(ciosctx.RequestCtx, string, sdkmodel.ApiGetStreamRequest, interface{}) error
 		DeleteDataByChannel(ciosctx.RequestCtx, string) (*_nethttp.Response, error)
 		DeleteObject(ciosctx.RequestCtx, string, string) (*_nethttp.Response, error)
-		NewMessaging(string, ciossdk_pusub_enum.MessagingMode, ciossdk_pusub_enum.PackerFormat) *CiosMessaging
+		NewMessaging(string, enum.MessagingMode, enum.PackerFormat) *srvpubsub.CiosMessaging
 		PublishMessage(ciosctx.RequestCtx, string, interface{}, *string) (*_nethttp.Response, error)
 		PublishMessagePackerOnly(ciosctx.RequestCtx, string, interface{}) (*_nethttp.Response, error)
 		PublishMessageJSON(ciosctx.RequestCtx, string, cios.PackerFormatJson) (*_nethttp.Response, error)
 		// Deprecated: should not be used
-		ConnectWebSocket(string, chan bool, ConnectWebSocketOptions) error
+		ConnectWebSocket(string, chan bool, srvpubsub.ConnectWebSocketOptions) error
 		// Deprecated: should not be used
 		CreateMessagingURL(string, string, *string) string
 		// Deprecated: should not be used
 		CreateCIOSWebsocketConnection(string, string) (*websocket.Conn, error)
-		setDebug(bool)
-		setToken(string)
+		SetDebug(bool)
+		SetToken(string)
 	}
 	Account interface {
 		GetGroups(ciosctx.RequestCtx, cios.ApiGetGroupsRequest) (cios.MultipleGroup, *_nethttp.Response, error)
@@ -173,7 +174,7 @@ type (
 		GetThumbnail(ciosctx.RequestCtx, string) ([]byte, *_nethttp.Response, error)
 		Play(ciosctx.RequestCtx, string) (cios.Room, *_nethttp.Response, error)
 		Stop(ciosctx.RequestCtx, string) (*_nethttp.Response, error)
-		setToken(string)
+		SetToken(string)
 	}
 	License interface {
 		GetLicenses(ciosctx.RequestCtx, cios.ApiGetMyLicensesRequest) ([]cios.License, *_nethttp.Response, error)

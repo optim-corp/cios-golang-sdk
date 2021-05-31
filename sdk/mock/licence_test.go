@@ -1,4 +1,4 @@
-package ciossdk_mock_test
+package ciossdmock_test
 
 import (
 	"testing"

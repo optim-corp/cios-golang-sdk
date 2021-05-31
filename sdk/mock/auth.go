@@ -1,4 +1,4 @@
-package ciossdk_mock
+package ciossdmock
 
 import sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 

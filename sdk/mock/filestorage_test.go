@@ -1,9 +1,9 @@
-package ciossdk_mock_test
+package ciossdmock_test
 
 import (
 	"testing"
 
-	ciossdk "github.com/optim-corp/cios-golang-sdk/sdk"
+	srvfilestorage "github.com/optim-corp/cios-golang-sdk/sdk/service/filestorage"
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
@@ -118,7 +118,7 @@ func TestNoImplementFileStorage_GetBuckets(t *testing.T) {
 		t.Log("Panic Err", err)
 		assert.Equal(t, "implement me", err)
 	}()
-	mock.GetBuckets(ciosctx.Background(), ciossdk.MakeGetBucketsOpts())
+	mock.GetBuckets(ciosctx.Background(), srvfilestorage.MakeGetBucketsOpts())
 }
 
 func TestNoImplementFileStorage_GetBucketsAll(t *testing.T) {
@@ -128,7 +128,7 @@ func TestNoImplementFileStorage_GetBucketsAll(t *testing.T) {
 		t.Log("Panic Err", err)
 		assert.Equal(t, "implement me", err)
 	}()
-	mock.GetBucketsAll(ciosctx.Background(), ciossdk.MakeGetBucketsOpts())
+	mock.GetBucketsAll(ciosctx.Background(), srvfilestorage.MakeGetBucketsOpts())
 }
 
 func TestNoImplementFileStorage_GetBucketsUnlimited(t *testing.T) {
@@ -138,7 +138,7 @@ func TestNoImplementFileStorage_GetBucketsUnlimited(t *testing.T) {
 		t.Log("Panic Err", err)
 		assert.Equal(t, "implement me", err)
 	}()
-	mock.GetBucketsUnlimited(ciosctx.Background(), ciossdk.MakeGetBucketsOpts())
+	mock.GetBucketsUnlimited(ciosctx.Background(), srvfilestorage.MakeGetBucketsOpts())
 }
 
 func TestNoImplementFileStorage_GetNode(t *testing.T) {

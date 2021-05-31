@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"testing"
 
+	srvfilestorage "github.com/optim-corp/cios-golang-sdk/sdk/service/filestorage"
+
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
 )
 
@@ -67,12 +69,12 @@ func TestFileStorage_UploadFile(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 	client.FileStorage.UploadFile(context.Background(), "bucketid", []byte("node"),
-		MakeUploadFileOpts().Key("").NodeId(""))
+		srvfilestorage.MakeUploadFileOpts().Key("").NodeId(""))
 	if nodeId != "" || key != "" {
 		t.Fatal(nodeId, key)
 	}
 	client.FileStorage.UploadFile(context.Background(), "bucketid", []byte("node"),
-		MakeUploadFileOpts().Key("test").NodeId("test"))
+		srvfilestorage.MakeUploadFileOpts().Key("test").NodeId("test"))
 	if nodeId != "test" || key != "test" {
 		t.Fatal(nodeId, key)
 	}

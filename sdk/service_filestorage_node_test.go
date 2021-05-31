@@ -9,6 +9,8 @@ import (
 	"net/url"
 	"testing"
 
+	srvfilestorage "github.com/optim-corp/cios-golang-sdk/sdk/service/filestorage"
+
 	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
 
 	xmath "github.com/fcfcqloow/go-advance/math"
@@ -29,7 +31,7 @@ func TestFileStorage_GetNodes(t *testing.T) {
 			test   func()
 		}{
 			{
-				params: MakeGetNodesOpts().Limit(1000),
+				params: srvfilestorage.MakeGetNodesOpts().Limit(1000),
 				test: func() {
 					if query.Get("limit") != "1000" {
 						t.Fatal("Missing Query", query.Encode())
@@ -39,7 +41,7 @@ func TestFileStorage_GetNodes(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetNodesOpts().Limit(1000).Offset(50),
+				params: srvfilestorage.MakeGetNodesOpts().Limit(1000).Offset(50),
 				test: func() {
 					if query.Get("limit") != "1000" || query.Get("offset") != "50" {
 						t.Fatal("Missing Query", query.Encode())
@@ -49,7 +51,7 @@ func TestFileStorage_GetNodes(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetNodesOpts().IsDirectory(true),
+				params: srvfilestorage.MakeGetNodesOpts().IsDirectory(true),
 				test: func() {
 					if query.Get("is_directory") != "true" {
 						t.Fatal("Missing Query", query.Encode())
@@ -59,7 +61,7 @@ func TestFileStorage_GetNodes(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetNodesOpts().Limit(1000).Offset(50).IsDirectory(true).Name("name"),
+				params: srvfilestorage.MakeGetNodesOpts().Limit(1000).Offset(50).IsDirectory(true).Name("name"),
 				test: func() {
 					if query.Get("is_directory") != "true" ||
 						query.Get("name") != "name" {
@@ -70,7 +72,7 @@ func TestFileStorage_GetNodes(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetNodesOpts().OrderBy("created_at"),
+				params: srvfilestorage.MakeGetNodesOpts().OrderBy("created_at"),
 				test: func() {
 					if query.Get("order_by") != "created_at" {
 						t.Fatal("Missing Query", query.Encode())
@@ -80,7 +82,7 @@ func TestFileStorage_GetNodes(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetNodesOpts().OrderBy("").Order("").Name("").ParentNodeId(""),
+				params: srvfilestorage.MakeGetNodesOpts().OrderBy("").Order("").Name("").ParentNodeId(""),
 				test: func() {
 					if query.Encode() != "" {
 						t.Fatal("Missing Query", query.Encode())
@@ -133,27 +135,27 @@ func TestFileStorage_GetNodesAll(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 
-	response, _, _ := client.FileStorage.GetNodesAll(ciosctx.Background(), "test", MakeGetNodesOpts().Limit(999))
+	response, _, _ := client.FileStorage.GetNodesAll(ciosctx.Background(), "test", srvfilestorage.MakeGetNodesOpts().Limit(999))
 	if len(response) != 999 || offsets[0] != 0 && limits[0] != 1000 {
 		t.Fatal(len(response))
 	}
 
 	offsets = []int{}
 	limits = []int{}
-	response, _, _ = client.FileStorage.GetNodesAll(ciosctx.Background(), "test", MakeGetNodesOpts().Limit(1500))
+	response, _, _ = client.FileStorage.GetNodesAll(ciosctx.Background(), "test", srvfilestorage.MakeGetNodesOpts().Limit(1500))
 	if len(response) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
 		t.Fatal(len(response), limits, offsets)
 	}
 	offsets = []int{}
 	limits = []int{}
-	response, _, _ = client.FileStorage.GetNodesAll(ciosctx.Background(), "test", MakeGetNodesOpts().Limit(2001))
+	response, _, _ = client.FileStorage.GetNodesAll(ciosctx.Background(), "test", srvfilestorage.MakeGetNodesOpts().Limit(2001))
 	if len(response) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
 		t.Fatal(len(response), limits, offsets)
 
 	}
 	offsets = []int{}
 	limits = []int{}
-	response, _, _ = client.FileStorage.GetNodesAll(ciosctx.Background(), "test", MakeGetNodesOpts().Limit(3501))
+	response, _, _ = client.FileStorage.GetNodesAll(ciosctx.Background(), "test", srvfilestorage.MakeGetNodesOpts().Limit(3501))
 	if len(response) != 3500 ||
 		offsets[0] != 0 || limits[0] != 1000 ||
 		offsets[1] != 1000 && limits[1] != 1000 ||
@@ -163,7 +165,7 @@ func TestFileStorage_GetNodesAll(t *testing.T) {
 	}
 	offsets = []int{}
 	limits = []int{}
-	response, _, _ = client.FileStorage.GetNodesAll(ciosctx.Background(), "test", MakeGetNodesOpts().Limit(2001).Offset(20))
+	response, _, _ = client.FileStorage.GetNodesAll(ciosctx.Background(), "test", srvfilestorage.MakeGetNodesOpts().Limit(2001).Offset(20))
 	if len(response) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
 		t.Fatal(len(response), limits, offsets)
 
@@ -184,7 +186,7 @@ func TestFileStorage_GetNodesUnlimited(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 
-	buckets, _, _ := client.FileStorage.GetNodesUnlimited(ciosctx.Background(), "test", MakeGetNodesOpts().Limit(1))
+	buckets, _, _ := client.FileStorage.GetNodesUnlimited(ciosctx.Background(), "test", srvfilestorage.MakeGetNodesOpts().Limit(1))
 	if len(buckets) != 3500 {
 		t.Fatal(len(buckets))
 	}

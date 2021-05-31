@@ -73,7 +73,7 @@ func TestQuery(t *testing.T) {
 					"test1":  cnv.StrPtr("b"),
 				},
 			},
-			want: "test2=b&sample=a&test1=b",
+			want: "sample=a&test1=b&test2=b",
 		},
 	}
 	for _, tt := range tests {

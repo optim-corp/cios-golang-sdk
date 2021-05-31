@@ -1,4 +1,4 @@
-package cios_util
+package ciosutil
 
 import (
 	"fmt"

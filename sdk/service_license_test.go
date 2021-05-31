@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
-
 	sdkmodel "github.com/optim-corp/cios-golang-sdk/model"
+	srvlicense "github.com/optim-corp/cios-golang-sdk/sdk/service/license"
 )
 
 func TestPubSub_GetLicenses(t *testing.T) {
@@ -22,7 +22,7 @@ func TestPubSub_GetLicenses(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{LicenseUrl: ts.URL}})
-	_, _, err := client.License.GetLicenses(ciosctx.Background(), MakeGetLicensesOpts())
+	_, _, err := client.License.GetLicenses(ciosctx.Background(), srvlicense.MakeGetLicensesOpts())
 	if err != nil {
 		t.Fatal(err.Error())
 	}

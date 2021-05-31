@@ -1,4 +1,4 @@
-package cios_util_test
+package ciosutil_test
 
 import (
 	"reflect"
@@ -6,7 +6,7 @@ import (
 
 	cnv "github.com/fcfcqloow/go-advance/convert"
 	"github.com/optim-corp/cios-golang-sdk/cios"
-	cios_util "github.com/optim-corp/cios-golang-sdk/util/cios"
+	ciosutil "github.com/optim-corp/cios-golang-sdk/util/cios"
 )
 
 func TestGroupMapByResourceOwnerID(t *testing.T) {
@@ -50,7 +50,7 @@ func TestGroupMapByResourceOwnerID(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := cios_util.GroupMapByResourceOwnerID(tt.args.groups, tt.args.resourceOwners); !reflect.DeepEqual(got, tt.want) {
+			if got := ciosutil.GroupMapByResourceOwnerID(tt.args.groups, tt.args.resourceOwners); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("GroupMapByResourceOwnerID() = %v, want %v", got, tt.want)
 			}
 		})
@@ -110,7 +110,7 @@ func TestBucketsMapByResourceOwnerID(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := cios_util.BucketsMapByResourceOwnerID(tt.args.buckets); !reflect.DeepEqual(got, tt.want) {
+			if got := ciosutil.BucketsMapByResourceOwnerID(tt.args.buckets); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("BucketsMapByResourceOwnerID() = %v, want %v", got, tt.want)
 			} else {
 				t.Log(got)
@@ -174,7 +174,7 @@ func TestChannelsMapByResourceOwnerID(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := cios_util.ChannelsMapByResourceOwnerID(tt.args.channels); !reflect.DeepEqual(got, tt.want) {
+			if got := ciosutil.ChannelsMapByResourceOwnerID(tt.args.channels); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ChannelsMapByResourceOwnerID() = %v, want %v", got, tt.want)
 			}
 		})
@@ -215,7 +215,7 @@ func TestResourceOwnerIDMapByChannelID(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := cios_util.ResourceOwnerIDMapByChannelID(tt.args.channels); !reflect.DeepEqual(got, tt.want) {
+			if got := ciosutil.ResourceOwnerIDMapByChannelID(tt.args.channels); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ResourceOwnerIDMapByChannelID() = %v, want %v", got, tt.want)
 			}
 		})
@@ -256,7 +256,7 @@ func TestResourceOwnerMapByGroupID(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := cios_util.ResourceOwnerMapByGroupID(tt.args.resourceOwners); !reflect.DeepEqual(got, tt.want) {
+			if got := ciosutil.ResourceOwnerMapByGroupID(tt.args.resourceOwners); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("ResourceOwnerMapByGroupID() = %v, want %v", got, tt.want)
 			}
 		})

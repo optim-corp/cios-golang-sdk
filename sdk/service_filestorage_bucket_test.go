@@ -10,6 +10,8 @@ import (
 	"testing"
 	"time"
 
+	srvfilestorage "github.com/optim-corp/cios-golang-sdk/sdk/service/filestorage"
+
 	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
 
 	xmath "github.com/fcfcqloow/go-advance/math"
@@ -48,7 +50,7 @@ func Test_RefreshBucket(t *testing.T) {
 		),
 	})
 	funcs := []func(){
-		func() { client.FileStorage.GetBuckets(ctx, MakeGetBucketsOpts()) },
+		func() { client.FileStorage.GetBuckets(ctx, srvfilestorage.MakeGetBucketsOpts()) },
 		func() { client.FileStorage.CreateBucket(ctx, "", "") },
 		func() { client.FileStorage.GetBucket(ctx, "") },
 		func() { client.FileStorage.UpdateBucket(ctx, "", "") },
@@ -111,7 +113,7 @@ func TestFileStorage_GetBuckets(t *testing.T) {
 			test   func()
 		}{
 			{
-				params: MakeGetBucketsOpts().Limit(1000),
+				params: srvfilestorage.MakeGetBucketsOpts().Limit(1000),
 				test: func() {
 					if query.Get("limit") != "1000" {
 						t.Fatal("Missing Query", query.Encode())
@@ -121,7 +123,7 @@ func TestFileStorage_GetBuckets(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetBucketsOpts().Limit(1000).Offset(50),
+				params: srvfilestorage.MakeGetBucketsOpts().Limit(1000).Offset(50),
 				test: func() {
 					if query.Get("limit") != "1000" || query.Get("offset") != "50" {
 						t.Fatal("Missing Query", query.Encode())
@@ -131,7 +133,7 @@ func TestFileStorage_GetBuckets(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetBucketsOpts().ResourceOwnerId("aaaaa"),
+				params: srvfilestorage.MakeGetBucketsOpts().ResourceOwnerId("aaaaa"),
 				test: func() {
 					if query.Get("resource_owner_id") != "aaaaa" {
 						t.Fatal("Missing Query", query.Encode())
@@ -141,7 +143,7 @@ func TestFileStorage_GetBuckets(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetBucketsOpts().Limit(1000).Offset(50).ResourceOwnerId("aaaaa").Name("name"),
+				params: srvfilestorage.MakeGetBucketsOpts().Limit(1000).Offset(50).ResourceOwnerId("aaaaa").Name("name"),
 				test: func() {
 					if query.Get("resource_owner_id") != "aaaaa" ||
 						query.Get("name") != "name" {
@@ -152,7 +154,7 @@ func TestFileStorage_GetBuckets(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetBucketsOpts().OrderBy("created_at"),
+				params: srvfilestorage.MakeGetBucketsOpts().OrderBy("created_at"),
 				test: func() {
 					if query.Get("order_by") != "created_at" {
 						t.Fatal("Missing Query", query.Encode())
@@ -162,7 +164,7 @@ func TestFileStorage_GetBuckets(t *testing.T) {
 				},
 			},
 			{
-				params: MakeGetBucketsOpts().OrderBy("").Order("").ResourceOwnerId("").Name(""),
+				params: srvfilestorage.MakeGetBucketsOpts().OrderBy("").Order("").ResourceOwnerId("").Name(""),
 				test: func() {
 					if query.Encode() != "" {
 						t.Fatal("Missing Query", query.Encode())
@@ -213,27 +215,27 @@ func TestFileStorage_GetBucketsAll(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 
-	buckets, _, _ := client.FileStorage.GetBucketsAll(nil, MakeGetBucketsOpts().Limit(999))
+	buckets, _, _ := client.FileStorage.GetBucketsAll(nil, srvfilestorage.MakeGetBucketsOpts().Limit(999))
 	if len(buckets) != 999 || offsets[0] != 0 && limits[0] != 1000 {
 		t.Fatal(len(buckets))
 	}
 
 	offsets = []int{}
 	limits = []int{}
-	buckets, _, _ = client.FileStorage.GetBucketsAll(nil, MakeGetBucketsOpts().Limit(1500))
+	buckets, _, _ = client.FileStorage.GetBucketsAll(nil, srvfilestorage.MakeGetBucketsOpts().Limit(1500))
 	if len(buckets) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
 		t.Fatal(len(buckets), limits, offsets)
 	}
 	offsets = []int{}
 	limits = []int{}
-	buckets, _, _ = client.FileStorage.GetBucketsAll(nil, MakeGetBucketsOpts().Limit(2001))
+	buckets, _, _ = client.FileStorage.GetBucketsAll(nil, srvfilestorage.MakeGetBucketsOpts().Limit(2001))
 	if len(buckets) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
 		t.Fatal(len(buckets), limits, offsets)
 
 	}
 	offsets = []int{}
 	limits = []int{}
-	buckets, _, _ = client.FileStorage.GetBucketsAll(nil, MakeGetBucketsOpts().Limit(3501))
+	buckets, _, _ = client.FileStorage.GetBucketsAll(nil, srvfilestorage.MakeGetBucketsOpts().Limit(3501))
 	if len(buckets) != 3500 ||
 		offsets[0] != 0 || limits[0] != 1000 ||
 		offsets[1] != 1000 && limits[1] != 1000 ||
@@ -243,7 +245,7 @@ func TestFileStorage_GetBucketsAll(t *testing.T) {
 	}
 	offsets = []int{}
 	limits = []int{}
-	buckets, _, _ = client.FileStorage.GetBucketsAll(nil, MakeGetBucketsOpts().Limit(2001).Offset(20))
+	buckets, _, _ = client.FileStorage.GetBucketsAll(nil, srvfilestorage.MakeGetBucketsOpts().Limit(2001).Offset(20))
 	if len(buckets) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
 		t.Fatal(len(buckets), limits, offsets)
 
@@ -264,7 +266,7 @@ func TestFileStorage_GetBucketsUnlimited(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{StorageUrl: ts.URL}})
 
-	buckets, _, _ := client.FileStorage.GetBucketsUnlimited(nil, MakeGetBucketsOpts().Limit(1))
+	buckets, _, _ := client.FileStorage.GetBucketsUnlimited(nil, srvfilestorage.MakeGetBucketsOpts().Limit(1))
 	if len(buckets) != 3500 {
 		t.Fatal(len(buckets))
 	}
