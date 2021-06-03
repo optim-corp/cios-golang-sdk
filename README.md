@@ -265,7 +265,7 @@ The refresh token will only be executed once if the request fails.
     * [Get Contracts no limit](./sdk/service/contract/README.md#get-contracts-no-limit)
     * [Get Contracts unlimited](./sdk/service/contract/README.md#get-contracts-unlimited)
 
-## How to Unit test
+## How to test client
 
 package ciossdk_mock has mock interface
 
