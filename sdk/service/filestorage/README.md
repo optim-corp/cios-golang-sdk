@@ -173,11 +173,11 @@ UploadFile(ciosctx.RequestCtx, string, []byte, cios.ApiUploadFileRequest) (*_net
 #### Download a File
 
 ```go
-byts, httpResponse, err := client.FileStorage(ctx, "bucket_id", "node_id")
+byts, httpResponse, err := client.FileStorage.DownloadFile(ctx, "bucket_id", "node_id")
 ```
 
 #### Upload a File
 
 ```go
-httpResponse, err := client.FileStorage(ctx, "bucket_id", []byte{}, srvfilestorage.MakeUploadFileOpts().NodeId("node_id"))
+httpResponse, err := client.FileStorage.UploadFile(ctx, "bucket_id", []byte{}, srvfilestorage.MakeUploadFileOpts().NodeId("node_id"))
 ```
