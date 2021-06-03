@@ -18,6 +18,18 @@ UpdateBucket(ciosctx.RequestCtx, string, string) (*_nethttp.Response, error)
 
 ### Usage
 
+#### Get a Bucket
+
+```go
+bucket, httpResponse, err := client.FileStorage.GetBucketsUnlimited(ctx, "bucket_id")
+```
+
+#### Get a Bucket by ResourceOwnerID + Bucket Name
+
+```go
+bucket, httpResponse, err := client.FileStorage.GetBucketByResourceOwnerIDAndName(ctx, "resource_owner_id", "name")
+```
+
 #### Get Buckets max limit 1000
 
 ```go
@@ -39,17 +51,6 @@ options := srvfilestorage.MakeGetBucketsOpts
 buckets, httpResponse, err := client.FileStorage.GetBucketsUnlimited(ctx, options().Name("test"))
 ```
 
-#### Get a Bucket 
-
-```go
-bucket, httpResponse, err := client.FileStorage.GetBucketsUnlimited(ctx, "bucket_id")
-```
-
-#### Get a Bucket by ResourceOwnerID + Bucket Name
-
-```go
-bucket, httpResponse, err := client.FileStorage.GetBucketByResourceOwnerIDAndName(ctx, "resource_owner_id", "name")
-```
 
 #### Get or create a Bucket
 
@@ -95,6 +96,13 @@ RenameNode(ciosctx.RequestCtx, string, string, string) (cios.Node, *_nethttp.Res
 
 ### Usage
 
+#### Get a Node
+
+```go
+node, httpResponse, err := client.FileStorage.GetNode(ctx, "bucket_id", "node_id")
+```
+
+
 #### Get Nodes max limit 1000
 
 ```go
@@ -116,11 +124,6 @@ options := srvfilestorage.MakeGetNodesOpts
 nodes, httpResponse, err := client.FileStorage.GetNodesUnlimited(ctx, "bucket_id", options().Name("sample"))
 ```
 
-#### Get a Node
-
-```go
-node, httpResponse, err := client.FileStorage.GetNode(ctx, "bucket_id", "node_id")
-```
 
 #### Create a Directory
 

@@ -1,9 +1,11 @@
-# OPTiM Cloud IoT OS Golang SDK
+# OPTiM Cloud IoT OS Golang SDK (0.4.2)
+
 
 It is a convenient SDK to use [OPTiM Cloud IoT OS(CIOS)](https://www.optim.cloud/platform/) in Go language.
 
 This SDK uses OpenAPI and is generated in code.
 OpenAPI will be split at a later date, but is now included in the code.
+It is imperfect.
 
 ## Instration
 
@@ -164,7 +166,47 @@ The refresh token will only be executed once if the request fails.
   * [File API](./sdk/service/filestorage/README.md#file-api)
     * [Download a File](./sdk/service/filestorage/README.md#download-a-file)
     * [Upload a File](./sdk/service/filestorage/README.md#upload-a-file)
-* [Pub/Sub]()
+* [Pub/Sub](./sdk/service/pubsub/README.md)
+  * [Channel API](./sdk/service/pubsub/README.md#channel-api)
+    * [Get a Channel](./sdk/service/pubsub/README.md#get-a-channel)
+    * [Get a Channel first on channel list response](./sdk/service/pubsub/README.md#get-a-channel-that-is-first-channels-api)
+    * [Get or Create Channel](./sdk/service/pubsub/README.md#get-or-create-a-channel)
+    * [Get Channels max limit 1000](./sdk/service/pubsub/README.md#get-channels-max-limit-1000)
+    * [Get Channels no limit](./sdk/service/pubsub/README.md#get-channels-no-limit)
+    * [Get Channels Unlimited](./sdk/service/pubsub/README.md#get-channels-unlimited)
+    * [Get Channel map by Channel ID key](./sdk/service/pubsub/README.md#get-channel-map-by-channel-id)
+    * [Get Channel map by ResourceOwner ID key](./sdk/service/pubsub/README.md#get-channel-map-by-resourceowner-id)
+    * [Create a Channel](./sdk/service/pubsub/README.md#create-a-channel)
+    * [Update a Channel](./sdk/service/pubsub/README.md#update-a-channel)
+    * [Delete a Channel](./sdk/service/pubsub/README.md#delete-a-channel)
+  * [DataStore API](./sdk/service/pubsub/README.md#data-store-api)
+    * [Get a Channel for DataStore](./sdk/service/pubsub/README.md#get-a-channel-on-data-store)
+    * [Get Channels for DataStore](./sdk/service/pubsub/README.md#get-channels-on-data-store-max-limit-1000)
+    * [Get a Object](./sdk/service/pubsub/README.md#get-a-datastore-object)
+    * [Get latest Object](./sdk/service/pubsub/README.md#get-latest-datastore-object)
+    * [Get latest Object on Channels](./sdk/service/pubsub/README.md#get-latest-datastore-object-on-channels)
+    * [Get Objects info max limit 1000](./sdk/service/pubsub/README.md#get-datastore-objects-max-limit-1000)
+    * [Get Objects info no limit](./sdk/service/pubsub/README.md#get-datastore-objects-no-limit)
+    * [Get Objects info unlimited](./sdk/service/pubsub/README.md#get-datastore-objects-unlimited)
+    * [Parse latest Object](./sdk/service/pubsub/README.md#parse-latest-for-object)
+    * [Parse latest Object on channels](./sdk/service/pubsub/README.md#parse-latest-for-object-on-channels)
+    * [Get Stream first (websocket)](./sdk/service/pubsub/README.md#get-a-datastore-stream-first)
+    * [Get Stream max limit 1000 (websocket)](./sdk/service/pubsub/README.md#get-datastore-stream-max-limit-1000)
+    * [Get Stream no limit (websocket)](./sdk/service/pubsub/README.md#get-datastore-stream-no-limit)
+    * [Get Stream unlimited (websocket)](./sdk/service/pubsub/README.md#get-datastore-stream-unlimited)
+    * [Parse Stream no limit (websocket)](./sdk/service/pubsub/README.md#parse-datastore-stream-no-limit)
+    * [Parse Stream unlimited (websocket)](./sdk/service/pubsub/README.md#parse-datastore-stream-unlimited)
+    * [Parse Stream first (websocket)](./sdk/service/pubsub/README.md#map-a-datastore-stream-first)
+    * [Delete a Object](./sdk/service/pubsub/README.md#delete-a-datastore-object)
+    * [Delete Objects on Channel](./sdk/service/pubsub/README.md#delete-datastore-objects)
+  * [Messaging API](./sdk/service/pubsub/README.md#messaging-api)
+    * [Publish a message](./sdk/service/pubsub/README.md#publish-message)
+    * [Publish a message (payload only format)](./sdk/service/pubsub/README.md#publish-payload-only-format)
+    * [Publish a message (json format)](./sdk/service/pubsub/README.md#publish-json-format)
+    * [Create Messaging instance (WIP)](./sdk/service/pubsub/README.md#create-messaging-instance)
+      * [How to use messaging instance (WIP)](./sdk/service/pubsub/README.md#about-messaging-instance)
+    
+
 ## How to Support
 
 If you have any issues or questions, please raise them on [Github issues](https://github.com/optim-corp/cios-golang-sdk/issues).
