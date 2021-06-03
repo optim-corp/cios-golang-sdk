@@ -18,3 +18,15 @@ func sampleGetBucket() []cios.Bucket {
 	fmt.Println(httpResponse)
 	return response.Buckets
 }
+
+func sampleGetBucketWithToken(token string) []cios.Bucket {
+	// usage
+	ctx := ciosctx.Background()
+	ctx = ciosctx.WithToken(ctx, token)
+	response, httpResponse, err := client.FileStorage.GetBuckets(ctx, srvfilestorage.MakeGetBucketsOpts().Limit(30))
+	if err != nil {
+		println(err)
+	}
+	fmt.Println(httpResponse)
+	return response.Buckets
+}
