@@ -13,11 +13,7 @@ It is imperfect.
 go get -u github.com/optim-corp/cios-golang-sdk
 ```
 
-## Document
-
-[CIOS Golang SDK Documents](./cios/README.md)
 ## Usage
-
 
 ### Initialization
 
@@ -71,10 +67,10 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 |Native|❌|
 
 
-* Client Auth 
-    * client id
-    * client secret
-    * request scope
+* Client Auth
+  * client id
+  * client secret
+  * request scope
 ```go
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     AuthConfig: ClientAuthConf(
@@ -86,10 +82,10 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 ```
 
 * Refresh Token Auth
-    * client id
-    * client secret
-    * refresh token
-    * request scope
+  * client id
+  * client secret
+  * refresh token
+  * request scope
 ```go
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     AuthConfig: RefreshTokenAuth(
@@ -102,10 +98,10 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 ```
 
 * Device Auth
-    * client id
-    * client secret
-    * assertion
-    * request scope
+  * client id
+  * client secret
+  * assertion
+  * request scope
 ```go
 client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
     AuthConfig: DeviceAuthConf(
@@ -119,15 +115,18 @@ client = ciossdk.NewCiosClient(ciossdk.CiosClientConfig{
 
 The refresh token will only be executed once if the request fails.
 
-### APIs
+## Document
 
+* [Authorization](./sdk/service/authorization/README.md)
+  * [How to set AccessToken in context](./sdk/service/authorization/README.md#how-to-set-token)
+  * [Auto Refresh AccessToken for instance](./sdk/service/authorization/README.md#how-to-auto-refresh-auth)
 * [Account](./sdk/service/account/README.md)
   * [Me API](./sdk/service/account/README.md#me-api)
     * [Get Me](./sdk/service/account/README.md#get-me)
   * [Group API](./sdk/service/account/README.md#group-api)
     * [Get a Group](./sdk/service/account/README.md#group-api)
     * [Get a Group by ResourceOwnerID](./sdk/service/account/README.md#get-a-group-by-resource-owner-id)
-    * [Get Groups max limit 1000](./sdk/service/account/README.md#get-groups-limit-1000)
+    * [Get Groups (max limit 1000)](./sdk/service/account/README.md#get-groups-limit-1000)
     * [Get Groups no limit](./sdk/service/account/README.md#get-groups-no-limit)
     * [Get Groups unlimited](./sdk/service/account/README.md#get-groups-unlimited)
     * [Create a Group](./sdk/service/account/README.md#crete-a-group)
@@ -139,7 +138,7 @@ The refresh token will only be executed once if the request fails.
     * [Get ResourceOwner Map (Key ResourceOwner ID)](./sdk/service/account/README.md#get-resourceowner-map-by-resourceowner-id)
     * [Get ResourceOwner Map (Key Group ID)](./sdk/service/account/README.md#get-resourceowner-map-by-group-id)
     * [Get ResourceOwners](./sdk/service/account/README.md#get-resourceowners)
-    * [Get ResourceOwners max limit 1000](./sdk/service/account/README.md#get-resourceowners-limit-1000)
+    * [Get ResourceOwners (max limit 1000)](./sdk/service/account/README.md#get-resourceowners-limit-1000)
     * [Get ResourceOwners no limit](./sdk/service/account/README.md#get-groups-no-limit)
     * [Get ResourceOwners unlimited](./sdk/service/account/README.md#get-resourceowners-unlimited)
 * [FileStorage](./sdk/service/filestorage/README.md)
@@ -147,7 +146,7 @@ The refresh token will only be executed once if the request fails.
     * [Get a Bucket](./sdk/service/filestorage/README.md#get-a-bucket)
     * [Get a Bucket by ResourceOwnerID and  Name](./sdk/service/filestorage/README.md#get-a-bucket-by-resourceownerid--bucket-name)
     * [Get or Create a Bucket](./sdk/service/filestorage/README.md#get-or-create-a-bucket)
-    * [Get Buckets max limit 1000](./sdk/service/filestorage/README.md#get-buckets-limit-1000)
+    * [Get Buckets (max limit 1000)](./sdk/service/filestorage/README.md#get-buckets-limit-1000)
     * [Get Buckets no limit](./sdk/service/filestorage/README.md#get-buckets-no-limit)
     * [Get Buckets unlimited](./sdk/service/filestorage/README.md#get-buckets-unlimited)
     * [Create a Bucket](./sdk/service/filestorage/README.md#create-a-bucket)
@@ -155,7 +154,7 @@ The refresh token will only be executed once if the request fails.
     * [Delete a Bucket](./sdk/service/filestorage/README.md#delete-a-bucket)
   * [Node API](./sdk/service/filestorage/README.md#node-api)
     * [Get a Node](./sdk/service/filestorage/README.md#get-a-node)
-    * [Get Nodes max limit 1000](./sdk/service/filestorage/README.md#get-nodes-limit-1000)
+    * [Get Nodes (max limit 1000)](./sdk/service/filestorage/README.md#get-nodes-limit-1000)
     * [Get Nodes no limit](./sdk/service/filestorage/README.md#get-nodes-no-limit)
     * [Get Nodes unlimited](./sdk/service/filestorage/README.md#get-nodes-unlimited)
     * [Create a Directory](./sdk/service/filestorage/README.md#create-a-directory)
@@ -171,7 +170,7 @@ The refresh token will only be executed once if the request fails.
     * [Get a Channel](./sdk/service/pubsub/README.md#get-a-channel)
     * [Get a Channel first on channel list response](./sdk/service/pubsub/README.md#get-a-channel-that-is-first-channels-api)
     * [Get or Create Channel](./sdk/service/pubsub/README.md#get-or-create-a-channel)
-    * [Get Channels max limit 1000](./sdk/service/pubsub/README.md#get-channels-max-limit-1000)
+    * [Get Channels (max limit 1000)](./sdk/service/pubsub/README.md#get-channels-max-limit-1000)
     * [Get Channels no limit](./sdk/service/pubsub/README.md#get-channels-no-limit)
     * [Get Channels Unlimited](./sdk/service/pubsub/README.md#get-channels-unlimited)
     * [Get Channel map by Channel ID key](./sdk/service/pubsub/README.md#get-channel-map-by-channel-id)
@@ -185,13 +184,13 @@ The refresh token will only be executed once if the request fails.
     * [Get a Object](./sdk/service/pubsub/README.md#get-a-datastore-object)
     * [Get latest Object](./sdk/service/pubsub/README.md#get-latest-datastore-object)
     * [Get latest Object on Channels](./sdk/service/pubsub/README.md#get-latest-datastore-object-on-channels)
-    * [Get Objects info max limit 1000](./sdk/service/pubsub/README.md#get-datastore-objects-max-limit-1000)
+    * [Get Objects info (max limit 1000)](./sdk/service/pubsub/README.md#get-datastore-objects-max-limit-1000)
     * [Get Objects info no limit](./sdk/service/pubsub/README.md#get-datastore-objects-no-limit)
     * [Get Objects info unlimited](./sdk/service/pubsub/README.md#get-datastore-objects-unlimited)
     * [Parse latest Object](./sdk/service/pubsub/README.md#parse-latest-for-object)
     * [Parse latest Object on channels](./sdk/service/pubsub/README.md#parse-latest-for-object-on-channels)
     * [Get Stream first (websocket)](./sdk/service/pubsub/README.md#get-a-datastore-stream-first)
-    * [Get Stream max limit 1000 (websocket)](./sdk/service/pubsub/README.md#get-datastore-stream-max-limit-1000)
+    * [Get Stream (max limit 1000) (websocket)](./sdk/service/pubsub/README.md#get-datastore-stream-max-limit-1000)
     * [Get Stream no limit (websocket)](./sdk/service/pubsub/README.md#get-datastore-stream-no-limit)
     * [Get Stream unlimited (websocket)](./sdk/service/pubsub/README.md#get-datastore-stream-unlimited)
     * [Parse Stream no limit (websocket)](./sdk/service/pubsub/README.md#parse-datastore-stream-no-limit)
@@ -205,7 +204,27 @@ The refresh token will only be executed once if the request fails.
     * [Publish a message (json format)](./sdk/service/pubsub/README.md#publish-json-format)
     * [Create Messaging instance (WIP)](./sdk/service/pubsub/README.md#create-messaging-instance)
       * [How to use messaging instance (WIP)](./sdk/service/pubsub/README.md#about-messaging-instance)
-    
+* [Device](./sdk/service/device/README.md)
+  * [Device Management API](./sdk/service/device/README.md#device-management-api)
+    * [Get a Device](./sdk/service/device/README.md#get-a-device)
+    * [Get a Device Inventory](./sdk/service/device/README.md#get-a-device-inventory)
+    * [Get Devices (max limit 1000)](./sdk/service/device/README.md#get-devices-max-limit-1000)
+    * [Get Devices no limit](./sdk/service/device/README.md#get-devices-max-no-limit)
+    * [Get Devices unlimited](./sdk/service/device/README.md#get-devices-max-unlimited)
+    * [Create a Device](./sdk/service/device/README.md#create-a-device)
+    * [Update a Device](./sdk/service/device/README.md#update-a-device)
+    * [Device a Device](./sdk/service/device/README.md#delete-a-device)
+  * [Device Monitoring API](./sdk/service/device/README.md#device-monitoring-api)
+    * [Get a Device Monitoring](./sdk/service/device/README.md#get-a-device-monitoring-info)
+    * [Get Devices Monitoring](./sdk/service/device/README.md#get-devices-monitoring-info)
+  * [Device Policy](./sdk/service/device/README.md#device-policy-api)
+    * [Get Policies (max limit 1000)](./sdk/service/device/README.md#get-policies-max-limit-1000)
+    * [Get Policies no limit](./sdk/service/device/README.md#get-policies-max-no-limit)
+    * [Get Policies unlimited](./sdk/service/device/README.md#get-policies-unlimited)
+    * [Create a Policy](./sdk/service/device/README.md#create-a-policy)
+    * [Delete a Policy](./sdk/service/device/README.md#delete-a-policy)
+
+
 
 ## How to Support
 
