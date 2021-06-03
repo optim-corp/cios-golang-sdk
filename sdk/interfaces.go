@@ -161,7 +161,6 @@ type (
 		MoveNode(ciosctx.RequestCtx, string, string, *string, *string) (cios.Node, *_nethttp.Response, error)
 		RenameNode(ciosctx.RequestCtx, string, string, string) (cios.Node, *_nethttp.Response, error)
 	}
-
 	Geography interface {
 		GetPoints(ciosctx.RequestCtx, cios.ApiGetPointsRequest) (cios.MultiplePoint, *_nethttp.Response, error)
 		CreatePoint(ciosctx.RequestCtx, cios.PointRequest) (cios.Point, *_nethttp.Response, error)
