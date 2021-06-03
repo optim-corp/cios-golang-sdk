@@ -265,6 +265,29 @@ The refresh token will only be executed once if the request fails.
     * [Get Contracts no limit](./sdk/service/contract/README.md#get-contracts-no-limit)
     * [Get Contracts unlimited](./sdk/service/contract/README.md#get-contracts-unlimited)
 
+## How to Unit test
+
+package ciossdk_mock has mock interface
+
+### Usage
+
+```go
+type MockAccount struct {
+	ciossdk_mock.NoImplementAccount
+}
+
+func (MockAccount) GetMe(ctx ciosctx.RequestCtx) (cios.Me, *http.Response, error) {
+	return testMe, nil, nil
+}
+func (MockAccount) GetResourceOwnersMapByGroupID(ciosctx.RequestCtx) (map[string]cios.ResourceOwner, error) {
+	return nil, nil
+}
+func TestExample(t *testing.T) {
+    client := &ciossdk.CiosClient{}
+    client.Account = MockAccount{}
+}
+```
+
 ## How to Support
 
 If you have any issues or questions, please raise them on [Github issues](https://github.com/optim-corp/cios-golang-sdk/issues).
