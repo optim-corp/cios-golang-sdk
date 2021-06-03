@@ -41,7 +41,7 @@ includes := "children"
 group, httpResponse, err := client.Account.GetGroup(ctx, "groupID", &includes)
 ```
 
-#### Get Groups limit 1000
+#### Get Groups max limit 1000
 
 ```go
 options := srvaccount.MakeGetGroupsOpts
@@ -137,7 +137,7 @@ resourceOwner, httpResponse, err := client.Account.GetResourceOwnersMapByID(ctx)
 resourceOwner, httpResponse, err := client.Account.GetResourceOwnersMapByGroupID(ctx)
 ```
 
-#### Get ResourceOwners limit 1000
+#### Get ResourceOwners max limit 1000
 
 ```go
 options := srvaccount.MakeGetResourceOwnersOpts
