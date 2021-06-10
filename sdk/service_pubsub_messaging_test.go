@@ -35,5 +35,5 @@ package ciossdk
 //	s := httptest.NewServer(http.HandlerFunc(handler))
 //	url := "ws" + strings.TrimPrefix(s.URL, "http")
 //	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{MessagingUrl: url}})
-//	client.PubSub.subscribeCiosWebSocket("")
+//	client.PubSub().subscribeCiosWebSocket("")
 //}

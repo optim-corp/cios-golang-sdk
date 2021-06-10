@@ -22,7 +22,7 @@ func TestPubSub_GetLicenses(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{LicenseUrl: ts.URL}})
-	_, _, err := client.License.GetLicenses(ciosctx.Background(), srvlicense.MakeGetLicensesOpts())
+	_, _, err := client.License().GetLicenses(ciosctx.Background(), srvlicense.MakeGetLicensesOpts())
 	if err != nil {
 		t.Fatal(err.Error())
 	}

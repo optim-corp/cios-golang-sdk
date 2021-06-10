@@ -32,20 +32,6 @@ var (
 )
 
 type (
-	CiosClient struct {
-		PubSub                PubSub
-		Account               Account
-		DeviceAssetManagement DeviceAssetManagement
-		DeviceManagement      DeviceManagement
-		FileStorage           FileStorage
-		Geography             Geography
-		Auth                  Auth
-		License               License
-		Contract              Contract
-		Video                 VideoStreaming
-		tokenExp              int64
-		cfg                   *cios.Configuration
-	}
 	CiosClientConfig struct {
 		AutoRefresh     bool
 		Debug           bool

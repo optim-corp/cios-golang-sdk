@@ -33,7 +33,7 @@ func TestDeviceManagement_GetMonitoringLatestList(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 
-	_, _, err := client.DeviceManagement.GetMonitoringLatestList(context.Background(), []string{"1", "2", "3"})
+	_, _, err := client.DeviceManagement().GetMonitoringLatestList(context.Background(), []string{"1", "2", "3"})
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -52,7 +52,7 @@ func TestDeviceManagement_GetMonitoring(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 
-	_, _, err := client.DeviceManagement.GetMonitoring(context.Background(), "id")
+	_, _, err := client.DeviceManagement().GetMonitoring(context.Background(), "id")
 	if err != nil {
 		t.Fatal(err.Error())
 	}

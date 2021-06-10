@@ -1,6 +1,7 @@
 package ciossdk
 
 import (
+	"fmt"
 	"regexp"
 	"time"
 
@@ -21,8 +22,50 @@ import (
 	ciosutil "github.com/optim-corp/cios-golang-sdk/util/cios"
 )
 
-func NewCiosClient(config CiosClientConfig) *CiosClient {
-	instance := new(CiosClient)
+type CiosClient interface {
+	fmt.Stringer
+	Auth() Auth
+	PubSub() PubSub
+	Account() Account
+	DeviceAssetManagement() DeviceAssetManagement
+	DeviceManagement() DeviceManagement
+	FileStorage() FileStorage
+	Geography() Geography
+	License() License
+	Contract() Contract
+	Video() VideoStreaming
+	Debug(debug bool) CiosClient
+	RequestScope(scope string) CiosClient
+	TokenExp() int64
+	SetTokenExp(tokenExp int64)
+
+	_accessToken(accessToken string) CiosClient
+}
+type ciosClient struct {
+	pubSub                PubSub
+	account               Account
+	deviceAssetManagement DeviceAssetManagement
+	deviceManagement      DeviceManagement
+	fileStorage           FileStorage
+	geography             Geography
+	auth                  Auth
+	license               License
+	contract              Contract
+	video                 VideoStreaming
+	tokenExp              int64
+	cfg                   *cios.Configuration
+}
+
+func (self *ciosClient) SetTokenExp(tokenExp int64) {
+	self.tokenExp = tokenExp
+}
+
+func (self *ciosClient) TokenExp() int64 {
+	return self.tokenExp
+}
+
+func NewCiosClient(config CiosClientConfig) CiosClient {
+	instance := new(ciosClient)
 	client := createClient(config.CustomClient, cios.ServerConfigurations{
 		{URL: config.Urls.AuthUrl},
 		{URL: config.Urls.AccountsUrl},
@@ -67,19 +110,19 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 			if instance.tokenExp == 0 || instance.tokenExp-60 <= time.Now().Unix() {
 				switch config.AuthConfig._type {
 				case sdkmodel.CLIENT_TYPE:
-					token, _, _, _, err := instance.Auth.GetAccessTokenOnClient()
+					token, _, _, _, err := instance.auth.GetAccessTokenOnClient()
 					if err != nil {
 						return err
 					}
 					instance._accessToken(token)
 				case sdkmodel.REFRESH_TYPE:
-					token, _, _, _, err := instance.Auth.GetAccessTokenByRefreshToken()
+					token, _, _, _, err := instance.auth.GetAccessTokenByRefreshToken()
 					if err != nil {
 						return err
 					}
 					instance._accessToken(token)
 				case sdkmodel.DEVICE_TYPE:
-					token, _, _, _, err := instance.Auth.GetAccessTokenOnDevice()
+					token, _, _, _, err := instance.auth.GetAccessTokenOnDevice()
 					if err != nil {
 						return err
 					}
@@ -101,28 +144,68 @@ func NewCiosClient(config CiosClientConfig) *CiosClient {
 	deviceAssetManagement.SetRefresh(refFunc)
 	pubsub.SetRefresh(refFunc)
 
-	instance.Contract = contract
-	instance.License = license
-	instance.Account = account
-	instance.DeviceManagement = deviceManagement
-	instance.DeviceAssetManagement = deviceAssetManagement
-	instance.FileStorage = fileStorage
-	instance.Geography = geography
-	instance.Auth = auth
-	instance.PubSub = pubsub
-	instance.Video = video
+	instance.contract = contract
+	instance.license = license
+	instance.account = account
+	instance.deviceManagement = deviceManagement
+	instance.deviceAssetManagement = deviceAssetManagement
+	instance.fileStorage = fileStorage
+	instance.geography = geography
+	instance.auth = auth
+	instance.pubSub = pubsub
+	instance.video = video
 
 	return instance
 }
 
-func (self *CiosClient) Debug(debug bool) *CiosClient {
+func (self *ciosClient) PubSub() PubSub {
+	return self.pubSub
+}
+
+func (self *ciosClient) Account() Account {
+	return self.account
+}
+
+func (self *ciosClient) DeviceAssetManagement() DeviceAssetManagement {
+	return self.deviceAssetManagement
+}
+
+func (self *ciosClient) DeviceManagement() DeviceManagement {
+	return self.deviceManagement
+}
+
+func (self *ciosClient) FileStorage() FileStorage {
+	return self.fileStorage
+}
+
+func (self *ciosClient) Geography() Geography {
+	return self.geography
+}
+
+func (self *ciosClient) Auth() Auth {
+	return self.auth
+}
+
+func (self *ciosClient) License() License {
+	return self.license
+}
+
+func (self *ciosClient) Contract() Contract {
+	return self.contract
+}
+
+func (self *ciosClient) Video() VideoStreaming {
+	return self.video
+}
+
+func (self *ciosClient) Debug(debug bool) CiosClient {
 	if !check.IsNil(self.cfg) {
 		self.cfg.Debug = debug
 	}
-	self.PubSub.SetDebug(debug)
+	self.pubSub.SetDebug(debug)
 	return self
 }
-func (self *CiosClient) _accessToken(accessToken string) *CiosClient {
+func (self *ciosClient) _accessToken(accessToken string) CiosClient {
 	accessToken = regexp.MustCompile(`^bearer|Bearer| `).ReplaceAllString(accessToken, "")
 	token, _, err := new(jwt.Parser).ParseUnverified(accessToken, jwt.MapClaims{})
 	if err == nil {
@@ -130,19 +213,19 @@ func (self *CiosClient) _accessToken(accessToken string) *CiosClient {
 			self.tokenExp = cnv.MustInt64(claims["exp"])
 		}
 	}
-	self.PubSub.SetToken(accessToken)
-	self.Video.SetToken(accessToken)
+	self.pubSub.SetToken(accessToken)
+	self.video.SetToken(accessToken)
 	if !check.IsNil(self.cfg) {
 		self.cfg.AddDefaultHeader("Authorization", ciosutil.ParseAccessToken(accessToken))
 	}
 	return self
 }
-func (self *CiosClient) RequestScope(scope string) *CiosClient {
-	self.Auth.SetScope(scope)
+func (self *ciosClient) RequestScope(scope string) CiosClient {
+	self.auth.SetScope(scope)
 	return self
 }
 
-func (self CiosClient) String() string {
+func (self ciosClient) String() string {
 	// TODO: ToString
 	return ""
 }

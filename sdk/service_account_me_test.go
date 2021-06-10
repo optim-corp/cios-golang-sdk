@@ -26,7 +26,7 @@ func TestAccount_GetMe(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
-	responseB, response, err := client.Account.GetMe(context.Background())
+	responseB, response, err := client.Account().GetMe(context.Background())
 	if responseB.Id != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(responseB)
 	}

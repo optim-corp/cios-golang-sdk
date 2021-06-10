@@ -106,7 +106,7 @@ func TestDeviceManagement_GetDevices(t *testing.T) {
 	)
 	defer ts.Close()
 	for _, test := range tests {
-		client.DeviceManagement.GetDevices(ctx, test.params)
+		client.DeviceManagement().GetDevices(ctx, test.params)
 		test.test()
 	}
 
@@ -130,7 +130,7 @@ func TestDeviceManagement_GetDevices(t *testing.T) {
 	//	result = "Accept"
 	//	return "", "", "", 0, nil
 	//}
-	//client.DeviceManagement.refresh = &refFunc
+	//client.DeviceManagement().refresh = &refFunc
 	//if result == "Failed" {
 	//	t.Fatal("Cant Refresh", result)
 	//}
@@ -156,27 +156,27 @@ func TestDeviceManagement_GetDevicesAll(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 
-	responses, _, _ := client.DeviceManagement.GetDevicesAll(nil, srvdevice.MakeGetDevicesOpts().Limit(999))
+	responses, _, _ := client.DeviceManagement().GetDevicesAll(nil, srvdevice.MakeGetDevicesOpts().Limit(999))
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
 		t.Fatal(len(responses))
 	}
 
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.DeviceManagement.GetDevicesAll(nil, srvdevice.MakeGetDevicesOpts().Limit(1500))
+	responses, _, _ = client.DeviceManagement().GetDevicesAll(nil, srvdevice.MakeGetDevicesOpts().Limit(1500))
 	if len(responses) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
 		t.Fatal(len(responses), limits, offsets)
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.DeviceManagement.GetDevicesAll(nil, srvdevice.MakeGetDevicesOpts().Limit(2001))
+	responses, _, _ = client.DeviceManagement().GetDevicesAll(nil, srvdevice.MakeGetDevicesOpts().Limit(2001))
 	if len(responses) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.DeviceManagement.GetDevicesAll(nil, srvdevice.MakeGetDevicesOpts().Limit(3501))
+	responses, _, _ = client.DeviceManagement().GetDevicesAll(nil, srvdevice.MakeGetDevicesOpts().Limit(3501))
 	if len(responses) != 3500 ||
 		offsets[0] != 0 || limits[0] != 1000 ||
 		offsets[1] != 1000 && limits[1] != 1000 ||
@@ -186,7 +186,7 @@ func TestDeviceManagement_GetDevicesAll(t *testing.T) {
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.DeviceManagement.GetDevicesAll(nil, srvdevice.MakeGetDevicesOpts().Limit(2001).Offset(20))
+	responses, _, _ = client.DeviceManagement().GetDevicesAll(nil, srvdevice.MakeGetDevicesOpts().Limit(2001).Offset(20))
 	if len(responses) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
@@ -207,7 +207,7 @@ func TestDeviceManagement_GetDevicesUnlimited(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 
-	responses, _, _ := client.DeviceManagement.GetDevicesUnlimited(nil, srvdevice.MakeGetDevicesOpts().Limit(1))
+	responses, _, _ := client.DeviceManagement().GetDevicesUnlimited(nil, srvdevice.MakeGetDevicesOpts().Limit(1))
 	if len(responses) != 3500 {
 		t.Fatal(len(responses))
 	}
@@ -227,7 +227,7 @@ func TestDeviceManagement_GetDevice(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
-	body, response, err := client.DeviceManagement.GetDevice(nil, "test", nil, nil)
+	body, response, err := client.DeviceManagement().GetDevice(nil, "test", nil, nil)
 	if body.Id != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(body)
 	}
@@ -252,7 +252,7 @@ func TestDeviceManagement_CreateDevice(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
-	_, _, err := client.DeviceManagement.CreateDevice(nil, cios.DeviceInfo{
+	_, _, err := client.DeviceManagement().CreateDevice(nil, cios.DeviceInfo{
 		Name:            cnv.StrPtr("name"),
 		ResourceOwnerId: "resource_owner_id",
 	})
@@ -273,7 +273,7 @@ func TestDeviceManagement_DeleteDevice(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
-	_, err := client.DeviceManagement.DeleteDevice(nil, "device_id")
+	_, err := client.DeviceManagement().DeleteDevice(nil, "device_id")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -298,7 +298,7 @@ func TestDeviceManagement_UpdateDevice(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
-	_, _, err := client.DeviceManagement.UpdateDevice(nil, "responseid", cios.DeviceUpdateRequest{
+	_, _, err := client.DeviceManagement().UpdateDevice(nil, "responseid", cios.DeviceUpdateRequest{
 		Name:         cnv.StrPtr("name"),
 		IdNumber:     cnv.StrPtr("1234"),
 		Description:  cnv.StrPtr("desc"),

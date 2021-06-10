@@ -124,7 +124,7 @@ ctx := ciossdk.MakeRequestCtx("Bearer Hogehoge")) // or context.Background()
 params := ciossdk.MakeGetBucketsOpts().
     Name("sample").
     Limit(20)
-buckets, httpResponse, err :=  client.FileStorage.GetBucketsUnlimited(params, ctx)
+buckets, httpResponse, err :=  client.FileStorage().GetBucketsUnlimited(params, ctx)
 ```
 
 ## How to Support
