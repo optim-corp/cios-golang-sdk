@@ -66,11 +66,11 @@ func Test_RefreshGroup(t *testing.T) {
 		),
 	})
 	funcs := []func(){
-		func() { client.Account.GetGroups(ctx, srvaccount.MakeGetGroupsOpts()) },
-		func() { client.Account.CreateGroup(ctx, cios.GroupCreateRequest{}) },
-		func() { client.Account.GetGroup(ctx, "", nil) },
-		func() { client.Account.UpdateGroup(ctx, "", cios.GroupUpdateRequest{}) },
-		func() { client.Account.DeleteGroup(ctx, "") },
+		func() { client.Account().GetGroups(ctx, srvaccount.MakeGetGroupsOpts()) },
+		func() { client.Account().CreateGroup(ctx, cios.GroupCreateRequest{}) },
+		func() { client.Account().GetGroup(ctx, "", nil) },
+		func() { client.Account().UpdateGroup(ctx, "", cios.GroupUpdateRequest{}) },
+		func() { client.Account().DeleteGroup(ctx, "") },
 	}
 	for i, fnc := range funcs {
 		fnc()
@@ -83,7 +83,7 @@ func Test_RefreshGroup(t *testing.T) {
 		_token = ""
 	}
 	for _, fnc := range funcs {
-		client.tokenExp = time.Now().Unix() + 10000
+		client.SetTokenExp(time.Now().Unix() + 10000)
 		fnc()
 		if _token != "Bearer "+sampleToken {
 			t.Fatal(_token)
@@ -115,7 +115,7 @@ func Test_RefreshGroup(t *testing.T) {
 	for i := 0; i < asyncTestNumber; i++ {
 		go func(i int) {
 			time.Sleep(time.Microsecond * time.Duration(rand.Int63n(100)))
-			response, _, _ := client.Account.GetGroups(ciosctx.WithToken(nil, cnv.MustStr(i)), srvaccount.MakeGetGroupsOpts().Name("async "+cnv.MustStr(i)))
+			response, _, _ := client.Account().GetGroups(ciosctx.WithToken(nil, cnv.MustStr(i)), srvaccount.MakeGetGroupsOpts().Name("async "+cnv.MustStr(i)))
 			if response.Groups[0].Id != "async "+cnv.MustStr(i)+":Bearer "+cnv.MustStr(i) {
 				t.Fatal(response.Groups)
 			}
@@ -207,7 +207,7 @@ func TestAccount_Groups(t *testing.T) {
 
 	defer ts.Close()
 	for _, test := range tests {
-		client.Account.GetGroups(ctx, test.params)
+		client.Account().GetGroups(ctx, test.params)
 		test.test()
 	}
 
@@ -232,27 +232,27 @@ func TestAccount_GetGroupsAll(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 
-	responses, _, _ := client.Account.GetGroupsAll(nil, srvaccount.MakeGetGroupsOpts().Limit(999))
+	responses, _, _ := client.Account().GetGroupsAll(nil, srvaccount.MakeGetGroupsOpts().Limit(999))
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
 		t.Fatal(len(responses))
 	}
 
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.Account.GetGroupsAll(nil, srvaccount.MakeGetGroupsOpts().Limit(1500))
+	responses, _, _ = client.Account().GetGroupsAll(nil, srvaccount.MakeGetGroupsOpts().Limit(1500))
 	if len(responses) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
 		t.Fatal(len(responses), limits, offsets)
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.Account.GetGroupsAll(nil, srvaccount.MakeGetGroupsOpts().Limit(2001))
+	responses, _, _ = client.Account().GetGroupsAll(nil, srvaccount.MakeGetGroupsOpts().Limit(2001))
 	if len(responses) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.Account.GetGroupsAll(nil, srvaccount.MakeGetGroupsOpts().Limit(3501))
+	responses, _, _ = client.Account().GetGroupsAll(nil, srvaccount.MakeGetGroupsOpts().Limit(3501))
 	if len(responses) != 3500 ||
 		offsets[0] != 0 || limits[0] != 1000 ||
 		offsets[1] != 1000 && limits[1] != 1000 ||
@@ -262,7 +262,7 @@ func TestAccount_GetGroupsAll(t *testing.T) {
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.Account.GetGroupsAll(nil, srvaccount.MakeGetGroupsOpts().Limit(2001).Offset(20))
+	responses, _, _ = client.Account().GetGroupsAll(nil, srvaccount.MakeGetGroupsOpts().Limit(2001).Offset(20))
 	if len(responses) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
@@ -283,7 +283,7 @@ func TestAccount_GetGroupsUnlimited(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
 
-	response, _, _ := client.Account.GetGroupsUnlimited(nil, srvaccount.MakeGetGroupsOpts().Limit(1))
+	response, _, _ := client.Account().GetGroupsUnlimited(nil, srvaccount.MakeGetGroupsOpts().Limit(1))
 	if len(response) != 3500 {
 		t.Fatal(len(response))
 	}
@@ -305,7 +305,7 @@ func TestAccount_GetGroup(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
-	responseB, response, err := client.Account.GetGroup(nil, "test", nil)
+	responseB, response, err := client.Account().GetGroup(nil, "test", nil)
 	if responseB.Id != "test" || err != nil || response.StatusCode != 200 {
 		t.Fatal(responseB)
 	}
@@ -332,7 +332,7 @@ func TestAccount_CreateGroup(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
-	_, _, err := client.Account.CreateGroup(nil, cios.GroupCreateRequest{
+	_, _, err := client.Account().CreateGroup(nil, cios.GroupCreateRequest{
 		ParentGroupId: cnv.StrPtr("parent"),
 		Name:          "name",
 		Tags:          &[]string{"key=value", "a=b"},
@@ -354,7 +354,7 @@ func TestAccount_DeleteGroup(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
-	_, err := client.Account.DeleteGroup(nil, "id")
+	_, err := client.Account().DeleteGroup(nil, "id")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -371,7 +371,7 @@ func TestAccount_UpdateGroup(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{AccountsUrl: ts.URL}})
-	_, _, err := client.Account.UpdateGroup(nil, "id", cios.GroupUpdateRequest{
+	_, _, err := client.Account().UpdateGroup(nil, "id", cios.GroupUpdateRequest{
 		Name: cnv.StrPtr("name"),
 	})
 	if err != nil {

@@ -6,7 +6,6 @@ import (
 
 	"github.com/optim-corp/cios-golang-sdk/cios"
 	ciosctx "github.com/optim-corp/cios-golang-sdk/ctx"
-	ciossdk "github.com/optim-corp/cios-golang-sdk/sdk"
 	ciossdk_mock "github.com/optim-corp/cios-golang-sdk/sdk/mock"
 )
 
@@ -22,8 +21,9 @@ func (*MockBucket) GetBuckets(ctx ciosctx.RequestCtx, request cios.ApiGetBuckets
 }
 
 func Test_sampleGetBucket(t *testing.T) {
-	client = &ciossdk.CiosClient{}
-	client.FileStorage = &MockBucket{}
+	mock := &ciossdk_mock.MockClient{}
+	mock.SetFileStorage(&MockBucket{})
+	client = mock
 	t.Run("test sample bucket", func(t *testing.T) {
 		buckets := sampleGetBucket()
 		if len(buckets) == 0 || buckets[0].Id != "test-bucket" {

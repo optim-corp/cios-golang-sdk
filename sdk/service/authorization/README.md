@@ -55,19 +55,19 @@ SetScope(scope string)
 
 ※ Fix in the future
 ```go
-token, scope, tokenType, expiresIn, err := client.Auth.GetAccessTokenByRefreshToken()
+token, scope, tokenType, expiresIn, err := client.Auth().GetAccessTokenByRefreshToken()
 ```
 
 #### Get an AccessToken by client
 
 ※ Fix in the future
 ```go
-token, scope, tokenType, expiresIn, err := client.Auth.GetAccessTokenOnClient()
+token, scope, tokenType, expiresIn, err := client.Auth().GetAccessTokenOnClient()
 ```
 
 #### Get an AccessToken by device 
 
 ※ Fix in the future
 ```go
-token, scope, tokenType, expiresIn, err := client.Auth.GetAccessTokenOnDevice()
+token, scope, tokenType, expiresIn, err := client.Auth().GetAccessTokenOnDevice()
 ```

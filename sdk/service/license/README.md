@@ -11,5 +11,5 @@ GetLicenses(ciosctx.RequestCtx, cios.ApiGetMyLicensesRequest) ([]cios.License, *
 #### Get Licenses
 
 ```go
-licensed, httpResponse, err := client.License.GetLicenses(ctx, srvlicense.MakeGetLicensesOpts())
+licensed, httpResponse, err := client.License().GetLicenses(ctx, srvlicense.MakeGetLicensesOpts())
 ```

@@ -106,7 +106,7 @@ func TestDeviceManagement_GetPolicies(t *testing.T) {
 	)
 	defer ts.Close()
 	for _, test := range tests {
-		client.DeviceManagement.GetPolicies(ctx, test.params)
+		client.DeviceManagement().GetPolicies(ctx, test.params)
 		test.test()
 	}
 
@@ -132,27 +132,27 @@ func TestDeviceManagement_GetPoliciesAll(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 
-	responses, _, _ := client.DeviceManagement.GetPoliciesAll(nil, srvdevice.MakeGetPoliciesOpts().Limit(999))
+	responses, _, _ := client.DeviceManagement().GetPoliciesAll(nil, srvdevice.MakeGetPoliciesOpts().Limit(999))
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
 		t.Fatal(len(responses))
 	}
 
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.DeviceManagement.GetPoliciesAll(nil, srvdevice.MakeGetPoliciesOpts().Limit(1500))
+	responses, _, _ = client.DeviceManagement().GetPoliciesAll(nil, srvdevice.MakeGetPoliciesOpts().Limit(1500))
 	if len(responses) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
 		t.Fatal(len(responses), limits, offsets)
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.DeviceManagement.GetPoliciesAll(nil, srvdevice.MakeGetPoliciesOpts().Limit(2001))
+	responses, _, _ = client.DeviceManagement().GetPoliciesAll(nil, srvdevice.MakeGetPoliciesOpts().Limit(2001))
 	if len(responses) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.DeviceManagement.GetPoliciesAll(nil, srvdevice.MakeGetPoliciesOpts().Limit(3501))
+	responses, _, _ = client.DeviceManagement().GetPoliciesAll(nil, srvdevice.MakeGetPoliciesOpts().Limit(3501))
 	if len(responses) != 3500 ||
 		offsets[0] != 0 || limits[0] != 1000 ||
 		offsets[1] != 1000 && limits[1] != 1000 ||
@@ -162,7 +162,7 @@ func TestDeviceManagement_GetPoliciesAll(t *testing.T) {
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.DeviceManagement.GetPoliciesAll(nil, srvdevice.MakeGetPoliciesOpts().Limit(2001).Offset(20))
+	responses, _, _ = client.DeviceManagement().GetPoliciesAll(nil, srvdevice.MakeGetPoliciesOpts().Limit(2001).Offset(20))
 	if len(responses) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
@@ -183,7 +183,7 @@ func TestDeviceManagement_GetPoliciesUnlimited(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
 
-	responses, _, _ := client.DeviceManagement.GetPoliciesUnlimited(nil, srvdevice.MakeGetPoliciesOpts().Limit(1))
+	responses, _, _ := client.DeviceManagement().GetPoliciesUnlimited(nil, srvdevice.MakeGetPoliciesOpts().Limit(1))
 	if len(responses) != 3500 {
 		t.Fatal(len(responses))
 	}
@@ -201,7 +201,7 @@ func TestDeviceManagement_DeletePolicy(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
-	_, err := client.DeviceManagement.DeletePolicy(nil, "id")
+	_, err := client.DeviceManagement().DeletePolicy(nil, "id")
 	if err != nil {
 		t.Fatal(err.Error())
 	}
@@ -225,5 +225,5 @@ func TestDeviceManagement_CreatePolicy(t *testing.T) {
 	}))
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{DeviceManagementUrl: ts.URL}})
-	client.DeviceManagement.CreatePolicy(nil, "resource_owner_id")
+	client.DeviceManagement().CreatePolicy(nil, "resource_owner_id")
 }

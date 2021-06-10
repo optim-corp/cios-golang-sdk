@@ -82,7 +82,7 @@ func TestContract_GetContracts(t *testing.T) {
 	)
 	defer ts.Close()
 	for _, test := range tests {
-		client.Contract.GetContracts(ctx, test.params)
+		client.Contract().GetContracts(ctx, test.params)
 		test.test()
 	}
 	ts.Close()
@@ -106,27 +106,27 @@ func TestContract_GetContractsAll(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{ContractUrl: ts.URL}})
 
-	responses, _, _ := client.Contract.GetContractsAll(nil, srvcontract.MakeGetContractsOpts().Limit(999))
+	responses, _, _ := client.Contract().GetContractsAll(nil, srvcontract.MakeGetContractsOpts().Limit(999))
 	if len(responses) != 999 || offsets[0] != 0 && limits[0] != 1000 {
 		t.Fatal(len(responses))
 	}
 
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.Contract.GetContractsAll(nil, srvcontract.MakeGetContractsOpts().Limit(1500))
+	responses, _, _ = client.Contract().GetContractsAll(nil, srvcontract.MakeGetContractsOpts().Limit(1500))
 	if len(responses) != 1500 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 {
 		t.Fatal(len(responses), limits, offsets)
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.Contract.GetContractsAll(nil, srvcontract.MakeGetContractsOpts().Limit(2001))
+	responses, _, _ = client.Contract().GetContractsAll(nil, srvcontract.MakeGetContractsOpts().Limit(2001))
 	if len(responses) != 2001 || offsets[0] != 0 && limits[0] != 1000 || offsets[1] != 1000 && limits[1] != 1000 || offsets[2] != 2000 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.Contract.GetContractsAll(nil, srvcontract.MakeGetContractsOpts().Limit(3501))
+	responses, _, _ = client.Contract().GetContractsAll(nil, srvcontract.MakeGetContractsOpts().Limit(3501))
 	if len(responses) != 3500 ||
 		offsets[0] != 0 || limits[0] != 1000 ||
 		offsets[1] != 1000 && limits[1] != 1000 ||
@@ -136,7 +136,7 @@ func TestContract_GetContractsAll(t *testing.T) {
 	}
 	offsets = []int{}
 	limits = []int{}
-	responses, _, _ = client.Contract.GetContractsAll(nil, srvcontract.MakeGetContractsOpts().Limit(2001).Offset(20))
+	responses, _, _ = client.Contract().GetContractsAll(nil, srvcontract.MakeGetContractsOpts().Limit(2001).Offset(20))
 	if len(responses) != 2001 || offsets[0] != 20 && limits[0] != 1000 || offsets[1] != 1020 && limits[1] != 1000 || offsets[2] != 2020 || limits[2] != 1 {
 		t.Fatal(len(responses), limits, offsets)
 
@@ -157,7 +157,7 @@ func TestContract_GetContractsUnlimited(t *testing.T) {
 	defer ts.Close()
 	client := NewCiosClient(CiosClientConfig{Urls: sdkmodel.CIOSUrl{ContractUrl: ts.URL}})
 
-	responses, _, _ := client.Contract.GetContractsUnlimited(nil, srvcontract.MakeGetContractsOpts().Limit(1))
+	responses, _, _ := client.Contract().GetContractsUnlimited(nil, srvcontract.MakeGetContractsOpts().Limit(1))
 	if len(responses) != 3500 {
 		t.Fatal(len(responses))
 	}

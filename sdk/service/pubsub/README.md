@@ -24,28 +24,28 @@ UpdateChannel(ctx, string, cios.ChannelUpdateProposal) (cios.MultipleChannel, *_
 
 ```go
 options := srvpubsub.MakeGetChannelsOpts
-channel, httpResponse, err := client.PubSub.GetChannel(ctx, "channel_id", nil, nil)
+channel, httpResponse, err := client.PubSub().GetChannel(ctx, "channel_id", nil, nil)
 ```
 
 #### Get Channels max limit 1000
 
 ```go
 options := srvpubsub.MakeGetChannelsOpts
-channels, httpResponse, err := client.PubSub.GetChannels(ctx, options().Limit(500))
+channels, httpResponse, err := client.PubSub().GetChannels(ctx, options().Limit(500))
 ```
 
 #### Get Channels no limit
 
 ```go
 options := srvpubsub.MakeGetChannelsOpts
-channels, httpResponse, err := client.PubSub.GetChannelsAll(ctx, options().Limit(500))
+channels, httpResponse, err := client.PubSub().GetChannelsAll(ctx, options().Limit(500))
 ```
 
 #### Get Channels unlimited
 
 ```go
 options := srvpubsub.MakeGetChannelsOpts
-channels, httpResponse, err := client.PubSub.GetChannelsUnlimited(ctx, options().Limit(500))
+channels, httpResponse, err := client.PubSub().GetChannelsUnlimited(ctx, options().Limit(500))
 ```
 
 
@@ -53,47 +53,47 @@ channels, httpResponse, err := client.PubSub.GetChannelsUnlimited(ctx, options()
 
 ```go
 options := srvpubsub.MakeGetChannelsOpts
-channel, httpResponse, err := client.PubSub.GetChannelFirst(ctx, options().Label("sample=test"))
+channel, httpResponse, err := client.PubSub().GetChannelFirst(ctx, options().Label("sample=test"))
 ```
 
 #### Get Channel Map by Channel ID
 
 ```go
 options := srvpubsub.MakeGetChannelsOpts
-channelMap, httpResponse, err := client.PubSub.GetChannelsMapByID(ctx, options().Label("sample=test"))
+channelMap, httpResponse, err := client.PubSub().GetChannelsMapByID(ctx, options().Label("sample=test"))
 ```
 
 #### Get Channel Map by ResourceOwner ID
 
 ```go
 options := srvpubsub.MakeGetChannelsOpts
-channelMap, httpResponse, err := client.PubSub.GetChannelsMapByResourceOwnerID(ctx, options().Label("sample=test"))
+channelMap, httpResponse, err := client.PubSub().GetChannelsMapByResourceOwnerID(ctx, options().Label("sample=test"))
 ```
 
 #### Get or Create a Channel
 
 ```go
 options := srvpubsub.MakeGetChannelsOpts
-channel, httpResponse, err := client.PubSub.GetOrCreateChannel(ctx, options().Limit(500), cios.ChannelProposal{})
+channel, httpResponse, err := client.PubSub().GetOrCreateChannel(ctx, options().Limit(500), cios.ChannelProposal{})
 ```
 
 #### Create a Channel
 
 ```go
-channel, httpResponse, err := client.PubSub.CreateChannel(ctx,  cios.ChannelProposal{})
+channel, httpResponse, err := client.PubSub().CreateChannel(ctx,  cios.ChannelProposal{})
 ```
 
 
 #### Update a Channel
 
 ```go
-_, httpResponse, err := client.PubSub.UpdateChannel(ctx,  cios.ChannelUpdateProposal{})
+_, httpResponse, err := client.PubSub().UpdateChannel(ctx,  cios.ChannelUpdateProposal{})
 ```
 
 #### Delete a Channel
 
 ```go
-_, httpResponse, err := client.PubSub.UpdateChannel(ctx,  cios.ChannelUpdateProposal{})
+_, httpResponse, err := client.PubSub().UpdateChannel(ctx,  cios.ChannelUpdateProposal{})
 ```
 
 ## Data Store API
@@ -131,13 +131,13 @@ DeleteObject(ctx, string, string) (*_nethttp.Response, error)
 
 ```go
 options := srvpubsub.MakeGetDataStoreChannelsOpts()
-channels, httpResponse, err := client.PubSub.GetDataStoreChannels(ctx, options().Limit(1000))
+channels, httpResponse, err := client.PubSub().GetDataStoreChannels(ctx, options().Limit(1000))
 ```
 
 #### Get a Channel on Data Store 
 
 ```go
-channel, httpResponse, err := client.PubSub.GetDataStoreChannel(ctx, "channel_id")
+channel, httpResponse, err := client.PubSub().GetDataStoreChannel(ctx, "channel_id")
 ```
 
 #### Get a DataStore Object
@@ -145,7 +145,7 @@ channel, httpResponse, err := client.PubSub.GetDataStoreChannel(ctx, "channel_id
 ※ Fix in the future
 ```go
 packer_format := "payload_only"
-object, httpResponse, err := client.PubSub.GetObject(ctx, "channel_id", "object_id", &packer_format)
+object, httpResponse, err := client.PubSub().GetObject(ctx, "channel_id", "object_id", &packer_format)
 ```
 
 #### Get latest DataStore Object 
@@ -153,40 +153,40 @@ object, httpResponse, err := client.PubSub.GetObject(ctx, "channel_id", "object_
 ※ Fix in the future
 ```go
 packer_format := "payload_only"
-object, httpResponse, err := client.PubSub.GetObjectLatest(ctx, "channel_id",  &packer_format)
+object, httpResponse, err := client.PubSub().GetObjectLatest(ctx, "channel_id",  &packer_format)
 ```
 
 #### Get latest DataStore Object on Channels
 
 ```go
-objects, httpResponse, err := client.PubSub.GetMultiObjectLatest(ctx, []string{"channel_id1", "channel_id2", "channel_id3"})
+objects, httpResponse, err := client.PubSub().GetMultiObjectLatest(ctx, []string{"channel_id1", "channel_id2", "channel_id3"})
 ```
 
 #### Get latest DataStore Object by Channels
 
 ```go
-objects, httpResponse, err := client.PubSub.GetMultiObjectLatest(ctx, []cios.Channel{channel1, channel2, channel3})
+objects, httpResponse, err := client.PubSub().GetMultiObjectLatest(ctx, []cios.Channel{channel1, channel2, channel3})
 ```
 
 #### Get DataStore Objects max limit 1000
 
 ```go
 options := srvpubsub.MakeGetObjectsOpts
-objects, httpResponse, err := client.PubSub.GetObjects(ctx, "channel_id", options())
+objects, httpResponse, err := client.PubSub().GetObjects(ctx, "channel_id", options())
 ```
 
 #### Get DataStore Objects no limit
 
 ```go
 options := srvpubsub.MakeGetObjectsOpts
-objects, httpResponse, err := client.PubSub.GetObjectsAll(ctx, "channel_id", options())
+objects, httpResponse, err := client.PubSub().GetObjectsAll(ctx, "channel_id", options())
 ```
 
 #### Get DataStore Objects unlimited
 
 ```go
 options := srvpubsub.MakeGetObjectsOpts
-objects, httpResponse, err := client.PubSub.GetObjectsUnlimited(ctx, "channel_id", options())
+objects, httpResponse, err := client.PubSub().GetObjectsUnlimited(ctx, "channel_id", options())
 ```
 
 #### Parse latest for Object
@@ -194,7 +194,7 @@ objects, httpResponse, err := client.PubSub.GetObjectsUnlimited(ctx, "channel_id
 ```go
 packerFormat := "payload_only"
 sample := struct{....}{}
-httpResponse, err := client.PubSub.MapObjectLatest(ctx, "channel_id", &packerFormat, &sample)
+httpResponse, err := client.PubSub().MapObjectLatest(ctx, "channel_id", &packerFormat, &sample)
 ```
 
 #### Parse latest for Object on channels
@@ -204,34 +204,34 @@ httpResponse, err := client.PubSub.MapObjectLatest(ctx, "channel_id", &packerFor
 ```go
 packerFormat := "payload_only"
 sample := struct{....}{}
-httpResponse, err := client.PubSub.MapMultiObjectLatestPayload(ctx, []string{"channel_id", "channel_id"}, &sample)
+httpResponse, err := client.PubSub().MapMultiObjectLatestPayload(ctx, []string{"channel_id", "channel_id"}, &sample)
 ```
 
 #### Get DataStore Stream max limit 1000 
 
 ```go
 options := srvpubsub.MakeGetStreamOpts
-stream, err := client.PubSub.GetStream(ctx, "channel_id", options())
+stream, err := client.PubSub().GetStream(ctx, "channel_id", options())
 ```
 
 #### Get DataStore Stream no limit
 
 ```go
 options := srvpubsub.MakeGetStreamOpts
-stream, err := client.PubSub.GetStreamAll(ctx, "channel_id", options())
+stream, err := client.PubSub().GetStreamAll(ctx, "channel_id", options())
 ```
 
 #### Get DataStore Stream unlimited
 
 ```go
 options := srvpubsub.MakeGetStreamOpts
-stream, err := client.PubSub.GetStreamUnimited(ctx, "channel_id", options())
+stream, err := client.PubSub().GetStreamUnimited(ctx, "channel_id", options())
 ```
 #### Get a DataStore Stream first
 
 ```go
 options := srvpubsub.MakeGetStreamOpts
-data, err := client.PubSub.GetStreamFirst(ctx, "channel_id", options())
+data, err := client.PubSub().GetStreamFirst(ctx, "channel_id", options())
 ```
 
 #### Parse DataStore Stream no limit
@@ -239,7 +239,7 @@ data, err := client.PubSub.GetStreamFirst(ctx, "channel_id", options())
 ```go
 data := []struct{...}{}
 options := srvpubsub.MakeGetStreamOpts
-err := client.PubSub.MapStreamAll(ctx, "channel_id", options(), &data)
+err := client.PubSub().MapStreamAll(ctx, "channel_id", options(), &data)
 ```
 
 #### Parse DataStore Stream unlimited
@@ -247,7 +247,7 @@ err := client.PubSub.MapStreamAll(ctx, "channel_id", options(), &data)
 ```go
 data := []struct{...}{}
 options := srvpubsub.MakeGetStreamOpts
-err := client.PubSub.MapStreamUnlimited(ctx, "channel_id", options(), &data)
+err := client.PubSub().MapStreamUnlimited(ctx, "channel_id", options(), &data)
 ```
 
 #### Map a DataStore Stream first
@@ -255,19 +255,19 @@ err := client.PubSub.MapStreamUnlimited(ctx, "channel_id", options(), &data)
 ```go
 options := srvpubsub.MakeGetStreamOpts
 data := struct{}{}
-err := client.PubSub.GetStreamFirst(ctx, "channel_id", options(), &data)
+err := client.PubSub().GetStreamFirst(ctx, "channel_id", options(), &data)
 ```
 
 #### Delete DataStore Objects
 
 ```go
-httpResponse, err := client.PubSub.DeleteDataByChannel(ctx, "channel_id")
+httpResponse, err := client.PubSub().DeleteDataByChannel(ctx, "channel_id")
 ```
 
 #### Delete a DataStore Object
 
 ```go
-httpResponse, err := client.PubSub.DeleteObject(ctx, "channel_id", "object_id")
+httpResponse, err := client.PubSub().DeleteObject(ctx, "channel_id", "object_id")
 ```
 
 ## Messaging API
@@ -290,7 +290,7 @@ PublishMessageJSON(ciosctx.RequestCtx, string, cios.PackerFormatJson) (*_nethttp
 ```go
 packerFormat := "payload_only"
 data := struct{}{}
-httpResponse, err := client.PubSub.PublishMessage(ctx, "channel_id", data, &packetFormat)
+httpResponse, err := client.PubSub().PublishMessage(ctx, "channel_id", data, &packetFormat)
 ```
 
 
@@ -299,21 +299,21 @@ httpResponse, err := client.PubSub.PublishMessage(ctx, "channel_id", data, &pack
 ※ Fix in the future
 ```go
 data := struct{}{}
-httpResponse, err := client.PubSub.PublishMessagePackerOnly(ctx, "channel_id", data)
+httpResponse, err := client.PubSub().PublishMessagePackerOnly(ctx, "channel_id", data)
 ```
 
 #### Publish json format
 
 ```go
 data := struct{}{}
-httpResponse, err := client.PubSub.PublishMessageJSON(ctx, "channel_id", data)
+httpResponse, err := client.PubSub().PublishMessageJSON(ctx, "channel_id", data)
 ```
 
 
 #### Create Messaging instance
 
 ```go
-ms := client.PubSub.NewMessaging("channel_id", enum.PubSub, enum.Json)
+ms := client.PubSub().NewMessaging("channel_id", enum.PubSub, enum.Json)
 err := ms.Start(ctx)
 ...
 ms.Close()

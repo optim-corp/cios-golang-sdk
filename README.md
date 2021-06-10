@@ -272,20 +272,21 @@ package ciossdk_mock has mock interface
 ### Usage
 
 ```go
-type MockAccount struct {
-	ciossdk_mock.NoImplementAccount
+var client = ciossdk.NewCiosClient()
+type MockBucket struct {
+	ciossdk_mock.NoImplementFileStorage
 }
 
-func (MockAccount) GetMe(ctx ciosctx.RequestCtx) (cios.Me, *http.Response, error) {
-	return testMe, nil, nil
+func (*MockBucket) GetBuckets(ctx ciosctx.RequestCtx, request cios.ApiGetBucketsRequest) (cios.MultipleBucket, *_nethttp.Response, error) {
+    return cios.MultipleBucket{}, nil, nil
 }
-func (MockAccount) GetResourceOwnersMapByGroupID(ciosctx.RequestCtx) (map[string]cios.ResourceOwner, error) {
-	return nil, nil
+func Test_sampleGetBucket(t *testing.T) {
+    mock := &ciossdk_mock.MockClient{}
+    mock.SetFileStorage(&MockBucket{})
+    client = mock
+    ....
 }
-func TestExample(t *testing.T) {
-    client := &ciossdk.CiosClient{}
-    client.Account = MockAccount{}
-}
+
 ```
 
 ## How to Support

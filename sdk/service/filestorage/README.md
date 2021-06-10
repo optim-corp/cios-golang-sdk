@@ -21,59 +21,59 @@ UpdateBucket(ciosctx.RequestCtx, string, string) (*_nethttp.Response, error)
 #### Get a Bucket
 
 ```go
-bucket, httpResponse, err := client.FileStorage.GetBucketsUnlimited(ctx, "bucket_id")
+bucket, httpResponse, err := client.FileStorage()().GetBucketsUnlimited(ctx, "bucket_id")
 ```
 
 #### Get a Bucket by ResourceOwnerID + Bucket Name
 
 ```go
-bucket, httpResponse, err := client.FileStorage.GetBucketByResourceOwnerIDAndName(ctx, "resource_owner_id", "name")
+bucket, httpResponse, err := client.FileStorage().GetBucketByResourceOwnerIDAndName(ctx, "resource_owner_id", "name")
 ```
 
 #### Get Buckets max limit 1000
 
 ```go
 options := srvfilestorage.MakeGetBucketsOpts
-buckets, httpResponse, err := client.FileStorage.GetBuckets(ctx, options().Name("test"))
+buckets, httpResponse, err := client.FileStorage().GetBuckets(ctx, options().Name("test"))
 ```
 
 #### Get Buckets no limit 
 
 ```go
 options := srvfilestorage.MakeGetBucketsOpts
-buckets, httpResponse, err := client.FileStorage.GetBucketsAll(ctx, options().Name("test").Limit(2000))
+buckets, httpResponse, err := client.FileStorage().GetBucketsAll(ctx, options().Name("test").Limit(2000))
 ```
 
 #### Get Buckets unlimited
 
 ```go
 options := srvfilestorage.MakeGetBucketsOpts
-buckets, httpResponse, err := client.FileStorage.GetBucketsUnlimited(ctx, options().Name("test"))
+buckets, httpResponse, err := client.FileStorage().GetBucketsUnlimited(ctx, options().Name("test"))
 ```
 
 
 #### Get or create a Bucket
 
 ```go
-bucket, httpResponse, err := client.FileStorage.GetOrCreateBucket(ctx, "resource_owner_id", "name")
+bucket, httpResponse, err := client.FileStorage().GetOrCreateBucket(ctx, "resource_owner_id", "name")
 ```
 
 #### Create a Bucket
 
 ```go
-bucket, httpResponse, err := client.FileStorage.CreateBucket(ctx, "resource_owner_id", "name")
+bucket, httpResponse, err := client.FileStorage().CreateBucket(ctx, "resource_owner_id", "name")
 ```
 
 #### Update a Bucket
 
 ```go
-httpResponse, err := client.FileStorage.UpdateBucket(ctx, "bucket_id", "name")
+httpResponse, err := client.FileStorage().UpdateBucket(ctx, "bucket_id", "name")
 ```
 
 #### Delete a Bucket
 
 ```go
-httpResponse, err := client.FileStorage.DeleteBucket(ctx, "bucket_id")
+httpResponse, err := client.FileStorage().DeleteBucket(ctx, "bucket_id")
 ```
 
 
@@ -99,7 +99,7 @@ RenameNode(ciosctx.RequestCtx, string, string, string) (cios.Node, *_nethttp.Res
 #### Get a Node
 
 ```go
-node, httpResponse, err := client.FileStorage.GetNode(ctx, "bucket_id", "node_id")
+node, httpResponse, err := client.FileStorage().GetNode(ctx, "bucket_id", "node_id")
 ```
 
 
@@ -107,21 +107,21 @@ node, httpResponse, err := client.FileStorage.GetNode(ctx, "bucket_id", "node_id
 
 ```go
 options := srvfilestorage.MakeGetNodesOpts
-nodes, httpResponse, err := client.FileStorage.GetNodes(ctx, "bucket_id", options().Limit(200).Name("sample"))
+nodes, httpResponse, err := client.FileStorage().GetNodes(ctx, "bucket_id", options().Limit(200).Name("sample"))
 ```
 
 #### Get Nodes no limit 
 
 ```go
 options := srvfilestorage.MakeGetNodesOpts
-nodes, httpResponse, err := client.FileStorage.GetNodesAll(ctx, "bucket_id", options().Limit(20000).Name("sample"))
+nodes, httpResponse, err := client.FileStorage().GetNodesAll(ctx, "bucket_id", options().Limit(20000).Name("sample"))
 ```
 
 #### Get Nodes unlimited
 
 ```go
 options := srvfilestorage.MakeGetNodesOpts
-nodes, httpResponse, err := client.FileStorage.GetNodesUnlimited(ctx, "bucket_id", options().Name("sample"))
+nodes, httpResponse, err := client.FileStorage().GetNodesUnlimited(ctx, "bucket_id", options().Name("sample"))
 ```
 
 
@@ -135,7 +135,7 @@ node, httpResponse, err := CreateNode(ciosctx.RequestCtx, "bucket_id", "node_nam
 #### Delete a Node
 
 ```go
-httpResponse, err := client.FileStorage.DeleteNode(ctx, "bucket_id", "node_id")
+httpResponse, err := client.FileStorage().DeleteNode(ctx, "bucket_id", "node_id")
 ```
 
 #### Copy a Node
@@ -143,7 +143,7 @@ httpResponse, err := client.FileStorage.DeleteNode(ctx, "bucket_id", "node_id")
 ```go
 destBucketId := "dest_bucket_id"
 destNodeId := "dest_node_id"
-node, httpResponse, err := client.FileStorage.CopyNode(ctx, "bucket_id", "node_id", &destBucketId, &destNodeId)
+node, httpResponse, err := client.FileStorage().CopyNode(ctx, "bucket_id", "node_id", &destBucketId, &destNodeId)
 ```
 
 #### Move a Node
@@ -151,13 +151,13 @@ node, httpResponse, err := client.FileStorage.CopyNode(ctx, "bucket_id", "node_i
 ```go
 destBucketId := "dest_bucket_id"
 destNodeId := "dest_node_id"
-node, httpResponse, err := client.FileStorage.MoveNode(ctx, "bucket_id", "node_id", &destBucketId, &destNodeId)
+node, httpResponse, err := client.FileStorage().MoveNode(ctx, "bucket_id", "node_id", &destBucketId, &destNodeId)
 ```
 
 #### Rename a Node
 
 ```go
-node, httpResponse, err := client.FileStorage.MoveNode(ctx, "bucket_id", "node_id", "name")
+node, httpResponse, err := client.FileStorage().MoveNode(ctx, "bucket_id", "node_id", "name")
 ```
 
 ## File API
@@ -176,11 +176,11 @@ UploadFile(ciosctx.RequestCtx, string, []byte, cios.ApiUploadFileRequest) (*_net
 #### Download a File
 
 ```go
-byts, httpResponse, err := client.FileStorage.DownloadFile(ctx, "bucket_id", "node_id")
+byts, httpResponse, err := client.FileStorage().DownloadFile(ctx, "bucket_id", "node_id")
 ```
 
 #### Upload a File
 
 ```go
-httpResponse, err := client.FileStorage.UploadFile(ctx, "bucket_id", []byte{}, srvfilestorage.MakeUploadFileOpts().NodeId("node_id"))
+httpResponse, err := client.FileStorage().UploadFile(ctx, "bucket_id", []byte{}, srvfilestorage.MakeUploadFileOpts().NodeId("node_id"))
 ```
