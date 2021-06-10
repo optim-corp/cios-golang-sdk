@@ -14,36 +14,36 @@ Stop(ciosctx.RequestCtx, string) (*_nethttp.Response, error)
 #### Get a Video information
 
 ```go
-videoInfo, httpResponse, err := client.Video.GetVideoInfo(ctx, "video_id")
+videoInfo, httpResponse, err := client.Video().GetVideoInfo(ctx, "video_id")
 ```
 
 #### Get Videos information
 
 ```go
 options := srvvideo.MakeGetVideosOpts()
-videosInfo, httpResponse, err := client.Video.GetVideoInfo(ctx, options())
+videosInfo, httpResponse, err := client.Video().GetVideoInfo(ctx, options())
 ```
 
 #### Update a Video information
 
 ```go
-videosInfo, httpResponse, err := client.Video.UpdateVideoInfo(ctx, "video_id", "name", "description")
+videosInfo, httpResponse, err := client.Video().UpdateVideoInfo(ctx, "video_id", "name", "description")
 ```
 
 #### Get a Thumbnail
 
 ```go
-byts, httpResponse, err := client.Video.GetThumbnail(ctx, "video_id")
+byts, httpResponse, err := client.Video().GetThumbnail(ctx, "video_id")
 ```
 
 #### Play Streaming
 
 ```go
-room, httpResponse, err := client.Video.Play(ctx, "video_id")
+room, httpResponse, err := client.Video().Play(ctx, "video_id")
 ```
 
 #### Stop Streaming
 
 ```go
-httpResponse, err := client.Video.Stop(ctx, "video_id")
+httpResponse, err := client.Video().Stop(ctx, "video_id")
 ```

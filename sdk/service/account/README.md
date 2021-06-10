@@ -12,7 +12,7 @@ GetMe(ciosctx.RequestCtx) (cios.Me, *_nethttp.Response, error)
 #### Get Me
 
 ```go
-me, httpResponse, err := client.Account.GetMe(ctx)
+me, httpResponse, err := client.Account().GetMe(ctx)
 ```
 
 
@@ -38,41 +38,41 @@ UpdateGroup(ciosctx.RequestCtx, string, cios.GroupUpdateRequest) (cios.Group, *_
 #### Get a Group
 ```go
 includes := "children"
-group, httpResponse, err := client.Account.GetGroup(ctx, "groupID", &includes)
+group, httpResponse, err := client.Account().GetGroup(ctx, "groupID", &includes)
 ```
 
 #### Get Groups max limit 1000
 
 ```go
 options := srvaccount.MakeGetGroupsOpts
-groups, httpResponse, err := client.Account.GetGroups(ctx, options().Tags("sample_test").Limit(10))
+groups, httpResponse, err := client.Account().GetGroups(ctx, options().Tags("sample_test").Limit(10))
 ```
 
 #### Get Groups no limit
 
 ```go
 options := srvaccount.MakeGetGroupsOpts
-groups, httpResponse, err := client.Account.GetGroupsAll(ctx, options().Tags("sample_test").Limit(2000))
+groups, httpResponse, err := client.Account().GetGroupsAll(ctx, options().Tags("sample_test").Limit(2000))
 ```
 
 #### Get Groups unlimited
 
 ```go
 options := srvaccount.MakeGetGroupsOpts
-groups, httpResponse, err := client.Account.GetGroupsUnlimited(ctx, options().Tags("sample_test"))
+groups, httpResponse, err := client.Account().GetGroupsUnlimited(ctx, options().Tags("sample_test"))
 ```
 
 #### Get a Group by Resource Owner ID
 
 ```go
 includes := "children"
-group, httpResponse, err := client.Account.GetGroupByResourceOwnerId(ctx, "resource_owner_id", &includes)
+group, httpResponse, err := client.Account().GetGroupByResourceOwnerId(ctx, "resource_owner_id", &includes)
 ```
 
 #### Crete a Group
 
 ```go
-group, httpResponse, err := client.Account.CreateGroup(ctx, cios.GroupCreateRequest{
+group, httpResponse, err := client.Account().CreateGroup(ctx, cios.GroupCreateRequest{
     Name: "",
     Type: "",
 })
@@ -83,7 +83,7 @@ group, httpResponse, err := client.Account.CreateGroup(ctx, cios.GroupCreateRequ
 ```go
 parentGroupId := "parent_group_id"
 groupName := "group_name"
-group, httpResponse, err := client.Account.UpdateGroup(ctx, "group_id",
+group, httpResponse, err := client.Account().UpdateGroup(ctx, "group_id",
     cios.GroupUpdateRequest{
         ParentGroupId: &parentGroupId,
         Name:          &groupName,
@@ -93,7 +93,7 @@ group, httpResponse, err := client.Account.UpdateGroup(ctx, "group_id",
 #### Delete a Group
 
 ```go
-httpResponse, err := client.Account.DeleteGroup(ctx, "group_id")
+httpResponse, err := client.Account().DeleteGroup(ctx, "group_id")
 ```
 
 ## Resource Owner API
@@ -116,44 +116,44 @@ GetResourceOwnersMapByGroupID(ciosctx.RequestCtx) (map[string]cios.ResourceOwner
 #### Get a ResourceOwner
 
 ```go
-resourceOwner, httpResponse, err := client.Account.GetResourceOwner(ctx, "resource_owner_id")
+resourceOwner, httpResponse, err := client.Account().GetResourceOwner(ctx, "resource_owner_id")
 ```
 
 #### Get a ResourceOwner by Group ID
 
 ```go
-resourceOwner, httpResponse, err := client.Account.GetResourceOwnerByGroupId(ctx, "group_id")
+resourceOwner, httpResponse, err := client.Account().GetResourceOwnerByGroupId(ctx, "group_id")
 ```
 
 #### Get ResourceOwner Map by ResourceOwner ID
 
 ```go
-resourceOwner, httpResponse, err := client.Account.GetResourceOwnersMapByID(ctx)
+resourceOwner, httpResponse, err := client.Account().GetResourceOwnersMapByID(ctx)
 ```
 
 #### Get ResourceOwner Map by Group ID
 
 ```go
-resourceOwner, httpResponse, err := client.Account.GetResourceOwnersMapByGroupID(ctx)
+resourceOwner, httpResponse, err := client.Account().GetResourceOwnersMapByGroupID(ctx)
 ```
 
 #### Get ResourceOwners max limit 1000
 
 ```go
 options := srvaccount.MakeGetResourceOwnersOpts
-resourceOwners, httpResponse, err := client.Account.GetResourceOwners(ctx, options().Limit(20).Offset(1000))
+resourceOwners, httpResponse, err := client.Account().GetResourceOwners(ctx, options().Limit(20).Offset(1000))
 ```
 
 #### Get ResourceOwners no limit
 
 ```go
 options := srvaccount.MakeGetResourceOwnersOpts
-resourceOwners, httpResponse, err := client.Account.GetResourceOwnersAll(ctx, options().Limit(20000).Offset(1000))
+resourceOwners, httpResponse, err := client.Account().GetResourceOwnersAll(ctx, options().Limit(20000).Offset(1000))
 ```
 
 #### Get ResourceOwners unlimited
 
 ```go
 options := srvaccount.MakeGetResourceOwnersOpts
-resourceOwners, httpResponse, err := client.Account.GetResourceOwnersUnlimited(ctx, options().Offset(1000))
+resourceOwners, httpResponse, err := client.Account().GetResourceOwnersUnlimited(ctx, options().Offset(1000))
 ```

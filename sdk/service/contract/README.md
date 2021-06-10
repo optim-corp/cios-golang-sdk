@@ -15,7 +15,7 @@ GetContractsUnlimited(ciosctx.RequestCtx, cios.ApiGetContractsRequest) ([]cios.C
 
 ```go
 options := srvcontract.MakeGetContractsOpts
-contracts, httpReponse, err := client.Contract.GetContracts(ctx, options())
+contracts, httpReponse, err := client.Contract().GetContracts(ctx, options())
 ```
 
 
@@ -23,7 +23,7 @@ contracts, httpReponse, err := client.Contract.GetContracts(ctx, options())
 
 ```go
 options := srvcontract.MakeGetContractsOpts
-contracts, httpReponse, err := client.Contract.GetContractsAll(ctx, options())
+contracts, httpReponse, err := client.Contract().GetContractsAll(ctx, options())
 ```
 
 
@@ -31,5 +31,5 @@ contracts, httpReponse, err := client.Contract.GetContractsAll(ctx, options())
 
 ```go
 options := srvcontract.MakeGetContractsOpts
-contracts, httpReponse, err := client.Contract.GetContractsUnlimited(ctx, options())
+contracts, httpReponse, err := client.Contract().GetContractsUnlimited(ctx, options())
 ```

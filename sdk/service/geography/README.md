@@ -16,7 +16,7 @@ DeletePoint(ciosctx.RequestCtx, string) (cios.Point, *_nethttp.Response, error)
 
 ```go
 options := srvgeography.MakeGetPointsOpts
-points, httpResponse, err := client.Geography.GetPoints(ctx, options())
+points, httpResponse, err := client.Geography().GetPoints(ctx, options())
 ```
 
 
@@ -24,7 +24,7 @@ points, httpResponse, err := client.Geography.GetPoints(ctx, options())
 
 ```go
 options := srvgeography.MakeGetPointsOpts
-points, httpResponse, err := client.Geography.GetPoints(ctx, options())
+points, httpResponse, err := client.Geography().GetPoints(ctx, options())
 ```
 
 
@@ -32,7 +32,7 @@ points, httpResponse, err := client.Geography.GetPoints(ctx, options())
 
 ```go
 options := srvgeography.MakeGetPointsOpts
-points, httpResponse, err := client.Geography.GetPoints(ctx, options())
+points, httpResponse, err := client.Geography().GetPoints(ctx, options())
 ```
 
 ## Cycle API 
