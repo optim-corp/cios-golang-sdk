@@ -9,6 +9,10 @@ import (
 
 type NoImplementVideoStreaming struct{}
 
+func (NoImplementVideoStreaming) SetToken(s2 string) {
+	panic("implement me")
+}
+
 func (NoImplementVideoStreaming) GetVideoInfos(ctx ciosctx.RequestCtx, request cios.ApiGetVideoStreamsListRequest) ([]cios.Video, *_nethttp.Response, error) {
 	panic("implement me")
 }
