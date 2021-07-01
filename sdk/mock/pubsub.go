@@ -16,6 +16,18 @@ import (
 
 type NoImplementPubsub struct{}
 
+func (p NoImplementPubsub) NewMessaging(s string, mode enum.MessagingMode, format enum.PackerFormat) *srvpubsub.CiosMessaging {
+	panic("implement me")
+}
+
+func (p NoImplementPubsub) SetDebug(b bool) {
+	panic("implement me")
+}
+
+func (p NoImplementPubsub) SetToken(s string) {
+	panic("implement me")
+}
+
 func (NoImplementPubsub) GetChannels(ctx ciosctx.RequestCtx, request cios.ApiGetChannelsRequest) (cios.MultipleChannel, *_nethttp.Response, error) {
 	panic("implement me")
 }
@@ -149,10 +161,6 @@ func (NoImplementPubsub) DeleteDataByChannel(ctx ciosctx.RequestCtx, s string) (
 }
 
 func (NoImplementPubsub) DeleteObject(ctx ciosctx.RequestCtx, s string, s2 string) (*_nethttp.Response, error) {
-	panic("implement me")
-}
-
-func (NoImplementPubsub) NewMessaging(s string, mode enum.MessagingMode, format enum.PackerFormat) *cios.MessagingConfig {
 	panic("implement me")
 }
 
