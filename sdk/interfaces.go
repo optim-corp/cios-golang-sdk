@@ -162,9 +162,21 @@ type (
 		RenameNode(ciosctx.RequestCtx, string, string, string) (cios.Node, *_nethttp.Response, error)
 	}
 	Geography interface {
-		GetPoints(ciosctx.RequestCtx, cios.ApiGetPointsRequest) (cios.MultiplePoint, *_nethttp.Response, error)
-		CreatePoint(ciosctx.RequestCtx, cios.PointRequest) (cios.Point, *_nethttp.Response, error)
-		DeletePoint(ciosctx.RequestCtx, string) (cios.Point, *_nethttp.Response, error)
+		GetPoints(ctx ciosctx.RequestCtx, params cios.ApiGetPointsRequest) (response cios.MultiplePoint, httpResponse *_nethttp.Response, err error)
+		CreatePoint(ctx ciosctx.RequestCtx, body cios.PointRequest) (cios.SinglePoint, *_nethttp.Response, error)
+		GetPoint(ctx ciosctx.RequestCtx, pointID string, lang *string, isDev *bool) (cios.SinglePoint, *_nethttp.Response, error)
+		UpdatePoint(ctx ciosctx.RequestCtx, pointID string, body []cios.DisplayInfo) (cios.SinglePoint, *_nethttp.Response, error)
+		DeletePoint(ctx ciosctx.RequestCtx, pointID string) (*_nethttp.Response, error)
+		GetCircles(ctx ciosctx.RequestCtx, req cios.ApiGetCirclesRequest) (cios.MultipleCircle, *_nethttp.Response, error)
+		CreateCircle(ctx ciosctx.RequestCtx, req cios.Circle) (cios.SingleCircle, *_nethttp.Response, error)
+		GetCircle(ctx ciosctx.RequestCtx, pointID string, lang *string, isDev *bool) (cios.SingleCircle, *_nethttp.Response, error)
+		UpdateCircle(ctx ciosctx.RequestCtx, pointID string, displayInfo []cios.DisplayInfo) (cios.SingleCircle, *_nethttp.Response, error)
+		DeleteCircle(ctx ciosctx.RequestCtx, pointID string) (*_nethttp.Response, error)
+		GetRoutes(ctx ciosctx.RequestCtx, req cios.ApiGetRoutesRequest) (cios.MultipleRoute, *_nethttp.Response, error)
+		CreateRoute(ctx ciosctx.RequestCtx, req cios.Route) (cios.SingleRoute, *_nethttp.Response, error)
+		GetRoute(ctx ciosctx.RequestCtx, routeID string, lang *string, isDev *bool) (cios.SingleRoute, *_nethttp.Response, error)
+		UpdateRoute(ctx ciosctx.RequestCtx, routeID string, displayInfo []cios.DisplayInfo) (cios.SingleRoute, *_nethttp.Response, error)
+		DeleteRoute(ctx ciosctx.RequestCtx, routeID string) (*_nethttp.Response, error)
 	}
 	VideoStreaming interface {
 		GetVideoInfos(ciosctx.RequestCtx, cios.ApiGetVideoStreamsListRequest) ([]cios.Video, *_nethttp.Response, error)
