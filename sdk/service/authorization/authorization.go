@@ -2,6 +2,7 @@ package srvauth
 
 import (
 	"context"
+	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -50,11 +51,14 @@ func (self *CiosAuth) GetAccessTokenOnClient() (sdkmodel.AccessToken, sdkmodel.S
 	values.Add("client_id", self.clientId)
 	values.Add("client_secret", self.clientSecret)
 	values.Add("scope", self.scope)
-	resp, _ := http.Post(
+	resp, err := http.Post(
 		self.Url+"/connect/token",
 		"application/x-www-form-urlencoded",
 		strings.NewReader(values.Encode()),
 	)
+	if err != nil {
+		return "", "", "", 0, fmt.Errorf("failed to request token: %w", err)
+	}
 	defer resp.Body.Close()
 
 	body, err := ioutil.ReadAll(resp.Body)
