@@ -7,6 +7,10 @@ This SDK uses OpenAPI and is generated in code.
 OpenAPI will be split at a later date, but is now included in the code.
 It is imperfect.
 
+## DEPRECATION NOTICE
+This project is no longer maintained.  
+We're needed the new maintainer, please [contact us](https://www.optim.co.jp/recruit/career/).
+
 ## Instration
 
 ```shell script
